@@ -437,7 +437,11 @@
 			</div>
 		</footer>
 		<script>
-			// Light/Dark Mode Toggle - Apply immediately to prevent flash
+			// ============================================
+			// IMMEDIATE INITIALIZATION (runs before DOM ready)
+			// ============================================
+
+			// Light/Dark Mode - Apply immediately to prevent flash
 			(function () {
 				const root = document.documentElement;
 				const savedMode = localStorage.getItem("colorMode") || "dark";
@@ -445,13 +449,54 @@
 					root.classList.add("light-mode");
 				}
 			})();
+
+			// Typewriter - Store original HTML immediately to prevent flash
+			(function () {
+				const headerLabels = document.querySelectorAll(".header-label");
+				headerLabels.forEach(function (label) {
+					label.setAttribute("data-original", label.innerHTML);
+				});
+			})();
+
+			// Clock - Initialize immediately
+			function updateClocks() {
+				const now = new Date();
+				const nzTimeZone = "Pacific/Auckland";
+				const nzTime = now.toLocaleString("en-NZ", {
+					timeZone: nzTimeZone,
+					hour: "2-digit",
+					minute: "2-digit",
+					second: "2-digit",
+					hour12: true,
+				});
+				const isDST = new Date().toLocaleTimeString("en-NZ", { timeZone: nzTimeZone, timeZoneName: "short" }).includes("DT");
+				const nzTimeZoneName = isDST ? "NZDT" : "NZST";
+				const nzDate = new Date().toLocaleString("en-US", { timeZone: nzTimeZone });
+				const nzOffsetInMinutes = new Date(nzDate).getTimezoneOffset();
+				const timezoneOffset = -nzOffsetInMinutes / 60;
+				const gmtOffset = `<span class="opacity-50">(GMT${timezoneOffset >= 0 ? "+" : ""}${timezoneOffset})</span>`;
+
+				const footerClockElement = document.getElementById("clock");
+				if (footerClockElement) {
+					footerClockElement.innerHTML = `<span>${nzTime}</span> <span class="opacity-25">${nzTimeZoneName}</span> ${gmtOffset}`;
+				}
+
+				const headerClockElement = document.getElementById("header-clock");
+				if (headerClockElement) {
+					headerClockElement.innerHTML = `<span class="opacity-75">${nzTimeZoneName}</span> <span>${nzTime}</span> ${gmtOffset}`;
+				}
+			}
+			setInterval(updateClocks, 1000);
+			updateClocks();
 		</script>
 		<script>
-			// Light/Dark Mode Toggle - Event handlers using event delegation
+			// ============================================
+			// DOM READY INITIALIZATION
+			// ============================================
 			document.addEventListener("DOMContentLoaded", function () {
 				const root = document.documentElement;
 
-				// Use event delegation on document to handle clicks on dynamically created elements
+				// Light/Dark Mode Toggle - Event delegation
 				document.addEventListener("click", function (e) {
 					if (e.target.classList.contains("dark-mode-toggle")) {
 						e.preventDefault();
@@ -463,49 +508,27 @@
 						localStorage.setItem("colorMode", "light");
 					}
 				});
-			});
-		</script>
-		<script>
-			// Typewriter effect for header labels - run immediately to prevent flash
-			(function () {
-				const headerLabels = document.querySelectorAll(".header-label");
 
-				// Store original HTML but keep it in place (hidden) to preserve layout space
-				headerLabels.forEach(function (label) {
-					label.setAttribute("data-original", label.innerHTML);
-					// Don't clear - keep content for layout, it's hidden with visibility: hidden
-				});
-			})();
-		</script>
-		<script>
-			// Typewriter effect for header labels
-			document.addEventListener("DOMContentLoaded", function () {
+				// Typewriter effect for header labels
 				const headerLabels = document.querySelectorAll(".header-label");
-
-				function typeWriter(element, speed, callback) {
+				function typeWriter(element, speed) {
 					const originalHTML = element.getAttribute("data-original") || element.innerHTML;
-
-					// Measure and preserve the height before clearing
 					element.style.visibility = "visible";
 					const originalHeight = element.offsetHeight;
 					element.style.minHeight = originalHeight + "px";
-
-					let htmlIndex = 0;
-					// Clear content and make visible when starting to type
 					element.innerHTML = "";
 					element.classList.add("typewriter-active");
-					element.style.visibility = ""; // Remove inline style to let CSS class take effect
+					element.style.visibility = "";
 
+					let htmlIndex = 0;
 					function typeHTML() {
 						if (htmlIndex < originalHTML.length) {
-							// Check if we're in a tag
 							if (originalHTML[htmlIndex] === "<") {
-								// Find the closing >
 								const tagEnd = originalHTML.indexOf(">", htmlIndex);
 								if (tagEnd !== -1) {
 									element.innerHTML = originalHTML.substring(0, tagEnd + 1);
 									htmlIndex = tagEnd + 1;
-									setTimeout(typeHTML, speed * 0.5); // Faster for tags
+									setTimeout(typeHTML, speed * 0.5);
 								} else {
 									element.innerHTML += originalHTML[htmlIndex];
 									htmlIndex++;
@@ -516,184 +539,104 @@
 								htmlIndex++;
 								setTimeout(typeHTML, speed);
 							}
-						} else if (callback) {
-							callback();
 						}
 					}
-
-					// Start typing immediately
 					typeHTML();
 				}
 
-				// Type each label with stagger
 				headerLabels.forEach(function (label, index) {
-					const delay = index * 150; // 150ms delay between each label
-
 					setTimeout(function () {
-						typeWriter(label, 30, null); // 30ms per character
-					}, delay);
-				});
-			});
-		</script>
-		<script>
-			// Clock
-			function updateClocks() {
-				const now = new Date();
-
-				// New Zealand time zone
-				const nzTimeZone = "Pacific/Auckland";
-
-				// Get NZ time components
-				const nzTime = now.toLocaleString("en-NZ", {
-					timeZone: nzTimeZone,
-					hour: "2-digit",
-					minute: "2-digit",
-					second: "2-digit",
-					hour12: true,
+						typeWriter(label, 30);
+					}, index * 150);
 				});
 
-				// Determine if it's daylight saving time in NZ
-				const isDST = new Date().toLocaleTimeString("en-NZ", { timeZone: nzTimeZone, timeZoneName: "short" }).includes("DT");
-				const nzTimeZoneName = isDST ? "NZDT" : "NZST";
+				// ASCII Character Cycling Animation
+				let animationIntervals = [];
+				let animationTimeouts = [];
 
-				// Calculate GMT offset for NZ
-				const nzDate = new Date().toLocaleString("en-US", { timeZone: nzTimeZone });
-				const nzOffsetInMinutes = new Date(nzDate).getTimezoneOffset();
-				const timezoneOffset = -nzOffsetInMinutes / 60; // Offset in hours
-				const gmtOffset = `<span class="opacity-50">(GMT${timezoneOffset >= 0 ? "+" : ""}${timezoneOffset})</span>`;
+				function initAsciiAnimation() {
+					const asciiTextElements = document.querySelectorAll(".ascii-text");
+					const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?/~`";
 
-				// Update footer clock (time first format)
-				const footerClockElement = document.getElementById("clock");
-				if (footerClockElement) {
-					const footerTimeOutput = `<span>${nzTime}</span> <span class="opacity-25">${nzTimeZoneName}</span> ${gmtOffset}`;
-					footerClockElement.innerHTML = footerTimeOutput;
-				}
+					asciiTextElements.forEach(function (element) {
+						const originalText = element.textContent;
+						const textArray = originalText.split("");
+						const newContent = [];
+						const animatePercentage = 0.15;
+						const charsToAnimate = Math.floor(textArray.length * animatePercentage);
+						const animateIndices = new Set();
 
-				// Update header clock (timezone first format)
-				const headerClockElement = document.getElementById("header-clock");
-				if (headerClockElement) {
-					const headerTimeOutput = `<span class="opacity-75">${nzTimeZoneName}</span> <span>${nzTime}</span> ${gmtOffset}`;
-					headerClockElement.innerHTML = headerTimeOutput;
-				}
-			}
-
-			// Update the clocks every second
-			setInterval(updateClocks, 1000);
-
-			// Initialize the clocks immediately
-			updateClocks();
-		</script>
-		<script>
-			// ASCII Character Cycling Animation
-			let animationIntervals = [];
-			let animationTimeouts = [];
-
-			function initAsciiAnimation() {
-				const asciiTextElements = document.querySelectorAll(".ascii-text");
-				const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?/~`";
-
-				asciiTextElements.forEach(function (element) {
-					const originalText = element.textContent;
-					const textArray = originalText.split("");
-					const newContent = [];
-
-					// Randomly select characters to animate
-					const animatePercentage = 0.15; // 15% of characters
-					const charsToAnimate = Math.floor(textArray.length * animatePercentage);
-					const animateIndices = new Set();
-
-					// Randomly select indices to animate
-					while (animateIndices.size < charsToAnimate) {
-						const randomIndex = Math.floor(Math.random() * textArray.length);
-						// Don't animate spaces or newlines
-						if (textArray[randomIndex] !== " " && textArray[randomIndex] !== "\n") {
-							animateIndices.add(randomIndex);
-						}
-					}
-
-					// Build new content with animated spans
-					textArray.forEach(function (char, index) {
-						if (animateIndices.has(index) && char !== " " && char !== "\n") {
-							// Create a span for animated characters - use HTML entity encoding for special chars
-							const span = document.createElement("span");
-							span.className = "ascii-char-animate";
-							span.setAttribute("data-final", char);
-							span.textContent = char;
-							// Use innerHTML approach to ensure proper replacement
-							newContent.push('<span class="ascii-char-animate" data-final="' + char.replace(/"/g, "&quot;") + '">' + char + "</span>");
-						} else {
-							// Keep original character
-							newContent.push(char === "\n" ? "\n" : char === " " ? " " : char);
-						}
-					});
-
-					element.innerHTML = newContent.join("");
-				});
-
-				// Animate the characters continuously
-				function animateChar(char, shouldLoop) {
-					const finalChar = char.getAttribute("data-final");
-					const duration = 1000 + Math.random() * 2000; // 1-3 seconds
-					const steps = 10 + Math.floor(Math.random() * 20); // 10-30 steps
-					const stepDuration = duration / steps;
-					let currentStep = 0;
-
-					const animate = setInterval(function () {
-						if (currentStep < steps) {
-							// Show random character
-							const randomChar = chars[Math.floor(Math.random() * chars.length)];
-							char.textContent = randomChar;
-							currentStep++;
-						} else {
-							// Settle on final character
-							char.textContent = finalChar;
-							animationIntervals = animationIntervals.filter(function (interval) {
-								return interval !== animate;
-							});
-							clearInterval(animate);
-
-							// Always loop if shouldLoop is true
-							if (shouldLoop) {
-								// After a random delay, start animating again
-								const delay = 2000 + Math.random() * 5000; // 2-7 seconds
-								const timeout = setTimeout(function () {
-									animationTimeouts = animationTimeouts.filter(function (t) {
-										return t !== timeout;
-									});
-									animateChar(char, true);
-								}, delay);
-								animationTimeouts.push(timeout);
+						while (animateIndices.size < charsToAnimate) {
+							const randomIndex = Math.floor(Math.random() * textArray.length);
+							if (textArray[randomIndex] !== " " && textArray[randomIndex] !== "\n") {
+								animateIndices.add(randomIndex);
 							}
 						}
-					}, stepDuration);
-					animationIntervals.push(animate);
+
+						textArray.forEach(function (char, index) {
+							if (animateIndices.has(index) && char !== " " && char !== "\n") {
+								newContent.push('<span class="ascii-char-animate" data-final="' + char.replace(/"/g, "&quot;") + '">' + char + "</span>");
+							} else {
+								newContent.push(char === "\n" ? "\n" : char === " " ? " " : char);
+							}
+						});
+
+						element.innerHTML = newContent.join("");
+					});
+
+					function animateChar(char, shouldLoop) {
+						const finalChar = char.getAttribute("data-final");
+						const duration = 1000 + Math.random() * 2000;
+						const steps = 10 + Math.floor(Math.random() * 20);
+						const stepDuration = duration / steps;
+						let currentStep = 0;
+
+						const animate = setInterval(function () {
+							if (currentStep < steps) {
+								const randomChar = chars[Math.floor(Math.random() * chars.length)];
+								char.textContent = randomChar;
+								currentStep++;
+							} else {
+								char.textContent = finalChar;
+								animationIntervals = animationIntervals.filter(function (interval) {
+									return interval !== animate;
+								});
+								clearInterval(animate);
+
+								if (shouldLoop) {
+									const delay = 2000 + Math.random() * 5000;
+									const timeout = setTimeout(function () {
+										animationTimeouts = animationTimeouts.filter(function (t) {
+											return t !== timeout;
+										});
+										animateChar(char, true);
+									}, delay);
+									animationTimeouts.push(timeout);
+								}
+							}
+						}, stepDuration);
+						animationIntervals.push(animate);
+					}
+
+					const animatedChars = document.querySelectorAll(".ascii-char-animate");
+					animatedChars.forEach(function (char) {
+						const initialDelay = Math.random() * 3000;
+						const timeout = setTimeout(function () {
+							animationTimeouts = animationTimeouts.filter(function (t) {
+								return t !== timeout;
+							});
+							animateChar(char, true);
+						}, initialDelay);
+						animationTimeouts.push(timeout);
+					});
 				}
 
-				// Start animation for all animated characters
-				const animatedChars = document.querySelectorAll(".ascii-char-animate");
-				animatedChars.forEach(function (char) {
-					// Random initial delay so they don't all animate at once
-					const initialDelay = Math.random() * 3000;
-					const timeout = setTimeout(function () {
-						animationTimeouts = animationTimeouts.filter(function (t) {
-							return t !== timeout;
-						});
-						animateChar(char, true);
-					}, initialDelay);
-					animationTimeouts.push(timeout);
-				});
-			}
-
-			// Initialize on page load
-			document.addEventListener("DOMContentLoaded", function () {
 				initAsciiAnimation();
 
-				// Handle window resize
 				let resizeTimeout;
 				window.addEventListener("resize", function () {
 					clearTimeout(resizeTimeout);
 					resizeTimeout = setTimeout(function () {
-						// Clear existing animations
 						animationIntervals.forEach(function (interval) {
 							clearInterval(interval);
 						});
@@ -702,21 +645,15 @@
 							clearTimeout(timeout);
 						});
 						animationTimeouts = [];
-
-						// Reinitialize
 						initAsciiAnimation();
 					}, 250);
 				});
-			});
-		</script>
-		<script>
-			// Staggered fade-in animation for hero graphics and icons
-			document.addEventListener("DOMContentLoaded", function () {
+
+				// Staggered fade-in animation for hero graphics and icons
 				const asciiTexts = document.querySelectorAll(".ascii-text");
 				const graphics = document.querySelectorAll(".hero-graphic");
 				const icons = document.querySelectorAll(".hero-icon");
 
-				// Fade in ASCII text first - use requestAnimationFrame to ensure initial opacity: 0 is rendered
 				requestAnimationFrame(function () {
 					requestAnimationFrame(function () {
 						asciiTexts.forEach(function (asciiText) {
@@ -725,35 +662,30 @@
 					});
 				});
 
-				// Wait for all images to load before starting fade-in
 				const imagePromises = Array.from(graphics).map(function (graphic) {
 					return new Promise(function (resolve) {
 						if (graphic.complete) {
 							resolve();
 						} else {
 							graphic.addEventListener("load", resolve);
-							graphic.addEventListener("error", resolve); // Resolve even on error to not block
+							graphic.addEventListener("error", resolve);
 						}
 					});
 				});
 
 				Promise.all(imagePromises).then(function () {
-					// Small delay to ensure images are rendered
 					setTimeout(function () {
-						// Stagger graphics: 200ms delay between each, slower fade-in
 						graphics.forEach(function (graphic, index) {
 							setTimeout(function () {
 								graphic.classList.add("fade-in");
 							}, index * 200);
 						});
 
-						// Calculate when last graphic finishes (last start + fade duration)
 						const lastGraphicStart = (graphics.length - 1) * 0;
-						const fadeDuration = 1500; // 1.5s in milliseconds (slower fade)
-						const additionalDelay = 0; // Extra time after graphics finish
+						const fadeDuration = 1500;
+						const additionalDelay = 0;
 						const iconsStartDelay = lastGraphicStart + fadeDuration + additionalDelay;
 
-						// Stagger icons: start after graphics fully fade in + extra delay, 150ms delay between each
 						icons.forEach(function (icon, index) {
 							setTimeout(function () {
 								icon.classList.add("fade-in");
