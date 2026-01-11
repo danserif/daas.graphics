@@ -447,28 +447,21 @@
 			})();
 		</script>
 		<script>
-			// Light/Dark Mode Toggle - Event handlers
+			// Light/Dark Mode Toggle - Event handlers using event delegation
 			document.addEventListener("DOMContentLoaded", function () {
 				const root = document.documentElement;
-				const darkModeBtns = document.querySelectorAll(".dark-mode-toggle");
-				const lightModeBtns = document.querySelectorAll(".light-mode-toggle");
 
-				// Toggle handlers for all dark mode buttons
-				darkModeBtns.forEach(function (btn) {
-					btn.addEventListener("click", function (e) {
+				// Use event delegation on document to handle clicks on dynamically created elements
+				document.addEventListener("click", function (e) {
+					if (e.target.classList.contains("dark-mode-toggle")) {
 						e.preventDefault();
 						root.classList.remove("light-mode");
 						localStorage.setItem("colorMode", "dark");
-					});
-				});
-
-				// Toggle handlers for all light mode buttons
-				lightModeBtns.forEach(function (btn) {
-					btn.addEventListener("click", function (e) {
+					} else if (e.target.classList.contains("light-mode-toggle")) {
 						e.preventDefault();
 						root.classList.add("light-mode");
 						localStorage.setItem("colorMode", "light");
-					});
+					}
 				});
 			});
 		</script>
