@@ -261,7 +261,7 @@ code {
 	margin: 0 auto;
 	padding: 0;
 	min-height: 512px;
-	margin-top: 313px;
+	margin-top: 200px;
 	width: 100%;
 	box-sizing: border-box;
 	overflow: hidden;
@@ -305,6 +305,12 @@ code {
 	line-height: 27.5px;
 	margin: 0;
 	white-space: pre;
+	opacity: 0;
+	transition: opacity 1s ease-in-out;
+}
+
+.ascii-text.fade-in {
+	opacity: 1;
 }
 
 .ascii-char-animate {
@@ -324,8 +330,13 @@ code {
 	align-items: center;
 	justify-content: center;
 	z-index: 2;
-	transition: transform 0.3s ease;
 	cursor: pointer;
+	opacity: 0;
+	transition: opacity 0.8s ease-in-out, transform 0.3s ease;
+}
+
+.hero-icon.fade-in {
+	opacity: 1;
 }
 
 .hero-icon img {
@@ -439,6 +450,15 @@ code {
 	max-width: 100%;
 	height: auto;
 	z-index: 0;
+}
+
+img.hero-graphic {
+	opacity: 0;
+	transition: opacity 1.5s ease-in-out;
+}
+
+img.hero-graphic.fade-in {
+	opacity: 1;
 }
 
 .hero-graphic-1 {

@@ -647,5 +647,55 @@
 				});
 			});
 		</script>
+		<script>
+			// Staggered fade-in animation for hero graphics and icons
+			document.addEventListener("DOMContentLoaded", function () {
+				const asciiTexts = document.querySelectorAll(".ascii-text");
+				const graphics = document.querySelectorAll(".hero-graphic");
+				const icons = document.querySelectorAll(".hero-icon");
+
+				// Fade in ASCII text first
+				asciiTexts.forEach(function (asciiText) {
+					asciiText.classList.add("fade-in");
+				});
+
+				// Wait for all images to load before starting fade-in
+				const imagePromises = Array.from(graphics).map(function (graphic) {
+					return new Promise(function (resolve) {
+						if (graphic.complete) {
+							resolve();
+						} else {
+							graphic.addEventListener("load", resolve);
+							graphic.addEventListener("error", resolve); // Resolve even on error to not block
+						}
+					});
+				});
+
+				Promise.all(imagePromises).then(function () {
+					// Small delay to ensure images are rendered
+					setTimeout(function () {
+						// Stagger graphics: 200ms delay between each, slower fade-in
+						graphics.forEach(function (graphic, index) {
+							setTimeout(function () {
+								graphic.classList.add("fade-in");
+							}, index * 200);
+						});
+
+						// Calculate when last graphic finishes (last start + fade duration)
+						const lastGraphicStart = (graphics.length - 1) * 0;
+						const fadeDuration = 1500; // 1.5s in milliseconds (slower fade)
+						const additionalDelay = 0; // Extra time after graphics finish
+						const iconsStartDelay = lastGraphicStart + fadeDuration + additionalDelay;
+
+						// Stagger icons: start after graphics fully fade in + extra delay, 150ms delay between each
+						icons.forEach(function (icon, index) {
+							setTimeout(function () {
+								icon.classList.add("fade-in");
+							}, iconsStartDelay + index * 150);
+						});
+					}, 50);
+				});
+			});
+		</script>
 	</body>
 </html>
