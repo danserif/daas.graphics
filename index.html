@@ -470,10 +470,10 @@
 			(function () {
 				const headerLabels = document.querySelectorAll(".header-label");
 
-				// Store original HTML and clear immediately
+				// Store original HTML but keep it in place (hidden) to preserve layout space
 				headerLabels.forEach(function (label) {
 					label.setAttribute("data-original", label.innerHTML);
-					label.innerHTML = "";
+					// Don't clear - keep content for layout, it's hidden with visibility: hidden
 				});
 			})();
 		</script>
@@ -484,9 +484,17 @@
 
 				function typeWriter(element, speed, callback) {
 					const originalHTML = element.getAttribute("data-original") || element.innerHTML;
+
+					// Measure and preserve the height before clearing
+					element.style.visibility = "visible";
+					const originalHeight = element.offsetHeight;
+					element.style.minHeight = originalHeight + "px";
+
 					let htmlIndex = 0;
+					// Clear content and make visible when starting to type
 					element.innerHTML = "";
-					element.classList.add("typewriter-active"); // Make visible
+					element.classList.add("typewriter-active");
+					element.style.visibility = ""; // Remove inline style to let CSS class take effect
 
 					function typeHTML() {
 						if (htmlIndex < originalHTML.length) {
@@ -513,6 +521,7 @@
 						}
 					}
 
+					// Start typing immediately
 					typeHTML();
 				}
 

@@ -242,11 +242,12 @@ code {
 	line-height: normal;
 	text-transform: uppercase;
 	color: var(--opacity-50);
-	opacity: 0;
+	visibility: hidden;
+	display: inline-block; /* Ensure min-height works */
 }
 
 .header-label.typewriter-active {
-	opacity: 1;
+	visibility: visible;
 }
 
 .header-label a {
