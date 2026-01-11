@@ -623,6 +623,9 @@ img.hero-graphic.fade-in {
 	color: var(--opacity-25);
 	margin: 0;
 }
+.work-content {
+	max-width: 444px; /* Temporary */
+}
 
 /* Footer */
 .footer {
@@ -799,7 +802,7 @@ img.hero-graphic.fade-in {
 	}
 }
 
-@media only screen and (max-width: 1440px) {
+@media only screen and (max-width: 1460px) {
 	body {
 		max-width: 1040px;
 	}
@@ -982,7 +985,7 @@ img.hero-graphic.fade-in {
 	}
 }
 
-@media only screen and (max-width: 960px) {
+@media only screen and (max-width: 980px) {
 	/* Header */
 	.header {
 		flex-direction: column;
