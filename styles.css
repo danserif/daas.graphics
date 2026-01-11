@@ -867,7 +867,7 @@ img.hero-graphic.fade-in {
 		row-gap: var(--gap-row-cards);
 		padding-left: 2rem;
 		padding-right: 2rem;
-		margin-top: 4rem;
+		margin-top: 10rem;
 	}
 
 	.card {
