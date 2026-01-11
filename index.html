@@ -67,7 +67,7 @@
 				<hr class="divider" />
 			</div>
 			<div class="header-column">
-				<p class="header-label">Made in New Zealand</p>
+				<p class="header-label">Made <span class="opacity-75">(online)</span> in New Zealand</p>
 				<hr class="divider" />
 			</div>
 			<!-- CLOCK -->
@@ -235,7 +235,6 @@
 				<div class="card-body">
 					<p>
 						DaaS <span class="opacity-50">(Dan as a Service)</span> is a subscription service for design leadership and branding run by <a href="https://danserif.com" target="_blank" class="underline">Dan Newman</a>.
-						<span class="opacity-50">(^_^)/~</span>
 					</p>
 					<p>
 						Over the past two decades he’s led design teams and worked hands-on at startups like Xero, Axiom, and Stedi; as well as at agencies, designing award-winning work for the likes of the
@@ -287,7 +286,7 @@
 					<p class="card-subtitle"><span class="accent">1982</span> <span class="opacity-25">→ Present</span></p>
 				</div>
 				<div class="card-body">
-					<p>From colouring competitions in the 80s to making websites <span class="opacity-50">(without AI)</span> in the 00s, Dan has always been creating.</p>
+					<p>From colouring competitions in the 80s to making websites <span class="opacity-50">(without AI)</span> in the 00s, Dan has always been creating. <span class="opacity-50">(^_^)/~</span></p>
 					<p>
 						He also has a Master’s degree in Computer Graphic Design from the Whanganui School of Design in the early 2000s, which included a scholarship to study at Nottingham University
 						<span class="opacity-50">(England),</span> and FH Oberösterreich <span class="opacity-50">(Austria).</span>
@@ -304,7 +303,7 @@
 					<p class="card-subtitle"><span class="opacity-50">Starting at </span>$7000 <span class="opacity-25">(USD)</span></p>
 				</div>
 				<div class="card-body">
-					<p>DaaS <span class="opacity-50">(Graphics)</span> offers plans that can be configured based on the size, stage, and services your business needs:</p>
+					<p>DaaS <span class="opacity-50">(Graphics)</span> offers plans that can be configured based on the size, stage, and services you need:</p>
 					<table class="pricing-table">
 						<tr>
 							<td><span class="opacity-50 mono">D-01 </span><span class="opacity-25 mono">/</span> &nbsp; Coaching</td>
@@ -330,7 +329,7 @@
 				</div>
 				<div class="card-body">
 					<p>
-						There's currently more people interested than there's time to help, sorry! If you're not in a rush, join the
+						There are currently more people interested than there is time to help, sorry! If you’re not in a rush, join the
 						<a href="mailto:dan@newman.is?subject=DaaS%20(Graphics)%20%E2%80%93%20Waitlist" class="underline">waitlist</a>.
 					</p>
 					<p>
@@ -351,7 +350,7 @@
 				</p>
 				<br />
 				<p>
-					A selection of some of my favourite graphics from the last few years. <br />
+					A selection of some of my favourite graphics from the last few years. Coming soon. <br class="hide" />
 					<span class="opacity-50">Work completed in-house at various startups and agencies.</span> <span class="opacity-25">Don’t worry, I can use colour when required.</span>
 				</p>
 			</div>
@@ -470,6 +469,67 @@
 						root.classList.add("light-mode");
 						localStorage.setItem("colorMode", "light");
 					});
+				});
+			});
+		</script>
+		<script>
+			// Typewriter effect for header labels - run immediately to prevent flash
+			(function () {
+				const headerLabels = document.querySelectorAll(".header-label");
+
+				// Store original HTML and clear immediately
+				headerLabels.forEach(function (label) {
+					label.setAttribute("data-original", label.innerHTML);
+					label.innerHTML = "";
+				});
+			})();
+		</script>
+		<script>
+			// Typewriter effect for header labels
+			document.addEventListener("DOMContentLoaded", function () {
+				const headerLabels = document.querySelectorAll(".header-label");
+
+				function typeWriter(element, speed, callback) {
+					const originalHTML = element.getAttribute("data-original") || element.innerHTML;
+					let htmlIndex = 0;
+					element.innerHTML = "";
+					element.classList.add("typewriter-active"); // Make visible
+
+					function typeHTML() {
+						if (htmlIndex < originalHTML.length) {
+							// Check if we're in a tag
+							if (originalHTML[htmlIndex] === "<") {
+								// Find the closing >
+								const tagEnd = originalHTML.indexOf(">", htmlIndex);
+								if (tagEnd !== -1) {
+									element.innerHTML = originalHTML.substring(0, tagEnd + 1);
+									htmlIndex = tagEnd + 1;
+									setTimeout(typeHTML, speed * 0.5); // Faster for tags
+								} else {
+									element.innerHTML += originalHTML[htmlIndex];
+									htmlIndex++;
+									setTimeout(typeHTML, speed);
+								}
+							} else {
+								element.innerHTML = originalHTML.substring(0, htmlIndex + 1);
+								htmlIndex++;
+								setTimeout(typeHTML, speed);
+							}
+						} else if (callback) {
+							callback();
+						}
+					}
+
+					typeHTML();
+				}
+
+				// Type each label with stagger
+				headerLabels.forEach(function (label, index) {
+					const delay = index * 150; // 150ms delay between each label
+
+					setTimeout(function () {
+						typeWriter(label, 30, null); // 30ms per character
+					}, delay);
 				});
 			});
 		</script>
@@ -654,9 +714,13 @@
 				const graphics = document.querySelectorAll(".hero-graphic");
 				const icons = document.querySelectorAll(".hero-icon");
 
-				// Fade in ASCII text first
-				asciiTexts.forEach(function (asciiText) {
-					asciiText.classList.add("fade-in");
+				// Fade in ASCII text first - use requestAnimationFrame to ensure initial opacity: 0 is rendered
+				requestAnimationFrame(function () {
+					requestAnimationFrame(function () {
+						asciiTexts.forEach(function (asciiText) {
+							asciiText.classList.add("fade-in");
+						});
+					});
 				});
 
 				// Wait for all images to load before starting fade-in

@@ -209,7 +209,7 @@ code {
 /* Scroll Animation */
 @keyframes scroll-horizontal {
 	0% {
-		transform: translateX(100vw);
+		transform: translateX(60vw);
 	}
 	100% {
 		transform: translateX(-100%);
@@ -242,6 +242,11 @@ code {
 	line-height: normal;
 	text-transform: uppercase;
 	color: var(--opacity-50);
+	opacity: 0;
+}
+
+.header-label.typewriter-active {
+	opacity: 1;
 }
 
 .header-label a {
@@ -306,7 +311,7 @@ code {
 	margin: 0;
 	white-space: pre;
 	opacity: 0;
-	transition: opacity 1s ease-in-out;
+	transition: opacity 2.5s ease-in-out;
 }
 
 .ascii-text.fade-in {
@@ -372,8 +377,8 @@ code {
 
 /* FACE - WHITE */
 .hero-icon-2 {
-	right: 8%;
-	top: 70%;
+	right: 11%;
+	top: 74%;
 	width: 5.5%;
 	min-width: 92px;
 	max-width: 92px;
@@ -1011,8 +1016,13 @@ img.hero-graphic.fade-in {
 		margin-right: -50vw;
 	}
 
+	.hero-title {
+		min-height: 400px;
+		align-items: end;
+	}
+
 	.ascii-text {
-		font-size: 18px;
+		font-size: 22px;
 		line-height: 22px;
 	}
 
@@ -1020,7 +1030,6 @@ img.hero-graphic.fade-in {
 	.cards {
 		flex-direction: column;
 		padding: 1.5rem;
-		row-gap: calc(var(--gap-row-cards) / 2);
 	}
 
 	.card {
@@ -1073,7 +1082,7 @@ img.hero-graphic.fade-in {
 
 	.footer-columns-wrapper {
 		flex-direction: column;
-		row-gap: calc(var(--gap-row-footer) / 2);
+		row-gap: calc(var(--gap-row-footer) / 1.5);
 		margin-bottom: 20px;
 	}
 
