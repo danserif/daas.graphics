@@ -271,6 +271,10 @@ code {
 	width: 100%;
 	box-sizing: border-box;
 	overflow: hidden;
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
 }
 
 .hero-title {
@@ -282,6 +286,10 @@ code {
 	white-space: nowrap;
 	will-change: transform;
 	animation: scroll-horizontal 40s linear infinite;
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
 }
 
 .hero-ascii {
@@ -292,6 +300,10 @@ code {
 	display: inline-block;
 	white-space: nowrap;
 	flex-shrink: 0;
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
 }
 
 .hero-ascii-daas {
@@ -313,6 +325,10 @@ code {
 	white-space: pre;
 	opacity: 0;
 	transition: opacity 2.5s ease-in-out;
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
 }
 
 .ascii-text.fade-in {
@@ -456,6 +472,11 @@ code {
 	max-width: 100%;
 	height: auto;
 	z-index: 0;
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	pointer-events: none;
 }
 
 img.hero-graphic {
