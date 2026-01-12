@@ -1069,6 +1069,10 @@ img.hero-graphic.fade-in {
 		line-height: 22px;
 	}
 
+	.card-title {
+		margin-bottom: 0.2rem;
+	}
+
 	.card-body {
 		font-size: 14px;
 		line-height: 22px;
