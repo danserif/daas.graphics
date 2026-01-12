@@ -67,7 +67,7 @@
 				<hr class="divider" />
 			</div>
 			<div class="header-column">
-				<p class="header-label">Made <span class="opacity-75">(online)</span> in New Zealand</p>
+				<p class="header-label">Made in <span class="opacity-75">(Aotearoa)</span> New Zealand</p>
 				<hr class="divider" />
 			</div>
 			<!-- CLOCK -->
@@ -772,29 +772,34 @@
 					});
 				});
 
-				// Card Icon Flicker Effect - Same as ASCII text glitch, triggered when card enters viewport
+				// Icon Flicker Effect - Same as ASCII text glitch, triggered when element enters viewport
 				const cardIcons = document.querySelectorAll(".card-icon");
+				const workIcons = document.querySelectorAll(".work-icon");
+				const footerIcons = document.querySelectorAll(".footer-icon");
+				const allIcons = Array.from(cardIcons).concat(Array.from(workIcons)).concat(Array.from(footerIcons));
 				const animatedIcons = new Set();
 
-				cardIcons.forEach(function (icon, index) {
-					// Get the original HTML entity - check both innerHTML and textContent
+				allIcons.forEach(function (icon) {
+					// Get the original HTML entity or text - check both innerHTML and textContent
 					const originalHTML = icon.innerHTML.trim();
 					const originalText = icon.textContent.trim();
 
 					// Try to extract the HTML entity code (e.g., "&#68;" -> 68)
 					let entityMatch = originalHTML.match(/&#(\d+);/);
 					let originalCharCode = null;
+					let isPlainText = false;
 
 					// If no match in innerHTML, try to get char code from textContent
 					if (!entityMatch && originalText.length > 0) {
 						originalCharCode = originalText.charCodeAt(0);
+						isPlainText = true; // work-icon is plain text "G"
 					} else if (entityMatch) {
 						originalCharCode = parseInt(entityMatch[1]);
 					} else {
 						return;
 					}
 
-					const originalHTMLToRestore = "&#" + originalCharCode + ";";
+					const originalHTMLToRestore = isPlainText ? originalText : "&#" + originalCharCode + ";";
 
 					function animateIcon() {
 						if (animatedIcons.has(icon)) return; // Already animated
@@ -808,14 +813,22 @@
 
 						animateInterval = setInterval(function () {
 							if (currentStep < steps) {
-								// Show random character - use innerHTML to preserve formatting
+								// Show random character
 								const randomChar = glitchChars[Math.floor(Math.random() * glitchChars.length)];
-								const randomCharCode = randomChar.charCodeAt(0);
-								icon.innerHTML = "&#" + randomCharCode + ";";
+								if (isPlainText) {
+									icon.textContent = randomChar;
+								} else {
+									const randomCharCode = randomChar.charCodeAt(0);
+									icon.innerHTML = "&#" + randomCharCode + ";";
+								}
 								currentStep++;
 							} else {
 								// Return to original character - animation complete, no loop
-								icon.innerHTML = originalHTMLToRestore;
+								if (isPlainText) {
+									icon.textContent = originalHTMLToRestore;
+								} else {
+									icon.innerHTML = originalHTMLToRestore;
+								}
 								if (animateInterval) {
 									clearInterval(animateInterval);
 									animateInterval = null;
@@ -824,13 +837,20 @@
 						}, stepDuration);
 					}
 
-					// Use Intersection Observer to trigger when card enters viewport
-					const card = icon.closest(".card");
-					if (card) {
+					// Use Intersection Observer to trigger when parent element enters viewport
+					let parentElement = icon.closest(".card");
+					if (!parentElement) {
+						parentElement = icon.closest(".work-samples");
+					}
+					if (!parentElement) {
+						parentElement = icon.closest(".footer-column");
+					}
+
+					if (parentElement) {
 						const observerOptions = {
 							root: null,
 							rootMargin: "0px",
-							threshold: 0.3, // Trigger when 30% of card is visible
+							threshold: 0.3, // Trigger when 30% of element is visible
 						};
 
 						const observer = new IntersectionObserver(function (entries) {
@@ -840,12 +860,12 @@
 									setTimeout(function () {
 										animateIcon();
 									}, 200);
-									observer.unobserve(card);
+									observer.unobserve(parentElement);
 								}
 							});
 						}, observerOptions);
 
-						observer.observe(card);
+						observer.observe(parentElement);
 					}
 				});
 			});

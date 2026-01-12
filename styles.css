@@ -1046,6 +1046,10 @@ img.hero-graphic.fade-in {
 		align-items: end;
 	}
 
+	.hero-ascii-daas .ascii-text {
+		padding-bottom: 22px;
+	}
+
 	.ascii-text {
 		font-size: 22px;
 		line-height: 22px;
