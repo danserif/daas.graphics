@@ -391,7 +391,6 @@
 						<p>
 							<a href="https://www.linkedin.com/company/daas-graphics/" target="_blank" onclick="fathom.trackEvent('LinkedIn', 0);">LinkedIn</a> <span class="opacity-25">+</span>
 							<a href="https://www.instagram.com/daas.graphics/" target="_blank" onclick="fathom.trackEvent('Instagram', 0);">Instagram</a>
-							<span class="opacity-50">(@daas.graphics)</span>
 						</p>
 						<p>
 							<span class="opacity-25">mailto:</span> <a href="mailto:dan@newman.is" onclick="fathom.trackEvent('Email', 0);">dan <span class="opacity-50">[at]</span> newman <span class="opacity-50">[dot]</span> is</a>
@@ -487,11 +486,12 @@
 					second: "2-digit",
 					hour12: true,
 				});
-				const isDST = new Date().toLocaleTimeString("en-NZ", { timeZone: nzTimeZone, timeZoneName: "short" }).includes("DT");
-				const nzTimeZoneName = isDST ? "NZDT" : "NZST";
-				const nzDate = new Date().toLocaleString("en-US", { timeZone: nzTimeZone });
-				const nzOffsetInMinutes = new Date(nzDate).getTimezoneOffset();
-				const timezoneOffset = -nzOffsetInMinutes / 60;
+				// Check DST using the same date object
+				const nzTimeString = now.toLocaleTimeString("en-NZ", { timeZone: nzTimeZone, timeZoneName: "short" });
+				const nzTimeZoneName = nzTimeString.includes("DT") ? "NZDT" : "NZST";
+				// Calculate timezone offset more efficiently
+				const nzDate = new Date(now.toLocaleString("en-US", { timeZone: nzTimeZone }));
+				const timezoneOffset = -nzDate.getTimezoneOffset() / 60;
 				const gmtOffset = `<span class="opacity-50">(GMT${timezoneOffset >= 0 ? "+" : ""}${timezoneOffset})</span>`;
 
 				const footerClockElement = document.getElementById("clock");
@@ -501,11 +501,24 @@
 
 				const headerClockElement = document.getElementById("header-clock");
 				if (headerClockElement) {
-					headerClockElement.innerHTML = `<span class="opacity-75">${nzTimeZoneName}</span> <span>${nzTime}</span> ${gmtOffset}`;
+					const clockHTML = `<span class="opacity-75">${nzTimeZoneName}</span> <span>${nzTime}</span> ${gmtOffset}`;
+					const headerLabel = headerClockElement.closest(".header-label");
+					// Only update if typewriter animation is not active
+					if (!headerLabel || !headerLabel.classList.contains("typewriter-active")) {
+						headerClockElement.innerHTML = clockHTML;
+					}
+					// Store original content for typewriter animation if not already stored
+					if (headerLabel && !headerLabel.hasAttribute("data-original")) {
+						headerLabel.setAttribute("data-original", clockHTML);
+					}
 				}
 			}
-			setInterval(updateClocks, 1000);
+			// Initialize clock immediately (before typewriter runs)
 			updateClocks();
+			// Start interval for updates after a short delay
+			setTimeout(function () {
+				setInterval(updateClocks, 1000);
+			}, 100);
 		</script>
 		<script>
 			// ============================================
@@ -531,44 +544,152 @@
 				});
 
 				// Typewriter effect for header labels
+				// Reuse headerLabels from immediate initialization if available, otherwise query
 				const headerLabels = document.querySelectorAll(".header-label");
+
 				function typeWriter(element, speed) {
 					const originalHTML = element.getAttribute("data-original") || element.innerHTML;
+
+					// Measure and preserve the height before clearing
 					element.style.visibility = "visible";
 					const originalHeight = element.offsetHeight;
 					element.style.minHeight = originalHeight + "px";
-					element.innerHTML = "";
-					element.classList.add("typewriter-active");
-					element.style.visibility = "";
 
 					let htmlIndex = 0;
+					// Clear content and make visible when starting to type
+					element.innerHTML = "";
+					element.classList.add("typewriter-active");
+					element.style.visibility = ""; // Remove inline style to let CSS class take effect
+
+					// Pre-compile entity lookup for faster checking
+					const validEntities = {
+						"&amp;": true,
+						"&lt;": true,
+						"&gt;": true,
+						"&quot;": true,
+						"&apos;": true,
+						"&#39;": true,
+						"&#34;": true,
+					};
+
 					function typeHTML() {
 						if (htmlIndex < originalHTML.length) {
-							if (originalHTML[htmlIndex] === "<") {
+							const char = originalHTML[htmlIndex];
+
+							// Check if we're in a tag
+							if (char === "<") {
+								// Find the closing >
 								const tagEnd = originalHTML.indexOf(">", htmlIndex);
 								if (tagEnd !== -1) {
 									element.innerHTML = originalHTML.substring(0, tagEnd + 1);
 									htmlIndex = tagEnd + 1;
-									setTimeout(typeHTML, speed * 0.5);
+									// Check if next character is another tag (consecutive tags)
+									const nextIsTag = htmlIndex < originalHTML.length && originalHTML[htmlIndex] === "<";
+									// Consecutive tags process faster, single tags also fast
+									setTimeout(typeHTML, Math.max(1, speed * (nextIsTag ? 0.05 : 0.15)));
 								} else {
-									element.innerHTML += originalHTML[htmlIndex];
+									// Malformed tag, treat as regular character
 									htmlIndex++;
+									element.innerHTML = originalHTML.substring(0, htmlIndex);
+									setTimeout(typeHTML, speed);
+								}
+							} else if (char === "&") {
+								// Check if we're starting an HTML entity
+								const entityEnd = originalHTML.indexOf(";", htmlIndex);
+								if (entityEnd !== -1) {
+									const entity = originalHTML.substring(htmlIndex, entityEnd + 1);
+									if (validEntities[entity]) {
+										// Process entire entity at once
+										htmlIndex = entityEnd + 1;
+										element.innerHTML = originalHTML.substring(0, htmlIndex);
+										setTimeout(typeHTML, Math.max(1, speed * 0.3));
+									} else {
+										// Not a valid entity, treat as regular character
+										htmlIndex++;
+										element.innerHTML = originalHTML.substring(0, htmlIndex);
+										setTimeout(typeHTML, speed);
+									}
+								} else {
+									// No semicolon found, treat as regular character
+									htmlIndex++;
+									element.innerHTML = originalHTML.substring(0, htmlIndex);
 									setTimeout(typeHTML, speed);
 								}
 							} else {
-								element.innerHTML = originalHTML.substring(0, htmlIndex + 1);
+								// Regular character
 								htmlIndex++;
-								setTimeout(typeHTML, speed);
+								element.innerHTML = originalHTML.substring(0, htmlIndex);
+
+								// Optimize brackets adjacent to tags
+								let delay = speed;
+								if ((char === "[" || char === "]") && htmlIndex < originalHTML.length) {
+									const nextChar = originalHTML[htmlIndex];
+									if (nextChar === "<" || (htmlIndex > 1 && originalHTML[htmlIndex - 2] === ">")) {
+										delay = speed * 0.5;
+									}
+								}
+
+								setTimeout(typeHTML, delay);
 							}
+						} else {
+							// Animation complete - keep visibility visible and allow clock updates
+							element.style.visibility = "visible";
+							element.classList.remove("typewriter-active");
 						}
 					}
+
+					// Start typing immediately
 					typeHTML();
 				}
 
+				// Constants for typewriter timing
+				const TYPEWRITER_SPEED = 30;
+				const TYPEWRITER_DELAY = 150;
+				const CLOCK_WAIT_DELAY = 150;
+
 				headerLabels.forEach(function (label, index) {
-					setTimeout(function () {
-						typeWriter(label, 30);
-					}, index * 150);
+					const clockElement = label.querySelector("#header-clock");
+					const startDelay = index * TYPEWRITER_DELAY;
+
+					if (clockElement) {
+						// Wait for clock to be populated, then animate
+						setTimeout(function () {
+							const fullLabelHTML = label.innerHTML;
+							if (fullLabelHTML && clockElement.innerHTML) {
+								label.setAttribute("data-original", fullLabelHTML);
+								const headerColumn = label.closest(".header-column");
+								const isVisible = headerColumn && window.getComputedStyle(headerColumn).display !== "none";
+
+								if (isVisible) {
+									setTimeout(function () {
+										typeWriter(label, TYPEWRITER_SPEED);
+									}, startDelay);
+								} else {
+									// Observe for when it becomes visible
+									const observer = new IntersectionObserver(
+										function (entries) {
+											entries.forEach(function (entry) {
+												if (entry.isIntersecting && !label.classList.contains("typewriter-active")) {
+													const currentLabelHTML = label.innerHTML;
+													if (currentLabelHTML) {
+														label.setAttribute("data-original", currentLabelHTML);
+													}
+													typeWriter(label, TYPEWRITER_SPEED);
+													observer.disconnect();
+												}
+											});
+										},
+										{ threshold: 0.1 }
+									);
+									observer.observe(headerColumn);
+								}
+							}
+						}, CLOCK_WAIT_DELAY);
+					} else {
+						setTimeout(function () {
+							typeWriter(label, TYPEWRITER_SPEED);
+						}, startDelay);
+					}
 				});
 
 				// ASCII Character Cycling Animation
