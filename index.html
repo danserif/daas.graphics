@@ -389,7 +389,7 @@
 					<hr class="divider" />
 					<div class="footer-content">
 						<p>
-							<a href="https://www.linkedin.com/company/daas-graphics/" target="_blank" onclick="fathom.trackEvent('LinkedIn', 0);">LinkedIn</a> <span class="opacity-25">+</span>
+							<a href="https://www.linkedin.com/company/daas-graphics/" target="_blank" onclick="fathom.trackEvent('LinkedIn', 0);">LinkedIn</a> <span class="opacity-25">/</span>
 							<a href="https://www.instagram.com/daas.graphics/" target="_blank" onclick="fathom.trackEvent('Instagram', 0);">Instagram</a>
 						</p>
 						<p>
@@ -1040,37 +1040,74 @@
 						footerPattern.innerHTML = "";
 						const containerWidth = footerPattern.offsetWidth;
 
+						if (containerWidth <= 0) return; // Safety check
+
+						// Create a test container that matches the actual styling
+						const testContainer = document.createElement("div");
+						testContainer.style.position = "absolute";
+						testContainer.style.visibility = "hidden";
+						testContainer.style.fontFamily = "Departure Mono, monospace";
+						testContainer.style.fontSize = "22px"; // Match CSS font-size
+						testContainer.style.lineHeight = "1.5";
+						document.body.appendChild(testContainer);
+
 						// Measure character width without padding
 						const testCharEl = document.createElement("span");
-						testCharEl.style.fontFamily = "Departure Mono, monospace";
-						testCharEl.style.fontSize = "11px";
-						testCharEl.style.position = "absolute";
-						testCharEl.style.visibility = "hidden";
+						testCharEl.className = "footer-pattern-char";
+						testCharEl.style.paddingRight = "0"; // Override padding for measurement
 						testCharEl.textContent = char;
-						document.body.appendChild(testCharEl);
+						testContainer.appendChild(testCharEl);
 						const charWidth = testCharEl.offsetWidth;
-						document.body.removeChild(testCharEl);
+						testContainer.removeChild(testCharEl);
 
-						// Measure character width with padding
+						// Measure character width with padding (using actual class)
 						const testCharWithPaddingEl = document.createElement("span");
-						testCharWithPaddingEl.style.fontFamily = "Departure Mono, monospace";
-						testCharWithPaddingEl.style.fontSize = "11px";
-						testCharWithPaddingEl.style.position = "absolute";
-						testCharWithPaddingEl.style.visibility = "hidden";
-						testCharWithPaddingEl.style.paddingRight = "0.5rem";
+						testCharWithPaddingEl.className = "footer-pattern-char";
 						testCharWithPaddingEl.textContent = char;
-						document.body.appendChild(testCharWithPaddingEl);
+						testContainer.appendChild(testCharWithPaddingEl);
 						const charWithPaddingWidth = testCharWithPaddingEl.offsetWidth;
-						document.body.removeChild(testCharWithPaddingEl);
+						testContainer.removeChild(testCharWithPaddingEl);
+
+						document.body.removeChild(testContainer);
 
 						// Calculate padding width
 						const paddingWidth = charWithPaddingWidth - charWidth;
 
-						// Calculate how many characters fit: (containerWidth - charWidth) / (charWidth + paddingWidth) + 1
-						// This accounts for the last character not having padding
-						const charsPerLine = Math.floor((containerWidth - charWidth) / charWithPaddingWidth) + 1;
+						// More accurate calculation: account for subpixel rendering
+						// Formula: (containerWidth - charWidth) / charWithPaddingWidth + 1
+						// The last character has no padding, so we subtract its width from available space
+						const availableWidth = containerWidth - charWidth;
+						let charsPerLine = Math.max(1, Math.floor(availableWidth / charWithPaddingWidth) + 1);
 						const linesCount = getLinesCount();
 
+						// Create a test line to verify the calculation
+						const testLine = document.createElement("div");
+						testLine.className = "footer-pattern-line";
+						testLine.style.position = "absolute";
+						testLine.style.visibility = "hidden";
+						testLine.style.width = containerWidth + "px";
+						document.body.appendChild(testLine);
+
+						// Build test line with calculated number of characters
+						for (let j = 0; j < charsPerLine; j++) {
+							const testCharSpan = document.createElement("span");
+							testCharSpan.className = "footer-pattern-char";
+							testCharSpan.textContent = char;
+							if (j === charsPerLine - 1) {
+								testCharSpan.style.paddingRight = "0";
+							}
+							testLine.appendChild(testCharSpan);
+						}
+
+						// Measure actual width and adjust if needed
+						const actualLineWidth = testLine.offsetWidth;
+						if (actualLineWidth > containerWidth && charsPerLine > 1) {
+							// Reduce by one if it overflows
+							charsPerLine--;
+						}
+						document.body.removeChild(testLine);
+
+						// Generate the actual pattern lines
 						for (let i = 0; i < linesCount; i++) {
 							const line = document.createElement("div");
 							line.className = "footer-pattern-line";
