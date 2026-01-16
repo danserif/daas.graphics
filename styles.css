@@ -1087,7 +1087,7 @@ img.hero-graphic.fade-in {
 	}
 
 	.hero-title {
-		min-height: 400px;
+		min-height: 380px;
 		align-items: end;
 	}
 
@@ -1156,6 +1156,10 @@ img.hero-graphic.fade-in {
 	.footer {
 		padding: 1.5rem;
 		margin-top: 4rem;
+	}
+
+	.footer-pattern {
+		display: none;
 	}
 
 	.footer-columns-wrapper {
