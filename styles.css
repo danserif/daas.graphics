@@ -811,11 +811,6 @@ img.hero-graphic.fade-in {
 		max-width: 1840px;
 	}
 
-	.start {
-		margin-top: 4rem;
-		margin-bottom: 4rem;
-	}
-
 	/* HEADER */
 	.header {
 		flex-wrap: wrap;
@@ -851,7 +846,10 @@ img.hero-graphic.fade-in {
 		margin-right: -50vw;
 	}
 
+	/* START */
 	.start {
+		margin-top: 4rem;
+		margin-bottom: 4rem;
 		padding-left: 3rem;
 		padding-right: 3rem;
 	}
@@ -918,11 +916,6 @@ img.hero-graphic.fade-in {
 		max-width: 1040px;
 	}
 
-	.start {
-		padding-left: 2rem;
-		padding-right: 2rem;
-	}
-
 	/* HEADER */
 	.header {
 		flex-wrap: wrap;
@@ -984,6 +977,12 @@ img.hero-graphic.fade-in {
 		display: none;
 	}
 
+	/* START */
+	.start {
+		padding-left: 2rem;
+		padding-right: 2rem;
+	}
+
 	/* CARDS */
 	.cards {
 		flex-wrap: wrap;
@@ -1019,11 +1018,6 @@ img.hero-graphic.fade-in {
 }
 
 @media only screen and (max-width: 1040px) {
-	.start {
-		padding-left: 2rem;
-		padding-right: 2rem;
-	}
-
 	/* HEADER */
 	.header {
 		flex-wrap: wrap;
@@ -1072,6 +1066,12 @@ img.hero-graphic.fade-in {
 		right: 50%;
 		margin-left: -50vw;
 		margin-right: -50vw;
+	}
+
+	/* START */
+	.start {
+		padding-left: 2rem;
+		padding-right: 2rem;
 	}
 
 	/* CARDS */
@@ -1171,14 +1171,10 @@ img.hero-graphic.fade-in {
 		line-height: 22px;
 	}
 
+	/* START */
 	.start {
 		padding: 1.5rem;
-		margin-top: 4rem;
-	}
-
-	.end {
-		margin-top: 3rem;
-		margin-bottom: 1rem;
+		margin-top: 8rem;
 	}
 
 	/* CARDS */
@@ -1231,6 +1227,12 @@ img.hero-graphic.fade-in {
 	/* WORK SAMPLES */
 	.work-samples {
 		padding: 1.5rem;
+	}
+
+	/* END */
+	.end {
+		margin-top: 3rem;
+		margin-bottom: 1rem;
 	}
 
 	/* FOOTER */

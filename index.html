@@ -456,7 +456,6 @@
 					</div>
 				</div>
 			</div>
-
 			<section class="end">
 				<p class="arrow"><a href="#top">↑</a></p>
 				<p class="end-label">End</p>
@@ -503,16 +502,17 @@
 				// Calculate timezone offset more efficiently
 				const nzDate = new Date(now.toLocaleString("en-US", { timeZone: nzTimeZone }));
 				const timezoneOffset = -nzDate.getTimezoneOffset() / 60;
-				const gmtOffset = `<span class="opacity-50">(GMT${timezoneOffset >= 0 ? "+" : ""}${timezoneOffset})</span>`;
+				const gmtOffsetFooter = `<span class="opacity-50">(GMT${timezoneOffset >= 0 ? "+" : ""}${timezoneOffset})</span>`;
+				const gmtOffsetHeader = `<span class="opacity-75">(GMT${timezoneOffset >= 0 ? "+" : ""}${timezoneOffset})</span>`;
 
 				const footerClockElement = document.getElementById("clock");
 				if (footerClockElement) {
-					footerClockElement.innerHTML = `<span>${nzTime}</span> <span class="opacity-25">${nzTimeZoneName}</span> ${gmtOffset}`;
+					footerClockElement.innerHTML = `<span>${nzTime}</span> <span class="opacity-25">${nzTimeZoneName}</span> ${gmtOffsetFooter}`;
 				}
 
 				const headerClockElement = document.getElementById("header-clock");
 				if (headerClockElement) {
-					const clockHTML = `<span class="opacity-75">${nzTimeZoneName}</span> <span>${nzTime}</span> ${gmtOffset}`;
+					const clockHTML = `<span class="opacity-50">${nzTimeZoneName}</span> <span>${nzTime}</span> ${gmtOffsetHeader}`;
 					const headerLabel = headerClockElement.closest(".header-label");
 					// Only update if typewriter animation is not active
 					if (!headerLabel || !headerLabel.classList.contains("typewriter-active")) {
@@ -1026,7 +1026,7 @@
 					}
 				});
 
-				// Footer Pattern - Repeating dashes with hover effect
+				// Footer Pattern - Repeating slashes with hover effect
 				function initFooterPattern() {
 					const footerPattern = document.querySelector(".footer-pattern");
 					if (!footerPattern) return;
@@ -1191,12 +1191,14 @@
 							hoveredChars.forEach(function (timestamp, charEl) {
 								const elapsed = now - timestamp;
 								if (elapsed >= fadeDuration) {
+									// Clear accent color but keep opacity at 0.75
 									charEl.style.color = "";
-									charEl.style.opacity = "";
+									charEl.style.opacity = "1";
 									hoveredChars.delete(charEl);
 								} else {
 									const fadeProgress = elapsed / fadeDuration;
-									charEl.style.opacity = (1 - fadeProgress * 0.5).toString(); // Fade to 50% opacity
+									// Fade from opacity 1 to 0.75
+									charEl.style.opacity = (1 - fadeProgress * 0.25).toString();
 								}
 							});
 
