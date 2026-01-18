@@ -59,7 +59,7 @@
 
 	<body>
 		<!-- INTRO -->
-		<header class="header">
+		<header class="header" id="top">
 			<div class="header-column">
 				<h1 class="header-label">DaaS <span class="opacity-75">(Graphics)</span> <span class="opacity-50">//</span> Dan as a Service</h1>
 				<hr class="divider" />
@@ -226,8 +226,13 @@
 			</div>
 		</main>
 		<!-- ABOUT -->
+		<section class="start">
+			<p class="start-label">Start</p>
+			<p><span class="opacity-50">0%</span> <span class="opacity-25">[</span> <span class="accent">█</span> <span class="opacity-25">_ _ _ _ _ _ _ _ _ ]</span> <span class="opacity-50">100%</span></p>
+			<p class="arrow"><a href="#start">↓</a></p>
+		</section>
 		<section class="cards">
-			<div class="card">
+			<div class="card" id="start">
 				<p class="card-icon">&#68;</p>
 				<h4 class="card-label">Name / Acronym</h4>
 				<hr class="divider" />
@@ -451,6 +456,12 @@
 					</div>
 				</div>
 			</div>
+
+			<section class="end">
+				<p class="arrow"><a href="#top">↑</a></p>
+				<p class="end-label">End</p>
+				<p><span class="opacity-50">0%</span> <span class="opacity-25">[</span> <span class="accent">█ █ █ █ █ █ █ █ █ █</span> <span class="opacity-25">]</span> <span class="opacity-50">100%</span></p>
+			</section>
 			<div class="footer-pattern"></div>
 		</footer>
 		<script>
@@ -1153,7 +1164,16 @@
 							if (color.startsWith("#")) {
 								return color;
 							}
-							return "#aaff00"; // fallback
+							// Fallback: get accent color from CSS variable and convert
+							const fallbackColor = getCSSVariableColor("--color-accent");
+							const fallbackMatch = fallbackColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+							if (fallbackMatch) {
+								const r = parseInt(fallbackMatch[1]).toString(16).padStart(2, "0");
+								const g = parseInt(fallbackMatch[2]).toString(16).padStart(2, "0");
+								const b = parseInt(fallbackMatch[3]).toString(16).padStart(2, "0");
+								return `#${r}${g}${b}`;
+							}
+							return fallbackColor.startsWith("#") ? fallbackColor : "#aaff00";
 						}
 
 						const accentColor = getCSSVariableColor("--color-accent");

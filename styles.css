@@ -1,4 +1,4 @@
-/* Custom Font */
+/* CUSTOM FONT */
 @font-face {
 	font-family: "Departure Mono";
 	src: url("fonts/departure-mono.woff2") format("woff2");
@@ -15,7 +15,7 @@
 	font-display: block;
 }
 
-/* CSS Custom Properties */
+/* CSS CUSTOM PROPERTIES */
 :root {
 	--color-bg: #000000;
 	--color-text: #ffffff;
@@ -32,11 +32,11 @@
 	--gap-row-cards: 80px;
 	--gap-row-footer: 80px;
 	--max-width: 2880px;
-	/* SVG color variables */
+	/* SVG COLOR VARIABLES */
 	--fill-0: #ffffff;
 }
 
-/* Light Mode */
+/* LIGHT MODE */
 :root.light-mode {
 	--color-bg: #ffffff;
 	--color-text: #000000;
@@ -47,11 +47,11 @@
 	--opacity-50: rgba(0, 0, 0, 0.5);
 	--opacity-75: rgba(0, 0, 0, 0.75);
 	--opacity-90: rgba(0, 0, 0, 0.9);
-	/* SVG color variables for light mode */
+	/* SVG COLOR VARIABLES FOR LIGHT MODE */
 	--fill-0: #000000;
 }
 
-/* Modern CSS Reset */
+/* MODERN CSS RESET */
 *,
 *::before,
 *::after {
@@ -153,7 +153,7 @@ code {
 	font-family: "Departure Mono", monospace;
 }
 
-/* Opacity utility classes */
+/* OPACITY UTILITY CLASSES */
 .opacity-10 {
 	opacity: 0.1;
 }
@@ -191,7 +191,7 @@ code {
 	text-transform: uppercase;
 }
 
-/* Blink Animation */
+/* BLINK ANIMATION */
 @keyframes blink {
 	0%,
 	100% {
@@ -206,7 +206,7 @@ code {
 	animation: blink 2.5s ease-in-out infinite;
 }
 
-/* Scroll Animation */
+/* SCROLL ANIMATION */
 @keyframes scroll-horizontal {
 	0% {
 		transform: translateX(60vw);
@@ -218,7 +218,7 @@ code {
 
 /* ---------------------------- */
 
-/* Header */
+/* HEADER SECTION */
 .header {
 	display: flex;
 	gap: var(--gap-flex);
@@ -243,7 +243,7 @@ code {
 	text-transform: uppercase;
 	color: var(--opacity-50);
 	visibility: hidden;
-	display: inline-block; /* Ensure min-height works */
+	display: inline-block;
 }
 
 .header-label.typewriter-active {
@@ -260,7 +260,7 @@ code {
 	opacity: 0.5;
 }
 
-/* Hero Section */
+/* HERO SECTION */
 .hero {
 	position: relative;
 	max-width: none;
@@ -512,7 +512,57 @@ img.hero-graphic.fade-in {
 	transform: rotate(351.948deg);
 }
 
-/* Cards Section */
+/* CARDS SECTION*/
+.start,
+.end {
+	max-width: var(--max-width);
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.start {
+	margin-top: 200px;
+	margin-bottom: 200px;
+	padding: 0 60px;
+}
+
+.end {
+	margin-top: 0;
+	margin-bottom: 4rem;
+	padding: 0;
+}
+
+.start-label,
+.end-label {
+	font-family: "Departure Mono", monospace;
+	font-size: 11px;
+	line-height: normal;
+	text-transform: uppercase;
+	color: var(--opacity-25);
+	margin: 0;
+	padding-bottom: 1rem;
+}
+
+.arrow {
+	font-size: 22px;
+	padding-top: 4rem;
+}
+
+.arrow a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.end .arrow {
+	padding-bottom: 4rem;
+}
+
+#start {
+	scroll-margin-top: 100px;
+}
+
 .cards {
 	display: flex;
 	gap: var(--gap-flex);
@@ -610,7 +660,7 @@ img.hero-graphic.fade-in {
 	padding-right: 15px;
 }
 
-/* Work Samples Section */
+/* WORK SECTION */
 .work-samples {
 	display: flex;
 	flex-direction: column;
@@ -631,7 +681,7 @@ img.hero-graphic.fade-in {
 	font-family: "Departure Mono", monospace;
 	font-size: 33px;
 	line-height: 33px;
-	color: var(--opacity-10);
+	color: var(--opacity-50);
 	text-transform: uppercase;
 	margin: 0;
 }
@@ -645,10 +695,10 @@ img.hero-graphic.fade-in {
 	margin: 0;
 }
 .work-content {
-	max-width: 444px; /* Temporary */
+	max-width: 444px; /* TEMPORARY */
 }
 
-/* Footer */
+/* FOOTER SECTION */
 .footer {
 	display: flex;
 	flex-direction: column;
@@ -755,13 +805,18 @@ img.hero-graphic.fade-in {
 	display: none;
 }
 
-/* Responsive Design */
+/* RESPONSIVE DESIGN */
 @media only screen and (max-width: 2420px) {
 	body {
 		max-width: 1840px;
 	}
 
-	/* Header */
+	.start {
+		margin-top: 4rem;
+		margin-bottom: 4rem;
+	}
+
+	/* HEADER */
 	.header {
 		flex-wrap: wrap;
 		row-gap: var(--gap-row-header);
@@ -784,7 +839,7 @@ img.hero-graphic.fade-in {
 		display: none;
 	}
 
-	/* Hero */
+	/* HERO */
 	.hero {
 		max-width: none;
 		width: 100vw;
@@ -796,7 +851,12 @@ img.hero-graphic.fade-in {
 		margin-right: -50vw;
 	}
 
-	/* Cards */
+	.start {
+		padding-left: 3rem;
+		padding-right: 3rem;
+	}
+
+	/* CARDS */
 	.cards {
 		flex-wrap: wrap;
 		row-gap: var(--gap-row-cards);
@@ -815,13 +875,13 @@ img.hero-graphic.fade-in {
 		display: flex;
 	}
 
-	/* Work Samples */
+	/* WORK SAMPLES */
 	.work-samples {
 		padding-left: 3rem;
 		padding-right: 3rem;
 	}
 
-	/* Footer */
+	/* FOOTER */
 	.footer {
 		padding-left: 3rem;
 		padding-right: 3rem;
@@ -842,6 +902,7 @@ img.hero-graphic.fade-in {
 		display: block;
 	}
 }
+
 @media only screen and (max-width: 1860px) {
 	.header {
 		padding-top: 2rem;
@@ -857,7 +918,12 @@ img.hero-graphic.fade-in {
 		max-width: 1040px;
 	}
 
-	/* Header */
+	.start {
+		padding-left: 2rem;
+		padding-right: 2rem;
+	}
+
+	/* HEADER */
 	.header {
 		flex-wrap: wrap;
 		row-gap: var(--gap-row-header);
@@ -891,7 +957,7 @@ img.hero-graphic.fade-in {
 		display: none;
 	}
 
-	/* Hero */
+	/* HERO */
 	.hero-graphics {
 		display: none;
 	}
@@ -918,7 +984,7 @@ img.hero-graphic.fade-in {
 		display: none;
 	}
 
-	/* Cards */
+	/* CARDS */
 	.cards {
 		flex-wrap: wrap;
 		row-gap: var(--gap-row-cards);
@@ -933,13 +999,13 @@ img.hero-graphic.fade-in {
 		min-width: 300px;
 	}
 
-	/* Work Samples */
+	/* WORK SAMPLES */
 	.work-samples {
 		padding-left: 2rem;
 		padding-right: 2rem;
 	}
 
-	/* Footer */
+	/* FOOTER */
 	.footer {
 		padding-left: 2rem;
 		padding-right: 2rem;
@@ -953,7 +1019,12 @@ img.hero-graphic.fade-in {
 }
 
 @media only screen and (max-width: 1040px) {
-	/* Header */
+	.start {
+		padding-left: 2rem;
+		padding-right: 2rem;
+	}
+
+	/* HEADER */
 	.header {
 		flex-wrap: wrap;
 		row-gap: var(--gap-row-header);
@@ -987,7 +1058,7 @@ img.hero-graphic.fade-in {
 		display: none;
 	}
 
-	/* Hero */
+	/* HERO */
 	.hero-graphics {
 		display: none;
 	}
@@ -1003,7 +1074,7 @@ img.hero-graphic.fade-in {
 		margin-right: -50vw;
 	}
 
-	/* Cards */
+	/* CARDS */
 	.cards {
 		flex-wrap: wrap;
 		row-gap: var(--gap-row-cards);
@@ -1021,13 +1092,13 @@ img.hero-graphic.fade-in {
 		margin: 0;
 	}
 
-	/* Work Samples */
+	/* WORK SAMPLES */
 	.work-samples {
 		padding-left: 2rem;
 		padding-right: 2rem;
 	}
 
-	/* Footer */
+	/* FOOTER */
 	.footer {
 		padding-left: 2rem;
 		padding-right: 2rem;
@@ -1044,7 +1115,7 @@ img.hero-graphic.fade-in {
 }
 
 @media only screen and (max-width: 980px) {
-	/* Header */
+	/* HEADER */
 	.header {
 		flex-direction: column;
 		padding: 1.5rem;
@@ -1072,7 +1143,7 @@ img.hero-graphic.fade-in {
 		display: none;
 	}
 
-	/* Hero */
+	/* HERO */
 	.hero {
 		margin-top: 2rem;
 		padding: 0;
@@ -1100,7 +1171,17 @@ img.hero-graphic.fade-in {
 		line-height: 22px;
 	}
 
-	/* Cards */
+	.start {
+		padding: 1.5rem;
+		margin-top: 4rem;
+	}
+
+	.end {
+		margin-top: 3rem;
+		margin-bottom: 1rem;
+	}
+
+	/* CARDS */
 	.cards {
 		flex-direction: column;
 		padding: 1.5rem;
@@ -1147,12 +1228,12 @@ img.hero-graphic.fade-in {
 		line-height: 22px;
 	}
 
-	/* Work Samples */
+	/* WORK SAMPLES */
 	.work-samples {
 		padding: 1.5rem;
 	}
 
-	/* Footer */
+	/* FOOTER */
 	.footer {
 		padding: 1.5rem;
 		margin-top: 4rem;
@@ -1190,27 +1271,27 @@ img.hero-graphic.fade-in {
 }
 
 @media only screen and (max-width: 420px) {
-	/* Header */
+	/* HEADER */
 	.header-column {
 		width: 100%;
 		flex: 1 1 100%;
 		max-width: 100%;
 	}
 
-	/* Hero */
-	/* (no hero-specific styles at this breakpoint) */
+	/* HERO */
+	/* (NO HERO-SPECIFIC STYLES AT THIS BREAKPOINT) */
 
-	/* Cards */
+	/* CARDS */
 	.card {
 		width: 100%;
 		flex: 1 1 100%;
 		max-width: 100%;
 	}
 
-	/* Work Samples */
-	/* (no work-samples-specific styles at this breakpoint) */
+	/* WORK SAMPLES */
+	/* (NO WORK-SAMPLES-SPECIFIC STYLES AT THIS BREAKPOINT) */
 
-	/* Footer */
+	/* FOOTER */
 	.footer-column {
 		width: 100%;
 		flex: 1 1 100%;
@@ -1218,14 +1299,14 @@ img.hero-graphic.fade-in {
 	}
 }
 
-/* SVG color overrides for light/dark mode */
-/* All hero icons are now inlined, so CSS variables work! */
+/* SVG COLOR OVERRIDES FOR LIGHT/DARK MODE */
+/* ALL HERO ICONS ARE NOW INLINED, SO CSS VARIABLES WORK! */
 .hero-icon svg {
 	width: 100%;
 	height: 100%;
 }
 
-/* Hero graphics still use <img> tags, so we need filters */
+/* HERO GRAPHICS STILL USE <IMG> TAGS, SO WE NEED FILTERS */
 .hero-graphic {
 	filter: none;
 	transition: filter 0.2s ease;
@@ -1235,7 +1316,7 @@ img.hero-graphic.fade-in {
 	filter: invert(1);
 }
 
-/* Focus styles for accessibility */
+/* FOCUS STYLES FOR ACCESSIBILITY */
 *:focus {
 	outline: 2px solid var(--opacity-50);
 	outline-offset: 2px;
