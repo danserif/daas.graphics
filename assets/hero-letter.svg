@@ -3,14 +3,14 @@
 <path d="M400.293 0.5L458.5 58.707V561H0.5V0.5H400.293Z" stroke="white" stroke-opacity="0.5"/>
 <g clip-path="url(#clip0_667_946)">
 <rect x="140" y="179" width="179.5" height="239.34" fill="black"/>
-<path opacity="0.7" d="M319.499 388.4L304.529 403.43L282.134 380.975L289.579 373.45V223.87L282.154 216.425L304.609 193.99L319.499 208.88V388.4Z" fill="white" fill-opacity="0.5"/>
-<path d="M140 179L169.9 208.92V388.42L140 418.34V179Z" fill="white" fill-opacity="0.5"/>
-<path opacity="0.7" d="M199.821 238.78L169.901 208.92V388.42L199.821 358.5V238.78Z" fill="white" fill-opacity="0.5"/>
-<path opacity="0.9" d="M289.58 179H140L169.94 208.92H274.61L282.155 216.425L304.609 193.99L289.58 179Z" fill="white" fill-opacity="0.5"/>
-<path opacity="0.8" d="M289.6 418.34H140L169.9 388.42H274.65L282.135 380.975L304.53 403.43L289.6 418.34Z" fill="white" fill-opacity="0.5"/>
-<path opacity="0.8" d="M259.68 238.82L282.155 216.425L274.611 208.92H169.94L199.821 238.78L259.68 238.82Z" fill="white" fill-opacity="0.5"/>
-<path opacity="0.9" d="M259.681 358.5L282.136 380.955L274.651 388.42H169.901L199.821 358.5H259.681Z" fill="white" fill-opacity="0.5"/>
-<path d="M259.68 358.5V238.82L282.154 216.425L289.58 223.87V373.47L282.135 380.975L259.68 358.5Z" fill="white" fill-opacity="0.5"/>
+<path opacity="0.7" d="M319.499 388.4L304.529 403.43L282.134 380.975L289.579 373.45V223.87L282.154 216.425L304.609 193.99L319.499 208.88V388.4Z" fill="white"/>
+<path d="M140 179L169.9 208.92V388.42L140 418.34V179Z" fill="white"/>
+<path opacity="0.7" d="M199.821 238.78L169.901 208.92V388.42L199.821 358.5V238.78Z" fill="white"/>
+<path opacity="0.9" d="M289.58 179H140L169.94 208.92H274.61L282.155 216.425L304.609 193.99L289.58 179Z" fill="white"/>
+<path opacity="0.8" d="M289.6 418.34H140L169.9 388.42H274.65L282.135 380.975L304.53 403.43L289.6 418.34Z" fill="white"/>
+<path opacity="0.8" d="M259.68 238.82L282.155 216.425L274.611 208.92H169.94L199.821 238.78L259.68 238.82Z" fill="white"/>
+<path opacity="0.9" d="M259.681 358.5L282.136 380.955L274.651 388.42H169.901L199.821 358.5H259.681Z" fill="white"/>
+<path d="M259.68 358.5V238.82L282.154 216.425L289.58 223.87V373.47L282.135 380.975L259.68 358.5Z" fill="white"/>
 </g>
 <rect x="140.5" y="179.5" width="178.5" height="238.34" stroke="black"/>
 <line y1="179.75" x2="140" y2="179.75" stroke="white" stroke-opacity="0.5" stroke-width="0.5" stroke-dasharray="2 2"/>

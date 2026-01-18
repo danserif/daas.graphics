@@ -442,6 +442,23 @@ code {
 	transform: rotate(14.048deg);
 }
 
+/* ACDC */
+.hero-icon-5 {
+	left: 80%;
+	top: 30%;
+	width: 18%;
+	min-width: 276px;
+	max-width: 276px;
+	height: auto;
+	max-height: 276px;
+	aspect-ratio: 525 / 253;
+	transform: rotate(10deg);
+}
+
+.hero-icon-5:hover {
+	transform: rotate(9deg);
+}
+
 .hero-graphics {
 	position: relative;
 	width: 100%;
@@ -488,12 +505,37 @@ img.hero-graphic.fade-in {
 	opacity: 1;
 }
 
-.hero-graphic-1 {
+.hero-letter-wrapper {
+	position: absolute;
 	left: 5%;
 	top: 40%;
 	width: 20%;
 	max-width: 400px;
 	transform: rotate(-5deg);
+}
+
+.hero-letter-bg {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background-color: var(--color-bg);
+	z-index: -1;
+	opacity: 1;
+	/* Not affected by fade-in animation - always visible */
+	/* Match the image dimensions */
+	min-height: 100%;
+}
+
+.hero-graphic-1 {
+	position: relative;
+	left: 0;
+	top: 0;
+	width: 100%;
+	max-width: 100%;
+	transform: none;
+	display: block;
 }
 
 .hero-graphic-2 {
@@ -844,6 +886,12 @@ img.hero-graphic.fade-in {
 		right: 50%;
 		margin-left: -50vw;
 		margin-right: -50vw;
+		margin-top: 20rem;
+		margin-bottom: 8rem;
+	}
+
+	.hero-graphics {
+		margin-top: 10rem;
 	}
 
 	/* START */
