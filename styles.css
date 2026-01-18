@@ -1225,6 +1225,10 @@ img.hero-graphic.fade-in {
 		margin-top: 8rem;
 	}
 
+	.start .arrow {
+		padding-top: 2rem;
+	}
+
 	/* CARDS */
 	.cards {
 		flex-direction: column;
@@ -1272,6 +1276,11 @@ img.hero-graphic.fade-in {
 		line-height: 22px;
 	}
 
+	.work-icon {
+		font-size: 22px;
+		line-height: 22px;
+	}
+
 	/* WORK SAMPLES */
 	.work-samples {
 		padding: 1.5rem;
@@ -1281,6 +1290,10 @@ img.hero-graphic.fade-in {
 	.end {
 		margin-top: 3rem;
 		margin-bottom: 1rem;
+	}
+
+	.end .arrow {
+		padding-bottom: 2rem;
 	}
 
 	/* FOOTER */
