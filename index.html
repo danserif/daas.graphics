@@ -301,7 +301,7 @@
 		<!-- ABOUT -->
 		<section class="start">
 			<p class="start-label">Start</p>
-			<p><span class="opacity-50">0%</span> <span class="opacity-25">[</span> <span class="accent">█</span> <span class="opacity-25">_ _ _ _ _ _ _ _ _ ]</span> <span class="opacity-50">100%</span></p>
+			<p><span class="opacity-50">0%</span> <span class="opacity-25">[</span> <span class="blink-container"><span class="accent blink">█</span><span class="opacity-25 blink-underscore">_</span></span> <span class="opacity-25">_ _ _ _ _ _ _ _ _ ]</span> <span class="opacity-50">100%</span></p>
 			<p class="arrow"><a href="#start">↓</a></p>
 		</section>
 		<section class="cards">
@@ -532,7 +532,7 @@
 			<section class="end">
 				<p class="arrow"><a href="#top">↑</a></p>
 				<p class="end-label">End</p>
-				<p><span class="opacity-50">0%</span> <span class="opacity-25">[</span> <span class="accent">█ █ █ █ █ █ █ █ █ █</span> <span class="opacity-25">]</span> <span class="opacity-50">100%</span></p>
+				<p><span class="opacity-50">0%</span> <span class="opacity-25">[</span> <span class="accent">█</span> <span class="opacity-25 end-progress">_ _ _ _ _ _ _ _ _ </span><span class="opacity-25">]</span> <span class="opacity-50">100%</span></p>
 			</section>
 			<div class="footer-pattern"></div>
 		</footer>
@@ -1344,6 +1344,80 @@
 				}
 
 				initFooterPattern();
+
+				// End Section Progress Bar Animation
+				function initEndProgressAnimation() {
+					const endSection = document.querySelector(".end");
+					if (!endSection) return;
+
+					const progressSpan = endSection.querySelector(".end-progress");
+					if (!progressSpan) return;
+
+					const parentParagraph = progressSpan.parentElement;
+					// Find the first accent block to insert after it
+					const firstAccentBlock = parentParagraph.querySelector(".accent");
+					let insertAfterElement = firstAccentBlock;
+					const originalText = progressSpan.textContent;
+					// Count underscores (they're separated by spaces)
+					const underscoreCount = (originalText.match(/_/g) || []).length;
+					let animated = false;
+
+					const observerOptions = {
+						root: null,
+						rootMargin: "0px",
+						threshold: 1.0, // Trigger when 10% of element is visible
+					};
+
+					const observer = new IntersectionObserver(function (entries) {
+						entries.forEach(function (entry) {
+							if (entry.isIntersecting && !animated) {
+								animated = true;
+
+								// Delay the animation start until after the section has entered the viewport
+								setTimeout(function () {
+									// Animate each block with a delay (slower animation)
+									for (let i = 0; i < underscoreCount; i++) {
+										setTimeout(function () {
+											// Remove first underscore from the opacity-25 span
+											const currentText = progressSpan.textContent;
+											let newText = currentText.replace(/_ /, "");
+											// If no replacement happened (last underscore without space), replace just "_"
+											if (newText === currentText) {
+												newText = currentText.replace(/_/, "");
+											}
+											progressSpan.textContent = newText;
+
+											// Insert the block as a sibling after the previous block (outside the opacity-25 span)
+											const blockSpan = document.createElement("span");
+											blockSpan.className = "accent";
+											blockSpan.textContent = "█";
+											// Insert space and block after the insertAfterElement
+											const textNode = document.createTextNode(" ");
+											// Insert after insertAfterElement, before its next sibling (or before progressSpan)
+											const nextSibling = insertAfterElement.nextSibling;
+											if (nextSibling) {
+												parentParagraph.insertBefore(textNode, nextSibling);
+												parentParagraph.insertBefore(blockSpan, nextSibling);
+											} else {
+												// If no next sibling, insert before progressSpan
+												parentParagraph.insertBefore(textNode, progressSpan);
+												parentParagraph.insertBefore(blockSpan, progressSpan);
+											}
+											// Update reference for next insertion (point to the new block)
+											insertAfterElement = blockSpan;
+										}, i * 200); // 200ms delay between each block (slower animation)
+									}
+								}, 500); // 500ms delay after entering viewport before animation starts
+
+								observer.unobserve(endSection);
+							}
+						});
+					}, observerOptions);
+
+					observer.observe(endSection);
+				}
+
+				initEndProgressAnimation();
 			});
 		</script>
 	</body>
