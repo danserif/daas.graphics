@@ -377,8 +377,8 @@ code {
 
 /* FACE - LIME */
 .hero-icon-1 {
-	left: 21%;
-	top: 0;
+	left: 22%;
+	top: 1%;
 	width: 5.3%;
 	min-width: 92px;
 	max-width: 92px;
@@ -394,8 +394,8 @@ code {
 
 /* FACE - WHITE */
 .hero-icon-2 {
-	right: 11%;
-	top: 74%;
+	left: 83%;
+	top: 27%;
 	width: 5.5%;
 	min-width: 92px;
 	max-width: 92px;
@@ -444,13 +444,13 @@ code {
 
 /* ACDC */
 .hero-icon-5 {
-	left: 80%;
-	top: 30%;
+	right: 11%;
+	top: 74%;
 	width: 18%;
-	min-width: 276px;
-	max-width: 276px;
+	min-width: 256px;
+	max-width: 256px;
 	height: auto;
-	max-height: 276px;
+	max-height: 256px;
 	aspect-ratio: 525 / 253;
 	transform: rotate(10deg);
 }
