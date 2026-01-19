@@ -1418,6 +1418,20 @@
 				}
 
 				initEndProgressAnimation();
+
+				// Stop blinking animation on start block after a few seconds
+				setTimeout(function () {
+					const startBlinkBlock = document.querySelector(".start .blink");
+					const startBlinkUnderscore = document.querySelector(".start .blink-underscore");
+					if (startBlinkBlock) {
+						startBlinkBlock.style.animation = "none";
+						startBlinkBlock.style.opacity = "1"; // Keep it visible
+					}
+					if (startBlinkUnderscore) {
+						startBlinkUnderscore.style.animation = "none";
+						startBlinkUnderscore.style.opacity = "0"; // Hide the underscore
+					}
+				}, 6000); // Stop after 6 seconds
 			});
 		</script>
 	</body>
