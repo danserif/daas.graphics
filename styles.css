@@ -1498,6 +1498,7 @@ img.hero-graphic.fade-in {
 	/* WORK SAMPLES */
 	.work-samples {
 		padding: 1.5rem;
+		margin-top: 3rem;
 	}
 
 	.work-grid {
@@ -1656,7 +1657,8 @@ img.hero-graphic.fade-in {
 	font-size: 11px;
 	line-height: normal;
 	text-transform: uppercase;
-	color: var(--opacity-25);
+	color: var(--color-bg);
+	opacity: 0.5;
 	padding: 0 0 1rem 0;
 }
 
@@ -1809,6 +1811,11 @@ img.hero-graphic.fade-in {
 
 	.loading-progress {
 		color: var(--color-text);
+	}
+
+	.loading-title {
+		color: var(--color-text);
+		opacity: 0.25;
 	}
 
 	/* LOADING BLOCKS SHOULD BE ACCENT COLOR ON BLACK BACKGROUND FOR MOBILE */
