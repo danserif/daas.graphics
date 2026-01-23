@@ -1651,6 +1651,15 @@ img.hero-graphic.fade-in {
 	box-sizing: border-box;
 }
 
+.loading-title {
+	font-family: "Departure Mono", monospace;
+	font-size: 11px;
+	line-height: normal;
+	text-transform: uppercase;
+	color: var(--opacity-25);
+	padding: 0 0 1rem 0;
+}
+
 .loading-overlay.fade-out {
 	opacity: 0;
 	pointer-events: none;
@@ -1784,7 +1793,7 @@ img.hero-graphic.fade-in {
 
 @media only screen and (max-width: 980px) {
 	.loading-overlay {
-		padding: 1.5rem;
+		padding: 2rem;
 		background-color: var(--color-bg);
 	}
 
