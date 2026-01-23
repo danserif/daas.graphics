@@ -1651,6 +1651,38 @@ img.hero-graphic.fade-in {
 	display: block;
 }
 
+/* Desktop: SVG paths should be black on yellow background (except accent border) */
+.loading-icon svg path {
+	fill: var(--color-bg) !important;
+}
+
+/* Border frame path should be black on all breakpoints */
+.loading-icon svg path[d*="M79.9837"] {
+	fill: var(--color-bg) !important;
+}
+
+/* Desktop: SVG rectangles should be accent-colored on yellow background */
+.loading-icon svg rect {
+	fill: var(--color-accent) !important;
+}
+
+/* Mobile: SVG paths should be white on black background (except accent border) */
+@media only screen and (max-width: 980px) {
+	.loading-icon svg path {
+		fill: var(--color-text) !important;
+	}
+	
+	/* Border frame path should be white on mobile (black background) */
+	.loading-icon svg path[d*="M79.9837"] {
+		fill: var(--color-text) !important;
+	}
+	
+	/* Mobile: SVG rectangles should be black on black background */
+	.loading-icon svg rect {
+		fill: var(--color-bg) !important;
+	}
+}
+
 .loading-icon.fade-out {
 	opacity: 0;
 }
@@ -1668,13 +1700,13 @@ img.hero-graphic.fade-in {
 	transition: opacity 0.6s ease-out;
 }
 
-.loading-progress.fade-out {
-	opacity: 0;
-}
-
 /* Loading blocks should be dark/black on accent background for visibility */
 .loading-progress .accent.loading-block {
 	color: var(--color-bg);
+}
+
+.loading-progress.fade-out {
+	opacity: 0;
 }
 
 .loading-progress p {
@@ -1692,6 +1724,7 @@ img.hero-graphic.fade-in {
 @media only screen and (max-width: 980px) {
 	.loading-overlay {
 		padding: 1.5rem;
+		background-color: var(--color-bg);
 	}
 
 	.loading-icon {
@@ -1704,5 +1737,11 @@ img.hero-graphic.fade-in {
 	.loading-progress {
 		bottom: 1.5rem;
 		left: 1.5rem;
+		color: var(--color-text);
+	}
+
+	/* Loading blocks should be white on black background for mobile */
+	.loading-progress .accent.loading-block {
+		color: var(--color-text);
 	}
 }
