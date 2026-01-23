@@ -1672,9 +1672,9 @@ img.hero-graphic.fade-in {
 		fill: var(--color-text) !important;
 	}
 	
-	/* Border frame path should be white on mobile (black background) */
+	/* Keep accent border frame accent-colored on mobile */
 	.loading-icon svg path[d*="M79.9837"] {
-		fill: var(--color-text) !important;
+		fill: var(--color-accent) !important;
 	}
 	
 	/* Mobile: SVG rectangles should be black on black background */
@@ -1740,8 +1740,8 @@ img.hero-graphic.fade-in {
 		color: var(--color-text);
 	}
 
-	/* Loading blocks should be white on black background for mobile */
+	/* Loading blocks should be accent color on black background for mobile */
 	.loading-progress .accent.loading-block {
-		color: var(--color-text);
+		color: var(--color-accent);
 	}
 }
