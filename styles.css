@@ -88,13 +88,13 @@ body {
 	background-color: var(--color-bg);
 	font-size: 11px;
 	max-width: 100%;
-	/* Prevent iOS Safari address bar color flash */
+	/* PREVENT IOS SAFARI ADDRESS BAR COLOR FLASH */
 	background: var(--color-bg);
 }
 
 body.loading {
 	overflow: hidden;
-	/* Ensure body background matches during loading to prevent iOS Safari color flash */
+	/* ENSURE BODY BACKGROUND MATCHES DURING LOADING TO PREVENT IOS SAFARI COLOR FLASH */
 	background-color: var(--color-bg);
 }
 
@@ -259,6 +259,16 @@ code {
 @keyframes scroll-horizontal {
 	0% {
 		transform: translateX(60vw);
+	}
+	100% {
+		transform: translateX(-100%);
+	}
+}
+
+/* MOBILE SCROLL ANIMATION */
+@keyframes scroll-horizontal-mobile {
+	0% {
+		transform: translateX(100vw);
 	}
 	100% {
 		transform: translateX(-100%);
@@ -559,8 +569,8 @@ img.hero-graphic.fade-in {
 	background-color: var(--color-bg);
 	z-index: -1;
 	opacity: 1;
-	/* Not affected by fade-in animation - always visible */
-	/* Match the image dimensions */
+	/* NOT AFFECTED BY FADE-IN ANIMATION - ALWAYS VISIBLE */
+	/* MATCH THE IMAGE DIMENSIONS */
 	min-height: 100%;
 }
 
@@ -827,7 +837,7 @@ img.hero-graphic.fade-in {
 }
 
 .work-image {
-	min-height: 200px; /* Fallback minimum height */
+	min-height: 200px; /* FALLBACK MINIMUM HEIGHT */
 	background-color: #1D1D1D;
 	filter: grayscale(100%);
 	transition: filter 0.3s ease;
@@ -1411,6 +1421,7 @@ img.hero-graphic.fade-in {
 	.hero-title {
 		min-height: 360px;
 		align-items: end;
+		animation: scroll-horizontal-mobile 40s linear infinite;
 	}
 
 	.hero-ascii-daas .ascii-text {
@@ -1497,7 +1508,7 @@ img.hero-graphic.fade-in {
 		grid-column: span 1 !important;
 	}
 
-	/* Logo-only items should visually take up 50% width on mobile */
+	/* LOGO-ONLY ITEMS SHOULD VISUALLY TAKE UP 50% WIDTH ON MOBILE */
 	.work-logo-item {
 		max-width: 50%;
 	}
@@ -1607,14 +1618,14 @@ img.hero-graphic.fade-in {
 	inset: 0;
 	width: 100vw;
 	height: 100vh;
-	height: 100dvh; /* Dynamic viewport height for mobile browsers */
-	min-height: -webkit-fill-available; /* iOS Safari */
+	height: 100dvh; /* DYNAMIC VIEWPORT HEIGHT FOR MOBILE BROWSERS */
+	min-height: -webkit-fill-available; /* IOS SAFARI */
 	background-color: var(--color-accent);
 	z-index: 99999;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
-	align-items: flex-start;
+	align-items: center;
 	padding: 60px;
 	padding-top: max(60px, env(safe-area-inset-top, 60px));
 	padding-bottom: max(60px, env(safe-area-inset-bottom, 60px));
@@ -1624,6 +1635,20 @@ img.hero-graphic.fade-in {
 	opacity: 1;
 	transition: opacity 1s ease-out;
 	pointer-events: none;
+}
+
+.loading-wrapper {
+	position: relative;
+	width: 100%;
+	max-width: var(--max-width);
+	margin: 0 auto;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: flex-start;
+	min-height: calc(100vh - 120px);
+	min-height: calc(100dvh - 120px);
+	box-sizing: border-box;
 }
 
 .loading-overlay.fade-out {
@@ -1637,12 +1662,48 @@ img.hero-graphic.fade-in {
 
 .loading-icon {
 	position: absolute;
-	top: max(60px, env(safe-area-inset-top, 60px));
-	left: max(60px, env(safe-area-inset-left, 60px));
+	top: 0;
+	left: 0;
 	width: 92px;
 	height: 92px;
 	opacity: 1;
 	transition: opacity 0.6s ease-out;
+}
+
+/* MATCH LOADING WRAPPER MAX-WIDTH AND PADDING TO HEADER BREAKPOINTS */
+@media only screen and (max-width: 2420px) {
+	.loading-overlay {
+		padding-left: max(3rem, env(safe-area-inset-left, 3rem));
+		padding-right: max(3rem, env(safe-area-inset-right, 3rem));
+	}
+
+	.loading-wrapper {
+		max-width: 1840px;
+	}
+}
+
+@media only screen and (max-width: 1860px) {
+	.loading-overlay {
+		padding-top: max(2rem, env(safe-area-inset-top, 2rem));
+	}
+}
+
+@media only screen and (max-width: 1460px) {
+	.loading-overlay {
+		padding-left: max(2rem, env(safe-area-inset-left, 2rem));
+		padding-right: max(2rem, env(safe-area-inset-right, 2rem));
+	}
+
+	.loading-wrapper {
+		max-width: 1200px;
+	}
+}
+
+@media only screen and (max-width: 1040px) {
+	.loading-overlay {
+		padding-left: max(2rem, env(safe-area-inset-left, 2rem));
+		padding-right: max(2rem, env(safe-area-inset-right, 2rem));
+	}
 }
 
 .loading-icon svg {
@@ -1651,33 +1712,33 @@ img.hero-graphic.fade-in {
 	display: block;
 }
 
-/* Desktop: SVG paths should be black on yellow background (except accent border) */
+/* DESKTOP: SVG PATHS SHOULD BE BLACK ON YELLOW BACKGROUND (EXCEPT ACCENT BORDER) */
 .loading-icon svg path {
 	fill: var(--color-bg) !important;
 }
 
-/* Border frame path should be black on all breakpoints */
+/* BORDER FRAME PATH SHOULD BE BLACK ON ALL BREAKPOINTS */
 .loading-icon svg path[d*="M79.9837"] {
 	fill: var(--color-bg) !important;
 }
 
-/* Desktop: SVG rectangles should be accent-colored on yellow background */
+/* DESKTOP: SVG RECTANGLES SHOULD BE ACCENT-COLORED ON YELLOW BACKGROUND */
 .loading-icon svg rect {
 	fill: var(--color-accent) !important;
 }
 
-/* Mobile: SVG paths should be white on black background (except accent border) */
+/* MOBILE: SVG PATHS SHOULD BE WHITE ON BLACK BACKGROUND (EXCEPT ACCENT BORDER) */
 @media only screen and (max-width: 980px) {
 	.loading-icon svg path {
 		fill: var(--color-text) !important;
 	}
 	
-	/* Keep accent border frame accent-colored on mobile */
+	/* KEEP ACCENT BORDER FRAME ACCENT-COLORED ON MOBILE */
 	.loading-icon svg path[d*="M79.9837"] {
 		fill: var(--color-accent) !important;
 	}
 	
-	/* Mobile: SVG rectangles should be black on black background */
+	/* MOBILE: SVG RECTANGLES SHOULD BE BLACK ON BLACK BACKGROUND */
 	.loading-icon svg rect {
 		fill: var(--color-bg) !important;
 	}
@@ -1689,8 +1750,8 @@ img.hero-graphic.fade-in {
 
 .loading-progress {
 	position: absolute;
-	bottom: max(60px, env(safe-area-inset-bottom, 60px));
-	left: max(60px, env(safe-area-inset-left, 60px));
+	bottom: 0;
+	left: 0;
 	font-family: "Departure Mono", monospace;
 	font-size: 11px;
 	line-height: normal;
@@ -1700,7 +1761,7 @@ img.hero-graphic.fade-in {
 	transition: opacity 0.6s ease-out;
 }
 
-/* Loading blocks should be dark/black on accent background for visibility */
+/* LOADING BLOCKS SHOULD BE DARK/BLACK ON ACCENT BACKGROUND FOR VISIBILITY */
 .loading-progress .accent.loading-block {
 	color: var(--color-bg);
 }
@@ -1727,20 +1788,21 @@ img.hero-graphic.fade-in {
 		background-color: var(--color-bg);
 	}
 
+	.loading-wrapper {
+		min-height: calc(100vh - 3rem);
+		min-height: calc(100dvh - 3rem);
+	}
+
 	.loading-icon {
-		top: 1.5rem;
-		left: 1.5rem;
 		width: 60px;
 		height: 60px;
 	}
 
 	.loading-progress {
-		bottom: 1.5rem;
-		left: 1.5rem;
 		color: var(--color-text);
 	}
 
-	/* Loading blocks should be accent color on black background for mobile */
+	/* LOADING BLOCKS SHOULD BE ACCENT COLOR ON BLACK BACKGROUND FOR MOBILE */
 	.loading-progress .accent.loading-block {
 		color: var(--color-accent);
 	}
