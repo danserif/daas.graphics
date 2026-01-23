@@ -88,10 +88,14 @@ body {
 	background-color: var(--color-bg);
 	font-size: 11px;
 	max-width: 100%;
+	/* Prevent iOS Safari address bar color flash */
+	background: var(--color-bg);
 }
 
 body.loading {
 	overflow: hidden;
+	/* Ensure body background matches during loading to prevent iOS Safari color flash */
+	background-color: var(--color-bg);
 }
 
 h1,
@@ -1600,10 +1604,11 @@ img.hero-graphic.fade-in {
 /* LOADING OVERLAY */
 .loading-overlay {
 	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
+	inset: 0;
+	width: 100vw;
+	height: 100vh;
+	height: 100dvh; /* Dynamic viewport height for mobile browsers */
+	min-height: -webkit-fill-available; /* iOS Safari */
 	background-color: var(--color-accent);
 	z-index: 99999;
 	display: flex;
@@ -1611,6 +1616,10 @@ img.hero-graphic.fade-in {
 	justify-content: space-between;
 	align-items: flex-start;
 	padding: 60px;
+	padding-top: max(60px, env(safe-area-inset-top, 60px));
+	padding-bottom: max(60px, env(safe-area-inset-bottom, 60px));
+	padding-left: max(60px, env(safe-area-inset-left, 60px));
+	padding-right: max(60px, env(safe-area-inset-right, 60px));
 	box-sizing: border-box;
 	opacity: 1;
 	transition: opacity 1s ease-out;
@@ -1628,8 +1637,8 @@ img.hero-graphic.fade-in {
 
 .loading-icon {
 	position: absolute;
-	top: 60px;
-	left: 60px;
+	top: max(60px, env(safe-area-inset-top, 60px));
+	left: max(60px, env(safe-area-inset-left, 60px));
 	width: 92px;
 	height: 92px;
 	opacity: 1;
@@ -1648,8 +1657,8 @@ img.hero-graphic.fade-in {
 
 .loading-progress {
 	position: absolute;
-	bottom: 60px;
-	left: 60px;
+	bottom: max(60px, env(safe-area-inset-bottom, 60px));
+	left: max(60px, env(safe-area-inset-left, 60px));
 	font-family: "Departure Mono", monospace;
 	font-size: 11px;
 	line-height: normal;
