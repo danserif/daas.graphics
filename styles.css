@@ -1746,6 +1746,11 @@ img.daas-graphic.fade-in {
 
 .loading-code p {
 	padding-top: 10px;
+	transition: opacity 0.1s ease-in;
+}
+
+.loading-code p:not(.code-line-visible) {
+	opacity: 0;
 }
 
 .loading-overlay.fade-out {
@@ -1876,8 +1881,13 @@ img.daas-graphic.fade-in {
 	opacity: 0;
 }
 
-.loading-progress p {
+.loading-progress>p {
 	margin: 0;
+	transition: opacity 0.1s ease-in;
+}
+
+.loading-progress>p:not(.progress-line-visible) {
+	opacity: 0;
 }
 
 .loading-block {

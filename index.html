@@ -70,7 +70,7 @@
 				</p>
 				<div class="loading-code">
 					<p class="opacity-25">/* ----------------------------------- */</p>
-					<p class="opacity-50">HTTPS:// DAAS.GRAPHICS</p>
+					<p><span class="opacity-50">HTTPS://</span> DAAS.GRAPHICS</p>
 					<p class="opacity-25">/* ----------------------------------- */</p>
 					<p>USER_SIGNAL: <span class="opacity-50">[RECEIVED]</span></p>
 					<p>VISUAL_SYSTEM: <span class="opacity-50">[SYNCING]</span></p>
@@ -275,7 +275,8 @@
 			<h4 class="card-label">Services</h4>
 			<hr class="divider" />
 			<div class="card-content">
-				<h3 class="card-title">Leadership<span class="accent"> / </span><span class="opacity-50">D-02 </span></h3>
+				<h3 class="card-title">Coaching<span class="accent"> / </span><span class="opacity-50">D-01 </span>
+					Leadership<span class="accent"> / </span><span class="opacity-50">D-02 </span></h3>
 				<p class="card-subtitle">Design<span class="accent"> /</span> <span class="opacity-50">D-03</span></p>
 			</div>
 			<div class="card-text">
@@ -658,6 +659,17 @@
 		// ============================================
 		(function () {
 			function initLoadingScreen() {
+				// Constants
+				const INITIAL_DELAY = 10;
+				const ANIMATION_START_DELAY = 800;
+				const BLOCK_DELAY = 200;
+				const CODE_LINE_DELAY = 100;
+				const LAST_BLOCK_DELAY = 400;
+				const PAUSE_TIME = 500;
+				const FADE_OUT_ICON_PROGRESS = 800;
+				const FADE_OUT_OVERLAY = 1500;
+
+				// Cache DOM elements
 				const loadingOverlay = document.getElementById("loading-overlay");
 				const loadingProgressText = loadingOverlay?.querySelector(".loading-progress-text");
 				const loadingBlock = loadingOverlay?.querySelector(".loading-block");
@@ -665,32 +677,32 @@
 
 				if (!loadingOverlay || !loadingProgressText) return;
 
-				// Development controls: Skip loading screen if:
-				// 1. Query parameter ?skipLoading=true is present
-				// 2. localStorage has skipLoadingScreen flag set to 'true'
-				// 3. On localhost (optional - uncomment if desired)
+				// Development controls: Skip loading screen
 				const urlParams = new URLSearchParams(window.location.search);
-				const skipViaQuery = urlParams.get("skipLoading") === "true";
-				const skipViaStorage = localStorage.getItem("skipLoadingScreen") === "true";
-				const isLocalhost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-
-				// Uncomment the line below to automatically skip on localhost
-				// const shouldSkip = skipViaQuery || skipViaStorage || isLocalhost;
-				const shouldSkip = skipViaQuery || skipViaStorage;
+				const shouldSkip = urlParams.get("skipLoading") === "true" ||
+					localStorage.getItem("skipLoadingScreen") === "true";
 
 				if (shouldSkip) {
-					// Immediately hide overlay and trigger loading complete
-					if (isLocalhost) {
-						console.log("🚀 Loading screen skipped (localhost detected). Use ?skipLoading=true or localStorage.setItem('skipLoadingScreen', 'true') to control.");
-					}
 					loadingOverlay.classList.add("hidden");
 					body.classList.remove("loading");
 					window.dispatchEvent(new CustomEvent("loadingComplete"));
 					return;
 				}
 
-				// Add loading class to body to prevent scrolling
 				body.classList.add("loading");
+
+				// Cache elements for animations
+				const loadingProgressLines = loadingOverlay.querySelectorAll(".loading-progress > p");
+				const loadingCodeLines = loadingOverlay.querySelectorAll(".loading-code p");
+				const loadingIcon = loadingOverlay.querySelector(".loading-icon");
+				const loadingProgress = loadingOverlay.querySelector(".loading-progress");
+
+				// Reveal loading-progress lines immediately
+				setTimeout(function () {
+					loadingProgressLines.forEach(function (line) {
+						line.classList.add("progress-line-visible");
+					});
+				}, INITIAL_DELAY);
 
 				// Count underscores in the progress text
 				const originalText = loadingProgressText.textContent;
@@ -698,71 +710,72 @@
 				const parentParagraph = loadingProgressText.parentElement;
 				let insertAfterElement = loadingBlock;
 
-				// Animate loading progress
-				function animateLoading() {
-					// Delay before starting animation
-					setTimeout(function () {
-						// Animate each block with a delay
-						for (let i = 0; i < underscoreCount; i++) {
-							setTimeout(function () {
-								// Remove first underscore from the progress text
-								const currentText = loadingProgressText.textContent;
-								let newText = currentText.replace(/_ /, "");
-								// If no replacement happened (last underscore without space), replace just "_"
-								if (newText === currentText) {
-									newText = currentText.replace(/_/, "");
-								}
-								loadingProgressText.textContent = newText;
-
-								// Insert the block as a sibling after the previous block
-								const blockSpan = document.createElement("span");
-								blockSpan.className = "accent loading-block";
-								blockSpan.textContent = "█";
-								// Insert space and block after the insertAfterElement
-								const textNode = document.createTextNode(" ");
-								// Insert after insertAfterElement, before its next sibling (or before progressSpan)
-								const nextSibling = insertAfterElement.nextSibling;
-								if (nextSibling) {
-									parentParagraph.insertBefore(textNode, nextSibling);
-									parentParagraph.insertBefore(blockSpan, nextSibling);
-								} else {
-									// If no next sibling, insert before loadingProgressText
-									parentParagraph.insertBefore(textNode, loadingProgressText);
-									parentParagraph.insertBefore(blockSpan, loadingProgressText);
-								}
-								// Update reference for next insertion (point to the new block)
-								insertAfterElement = blockSpan;
-
-								// If this is the last block, fade out the icon and progress first, then the overlay
-								if (i === underscoreCount - 1) {
-									setTimeout(function () {
-										// Fade out the loading icon and progress simultaneously
-										const loadingIcon = loadingOverlay.querySelector(".loading-icon");
-										const loadingProgress = loadingOverlay.querySelector(".loading-progress");
-										if (loadingIcon) {
-											loadingIcon.classList.add("fade-out");
-										}
-										if (loadingProgress) {
-											loadingProgress.classList.add("fade-out");
-										}
-										// Then fade out the overlay background after icon and progress fade completes
-										setTimeout(function () {
-											loadingOverlay.classList.add("fade-out");
-											setTimeout(function () {
-												loadingOverlay.classList.add("hidden");
-												body.classList.remove("loading");
-												// Trigger custom event to signal loading is complete
-												window.dispatchEvent(new CustomEvent("loadingComplete"));
-											}, 1200); // Wait for overlay fade-out transition
-										}, 800); // Wait for icon and progress fade-out transition
-									}, 400);
-								}
-							}, i * 200); // 200ms delay between each block
-						}
-					}, 800); // 800ms delay before starting animation
+				// Helper function to remove underscore from progress text
+				function removeUnderscore(text) {
+					const withSpace = text.replace(/_ /, "");
+					return withSpace !== text ? withSpace : text.replace(/_/, "");
 				}
 
-				// Start animation
+				// Helper function to insert progress block
+				function insertProgressBlock() {
+					const blockSpan = document.createElement("span");
+					blockSpan.className = "accent loading-block";
+					blockSpan.textContent = "█";
+					const textNode = document.createTextNode(" ");
+					const nextSibling = insertAfterElement.nextSibling;
+
+					if (nextSibling) {
+						parentParagraph.insertBefore(textNode, nextSibling);
+						parentParagraph.insertBefore(blockSpan, nextSibling);
+					} else {
+						parentParagraph.insertBefore(textNode, loadingProgressText);
+						parentParagraph.insertBefore(blockSpan, loadingProgressText);
+					}
+					return blockSpan;
+				}
+
+				// Helper function to fade out loading screen
+				function fadeOutLoadingScreen() {
+					if (loadingIcon) loadingIcon.classList.add("fade-out");
+					if (loadingProgress) loadingProgress.classList.add("fade-out");
+
+					setTimeout(function () {
+						loadingOverlay.classList.add("fade-out");
+						setTimeout(function () {
+							loadingOverlay.classList.add("hidden");
+							body.classList.remove("loading");
+							window.dispatchEvent(new CustomEvent("loadingComplete"));
+						}, FADE_OUT_OVERLAY);
+					}, FADE_OUT_ICON_PROGRESS);
+				}
+
+				// Animate loading progress
+				function animateLoading() {
+					setTimeout(function () {
+						// Start animating code lines
+						loadingCodeLines.forEach(function (line, index) {
+							setTimeout(function () {
+								line.classList.add("code-line-visible");
+							}, index * CODE_LINE_DELAY);
+						});
+
+						// Animate each progress block
+						for (let i = 0; i < underscoreCount; i++) {
+							setTimeout(function () {
+								loadingProgressText.textContent = removeUnderscore(loadingProgressText.textContent);
+								insertAfterElement = insertProgressBlock();
+
+								// Handle fade-out after last block
+								if (i === underscoreCount - 1) {
+									setTimeout(function () {
+										setTimeout(fadeOutLoadingScreen, PAUSE_TIME);
+									}, LAST_BLOCK_DELAY);
+								}
+							}, i * BLOCK_DELAY);
+						}
+					}, ANIMATION_START_DELAY);
+				}
+
 				animateLoading();
 			}
 
