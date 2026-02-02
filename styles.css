@@ -415,7 +415,7 @@ h1.header-label {
 	z-index: 1;
 }
 
-.hero-icon {
+.daas-icon {
 	position: absolute;
 	display: flex;
 	align-items: center;
@@ -426,11 +426,11 @@ h1.header-label {
 	transition: opacity 0.8s ease-in-out, transform 0.3s ease;
 }
 
-.hero-icon.fade-in {
+.daas-icon.fade-in {
 	opacity: 1;
 }
 
-.hero-icon img {
+.daas-icon img {
 	width: 100%;
 	height: 100%;
 	max-width: 92px;
@@ -439,13 +439,13 @@ h1.header-label {
 	display: block;
 }
 
-.hero-icon img[src=""],
-.hero-icon img:not([src]) {
+.daas-icon img[src=""],
+.daas-icon img:not([src]) {
 	display: none;
 }
 
 /* FACE - LIME */
-.hero-icon-1 {
+.daas-icon-1 {
 	left: 7%;
 	top: 34%;
 	width: 5.3%;
@@ -457,12 +457,12 @@ h1.header-label {
 	transform: rotate(6.034deg);
 }
 
-.hero-icon-1:hover {
+.daas-icon-1:hover {
 	transform: rotate(11.034deg);
 }
 
 /* FACE - WHITE */
-.hero-icon-2 {
+.daas-icon-2 {
 	left: 83%;
 	top: 27%;
 	width: 5.5%;
@@ -474,12 +474,12 @@ h1.header-label {
 	transform: rotate(351.498deg);
 }
 
-.hero-icon-2:hover {
+.daas-icon-2:hover {
 	transform: rotate(356.498deg);
 }
 
 /* RULER */
-.hero-icon-3 {
+.daas-icon-3 {
 	left: 50.5%;
 	top: 54%;
 	width: 6.1%;
@@ -491,12 +491,12 @@ h1.header-label {
 	transform: rotate(255.093deg);
 }
 
-.hero-icon-3:hover {
+.daas-icon-3:hover {
 	transform: rotate(260.093deg);
 }
 
 /* HORNS */
-.hero-icon-4 {
+.daas-icon-4 {
 	left: 38%;
 	top: 66%;
 	width: 5.7%;
@@ -507,11 +507,11 @@ h1.header-label {
 	transform: rotate(20.05deg);
 }
 
-.hero-icon-4:hover {
+.daas-icon-4:hover {
 	transform: rotate(25.05deg);
 }
 
-.hero-graphics {
+.daas-graphics {
 	position: relative;
 	width: 100%;
 	max-width: 2320px;
@@ -523,7 +523,7 @@ h1.header-label {
 	min-height: 800px;
 }
 
-.hero-graphics::before {
+.daas-graphics::before {
 	content: "";
 	position: absolute;
 	top: 0;
@@ -535,7 +535,7 @@ h1.header-label {
 	z-index: 1;
 }
 
-.hero-graphic {
+.daas-graphic {
 	position: absolute;
 	display: block;
 	max-width: 100%;
@@ -548,16 +548,16 @@ h1.header-label {
 	pointer-events: none;
 }
 
-img.hero-graphic {
+img.daas-graphic {
 	opacity: 0;
 	transition: opacity 1.5s ease-in-out;
 }
 
-img.hero-graphic.fade-in {
+img.daas-graphic.fade-in {
 	opacity: 1;
 }
 
-.hero-letter-wrapper {
+.daas-letter-wrapper {
 	position: absolute;
 	left: 5%;
 	top: 40%;
@@ -566,7 +566,7 @@ img.hero-graphic.fade-in {
 	transform: rotate(-5deg);
 }
 
-.hero-letter-bg {
+.daas-letter-bg {
 	position: absolute;
 	left: 0;
 	top: 0;
@@ -580,7 +580,7 @@ img.hero-graphic.fade-in {
 	min-height: 100%;
 }
 
-.hero-graphic-1 {
+.daas-graphic-1 {
 	position: relative;
 	left: 0;
 	top: 0;
@@ -590,7 +590,7 @@ img.hero-graphic.fade-in {
 	display: block;
 }
 
-.hero-graphic-2 {
+.daas-graphic-2 {
 	left: 15%;
 	top: 12%;
 	width: 26%;
@@ -598,7 +598,7 @@ img.hero-graphic.fade-in {
 	transform: rotate(7.254deg);
 }
 
-.hero-graphic-3 {
+.daas-graphic-3 {
 	right: 8%;
 	top: 30%;
 	width: 39%;
@@ -617,7 +617,7 @@ img.hero-graphic.fade-in {
 }
 
 .start {
-	margin-top: 200px;
+	margin-top: 250px;
 	margin-bottom: 200px;
 	padding: 0 60px;
 }
@@ -999,8 +999,12 @@ img.hero-graphic.fade-in {
 	opacity: 0.5;
 }
 
-.footer-pattern {
+.pattern {
+	max-width: var(--max-width);
+	margin: 0 auto;
+	padding: 0 60px;
 	width: 100%;
+	box-sizing: border-box;
 	font-family: "Departure Mono", monospace;
 	font-size: 22px;
 	line-height: 1.5;
@@ -1011,17 +1015,16 @@ img.hero-graphic.fade-in {
 	-moz-user-select: none;
 	-ms-user-select: none;
 	cursor: default;
-	padding-bottom: 4rem;
 }
 
-.footer-pattern-line {
+.pattern-line {
 	display: block;
 	white-space: nowrap;
 	overflow: visible;
 	width: 100%;
 }
 
-.footer-pattern-char {
+.pattern-char {
 	display: inline-block;
 	transition: color 0.3s ease, opacity 0.6s ease-out;
 	opacity: 0.5;
@@ -1039,6 +1042,20 @@ img.hero-graphic.fade-in {
 }
 
 /* RESPONSIVE DESIGN */
+/* WIDEST BREAKPOINT - DESKTOP */
+@media only screen and (min-width: 2421px) {
+	.hero {
+		/* Shorter hero and less top offset so the Start section is still visible */
+		min-height: 45vh;
+		margin-top: 18vh;
+		margin-bottom: 4vh;
+	}
+
+	.hero-title {
+		min-height: 45vh;
+	}
+}
+
 @media only screen and (max-width: 2420px) {
 	body {
 		max-width: 1840px;
@@ -1048,6 +1065,12 @@ img.hero-graphic.fade-in {
 	.header {
 		flex-wrap: wrap;
 		row-gap: var(--gap-row-header);
+		padding-left: 3rem;
+		padding-right: 3rem;
+	}
+
+	/* PATTERN */
+	.pattern {
 		padding-left: 3rem;
 		padding-right: 3rem;
 	}
@@ -1077,11 +1100,17 @@ img.hero-graphic.fade-in {
 		right: 50%;
 		margin-left: -50vw;
 		margin-right: -50vw;
-		margin-top: 20rem;
-		margin-bottom: 8rem;
+		/* Use viewport height so the ASCII hero and Start section are visible together */
+		min-height: 45vh;
+		margin-top: 18vh;
+		margin-bottom: 4vh;
 	}
 
-	.hero-graphics {
+	.hero-title {
+		min-height: 45vh;
+	}
+
+	.daas-graphics {
 		margin-top: 10rem;
 	}
 
@@ -1164,6 +1193,12 @@ img.hero-graphic.fade-in {
 		padding-right: 2rem;
 	}
 
+	/* PATTERN */
+	.pattern {
+		padding-left: 2rem;
+		padding-right: 2rem;
+	}
+
 	.header-column,
 	.footer-column,
 	.bonus-column,
@@ -1191,7 +1226,7 @@ img.hero-graphic.fade-in {
 	}
 
 	/* HERO */
-	.hero-graphics {
+	.daas-graphics {
 		display: none;
 	}
 
@@ -1271,6 +1306,12 @@ img.hero-graphic.fade-in {
 		padding-right: 2rem;
 	}
 
+	/* PATTERN */
+	.pattern {
+		padding-left: 2rem;
+		padding-right: 2rem;
+	}
+
 	.header-column,
 	.footer-column,
 	.bonus-column,
@@ -1298,7 +1339,7 @@ img.hero-graphic.fade-in {
 	}
 
 	/* HERO */
-	.hero-graphics {
+	.graphics {
 		display: none;
 	}
 
@@ -1369,6 +1410,12 @@ img.hero-graphic.fade-in {
 	.header {
 		flex-direction: column;
 		padding: 1.5rem;
+	}
+
+	/* PATTERN */
+	.pattern {
+		padding-left: 1.5rem;
+		padding-right: 1.5rem;
 	}
 
 	.header-column {
@@ -1539,7 +1586,7 @@ img.hero-graphic.fade-in {
 		margin-top: 4rem;
 	}
 
-	.footer-pattern {
+	.pattern {
 		display: none;
 	}
 
@@ -1602,18 +1649,18 @@ img.hero-graphic.fade-in {
 
 /* SVG COLOR OVERRIDES FOR LIGHT/DARK MODE */
 /* ALL HERO ICONS ARE NOW INLINED, SO CSS VARIABLES WORK! */
-.hero-icon svg {
+.daas-icon svg {
 	width: 100%;
 	height: 100%;
 }
 
 /* HERO GRAPHICS STILL USE <IMG> TAGS, SO WE NEED FILTERS */
-.hero-graphic {
+.daas-graphic {
 	filter: none;
 	transition: filter 0.2s ease;
 }
 
-:root.light-mode .hero-graphic {
+:root.light-mode .daas-graphic {
 	filter: invert(1);
 }
 
@@ -1674,6 +1721,19 @@ img.hero-graphic.fade-in {
 	padding: 0 0 1rem 0;
 }
 
+.loading-code {
+	font-family: "Departure Mono", monospace;
+	font-size: 11px;
+	line-height: normal;
+	text-transform: uppercase;
+	color: var(--color-bg);
+	padding: 2rem 0 1rem 0;
+}
+
+.loading-code p {
+	padding-top: 10px;
+}
+
 .loading-overlay.fade-out {
 	opacity: 0;
 	pointer-events: none;
@@ -1685,7 +1745,7 @@ img.hero-graphic.fade-in {
 
 .loading-icon {
 	position: absolute;
-	top: 0;
+	bottom: 0;
 	left: 0;
 	width: 92px;
 	height: 92px;
@@ -1782,7 +1842,7 @@ img.hero-graphic.fade-in {
 
 .loading-progress {
 	position: absolute;
-	bottom: 0;
+	top: 0;
 	left: 0;
 	font-family: "Departure Mono", monospace;
 	font-size: 11px;
@@ -1818,6 +1878,7 @@ img.hero-graphic.fade-in {
 	.loading-overlay {
 		padding: 2rem;
 		padding-bottom: 3rem;
+		padding-top: 1.5rem;
 		background-color: var(--color-bg);
 	}
 
@@ -1838,6 +1899,11 @@ img.hero-graphic.fade-in {
 	.loading-title {
 		color: var(--color-text);
 		opacity: 0.25;
+	}
+
+	.loading-code {
+		color: var(--color-text);
+		opacity: 0.5;
 	}
 
 	/* LOADING BLOCKS SHOULD BE ACCENT COLOR ON BLACK BACKGROUND FOR MOBILE */
