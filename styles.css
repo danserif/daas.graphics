@@ -620,6 +620,12 @@ img.daas-graphic.fade-in {
 	margin-top: 250px;
 	margin-bottom: 200px;
 	padding: 0 60px;
+	opacity: 0;
+	transition: opacity 1s ease-in-out;
+}
+
+.start.fade-in {
+	opacity: 1;
 }
 
 .end {
