@@ -515,7 +515,7 @@ h1.header-label {
 	position: relative;
 	width: 100%;
 	max-width: 2320px;
-	margin: 0 auto;
+	margin: 8rem auto 0;
 	padding: 60px 60px 0;
 	box-sizing: border-box;
 	overflow: hidden;
@@ -1117,7 +1117,7 @@ img.daas-graphic.fade-in {
 	}
 
 	.daas-graphics {
-		margin-top: 10rem;
+		margin-top: 4rem;
 	}
 
 	/* START */
@@ -1223,11 +1223,15 @@ img.daas-graphic.fade-in {
 		display: none;
 	}
 
-	.header .bonus-column {
+	.header-column:nth-child(3) {
 		display: none;
 	}
 
-	.header-column:nth-child(3) .divider {
+	.header .bonus-column {
+		display: flex;
+	}
+
+	.header-column:nth-child(4) .divider {
 		display: none;
 	}
 
@@ -1336,11 +1340,15 @@ img.daas-graphic.fade-in {
 		display: none;
 	}
 
-	.header .bonus-column {
+	.header-column:nth-child(3) {
 		display: none;
 	}
 
-	.header-column:nth-child(3) .divider {
+	.header .bonus-column {
+		display: flex;
+	}
+
+	.header-column:nth-child(4) .divider {
 		display: none;
 	}
 
