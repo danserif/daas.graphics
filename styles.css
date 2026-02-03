@@ -40,7 +40,7 @@
 :root.light-mode {
 	--color-bg: #ffffff;
 	--color-text: #000000;
-	--color-accent: #7b7b7b;
+	--color-accent: #0044FF;
 	--color-border: #e5e5e5;
 	--opacity-15: rgba(0, 0, 0, 0.15);
 	--opacity-25: rgba(0, 0, 0, 0.25);
