@@ -662,17 +662,70 @@
 		// LOADING SCREEN (runs immediately)
 		// ============================================
 		(function () {
-			function initLoadingScreen() {
-				// Constants
-				const INITIAL_DELAY = 10;
-				const ANIMATION_START_DELAY = 800;
-				const BLOCK_DELAY = 200;
-				const CODE_LINE_DELAY = 100;
-				const LAST_BLOCK_DELAY = 400;
-				const PAUSE_TIME = 500;
-				const FADE_OUT_ICON_PROGRESS = 800;
-				const FADE_OUT_OVERLAY = 1500;
+			// Constants
+			const INITIAL_DELAY = 10;
+			const ANIMATION_START_DELAY = 800;
+			const BLOCK_DELAY = 200;
+			const CODE_LINE_DELAY = 100;
+			const LAST_BLOCK_DELAY = 400;
+			const PAUSE_TIME = 500;
+			const FADE_OUT_ICON_PROGRESS = 800;
+			const FADE_OUT_OVERLAY = 1500;
 
+			// Store original progress text for reset
+			let originalProgressText = null;
+
+			// Function to reset loading screen state
+			function resetLoadingScreen() {
+				const loadingOverlay = document.getElementById("loading-overlay");
+				if (!loadingOverlay) return;
+
+				// Remove all classes that affect visibility
+				loadingOverlay.classList.remove("hidden", "fade-out");
+
+				const loadingProgress = loadingOverlay.querySelector(".loading-progress");
+				const loadingIcon = loadingOverlay.querySelector(".loading-icon");
+				if (loadingProgress) loadingProgress.classList.remove("fade-out");
+				if (loadingIcon) loadingIcon.classList.remove("fade-out");
+
+				// Reset progress text to original
+				const loadingProgressText = loadingOverlay.querySelector(".loading-progress-text");
+				if (loadingProgressText && originalProgressText) {
+					loadingProgressText.textContent = originalProgressText;
+				}
+
+				// Remove all dynamically added progress blocks
+				const loadingBlocks = loadingOverlay.querySelectorAll(".loading-block");
+				const firstBlock = loadingOverlay.querySelector(".loading-progress .loading-block");
+				loadingBlocks.forEach(function (block) {
+					// Keep only the first one (the original in HTML)
+					if (block !== firstBlock) {
+						const prevSibling = block.previousSibling;
+						if (prevSibling && prevSibling.nodeType === 3 && prevSibling.textContent.trim() === "") {
+							prevSibling.remove();
+						}
+						block.remove();
+					}
+				});
+
+				// Reset code lines visibility
+				const loadingCodeLines = loadingOverlay.querySelectorAll(".loading-code p");
+				loadingCodeLines.forEach(function (line) {
+					line.classList.remove("code-line-visible");
+				});
+
+				// Reset progress lines visibility
+				const loadingProgressLines = loadingOverlay.querySelectorAll(".loading-progress > p");
+				loadingProgressLines.forEach(function (line) {
+					line.classList.remove("progress-line-visible");
+				});
+
+				// Add loading class to body
+				document.body.classList.add("loading");
+			}
+
+			// Core animation function (can be called directly, bypasses skip check)
+			function runLoadingAnimation() {
 				// Cache DOM elements
 				const loadingOverlay = document.getElementById("loading-overlay");
 				const loadingProgressText = loadingOverlay?.querySelector(".loading-progress-text");
@@ -681,16 +734,9 @@
 
 				if (!loadingOverlay || !loadingProgressText) return;
 
-				// Development controls: Skip loading screen
-				const urlParams = new URLSearchParams(window.location.search);
-				const shouldSkip = urlParams.get("skipLoading") === "true" ||
-					localStorage.getItem("skipLoadingScreen") === "true";
-
-				if (shouldSkip) {
-					loadingOverlay.classList.add("hidden");
-					body.classList.remove("loading");
-					window.dispatchEvent(new CustomEvent("loadingComplete"));
-					return;
+				// Store original progress text on first load
+				if (!originalProgressText) {
+					originalProgressText = loadingProgressText.textContent;
 				}
 
 				body.classList.add("loading");
@@ -709,8 +755,8 @@
 				}, INITIAL_DELAY);
 
 				// Count underscores in the progress text
-				const originalText = loadingProgressText.textContent;
-				const underscoreCount = (originalText.match(/_/g) || []).length;
+				const currentText = loadingProgressText.textContent;
+				const underscoreCount = (currentText.match(/_/g) || []).length;
 				const parentParagraph = loadingProgressText.parentElement;
 				let insertAfterElement = loadingBlock;
 
@@ -782,6 +828,36 @@
 
 				animateLoading();
 			}
+
+			// Wrapper function that checks for skip flag (for initial load)
+			function initLoadingScreen() {
+				// Development controls: Skip loading screen
+				const urlParams = new URLSearchParams(window.location.search);
+				const shouldSkip = urlParams.get("skipLoading") === "true" ||
+					localStorage.getItem("skipLoadingScreen") === "true";
+
+				if (shouldSkip) {
+					const loadingOverlay = document.getElementById("loading-overlay");
+					const body = document.body;
+					if (loadingOverlay) {
+						loadingOverlay.classList.add("hidden");
+					}
+					body.classList.remove("loading");
+					window.dispatchEvent(new CustomEvent("loadingComplete"));
+					return;
+				}
+
+				runLoadingAnimation();
+			}
+
+			// Make triggerLoadingScreen available globally for mode toggle
+			window.triggerLoadingScreen = function () {
+				resetLoadingScreen();
+				// Small delay to ensure color mode is applied
+				setTimeout(function () {
+					runLoadingAnimation();
+				}, 10);
+			};
 
 			// Start loading screen when DOM is ready
 			if (document.readyState === "loading") {
@@ -894,10 +970,18 @@
 					e.preventDefault();
 					root.classList.remove("light-mode");
 					localStorage.setItem("colorMode", "dark");
+					// Trigger loading screen in new color mode
+					if (typeof window.triggerLoadingScreen === "function") {
+						window.triggerLoadingScreen();
+					}
 				} else if (e.target.classList.contains("light-mode-toggle")) {
 					e.preventDefault();
 					root.classList.add("light-mode");
 					localStorage.setItem("colorMode", "light");
+					// Trigger loading screen in new color mode
+					if (typeof window.triggerLoadingScreen === "function") {
+						window.triggerLoadingScreen();
+					}
 				}
 			});
 
