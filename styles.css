@@ -480,8 +480,8 @@ h1.header-label {
 
 /* RULER */
 .daas-icon-3 {
-	left: 50.5%;
-	top: 54%;
+	left: 46%;
+	top: 44%;
 	width: 6.1%;
 	min-width: 92px;
 	max-width: 92px;
@@ -497,7 +497,7 @@ h1.header-label {
 
 /* HORNS */
 .daas-icon-4 {
-	left: 38%;
+	left: 42%;
 	top: 66%;
 	width: 5.7%;
 	min-width: 70px;
@@ -519,8 +519,8 @@ h1.header-label {
 	padding: 60px 60px 0;
 	box-sizing: border-box;
 	overflow: hidden;
-	max-height: 800px;
-	min-height: 800px;
+	max-height: 900px;
+	min-height: 900px;
 }
 
 .daas-graphics::before {
