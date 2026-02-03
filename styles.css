@@ -1438,6 +1438,10 @@ img.daas-graphic.fade-in {
 		max-width: 100%;
 	}
 
+	.header-column:nth-child(3) {
+		display: flex;
+	}
+
 	.header-column:nth-child(3) .divider {
 		display: block;
 	}
