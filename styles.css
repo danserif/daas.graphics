@@ -478,6 +478,24 @@ h1.header-label {
 	transform: rotate(356.498deg);
 }
 
+/* Swap colors for daas-icon-2 in dark mode (white becomes black, black becomes white) */
+.daas-icon-2 svg path[id="Face"] {
+	fill: var(--color-bg);
+}
+
+.daas-icon-2 svg rect {
+	fill: var(--color-text);
+}
+
+/* Swap colors for daas-icon-2 in light mode (white becomes black, black becomes white) */
+:root.light-mode .daas-icon-2 svg path[id="Face"] {
+	fill: var(--color-bg);
+}
+
+:root.light-mode .daas-icon-2 svg rect {
+	fill: var(--color-text);
+}
+
 /* RULER */
 .daas-icon-3 {
 	left: 46%;
@@ -533,6 +551,7 @@ h1.header-label {
 	background: linear-gradient(to top, var(--color-bg), transparent);
 	pointer-events: none;
 	z-index: 1;
+	display: none;
 }
 
 .daas-graphic {
@@ -1678,7 +1697,19 @@ img.daas-graphic.fade-in {
 	transition: filter 0.2s ease;
 }
 
+/* Invert daas-letter and daas-tape in dark mode so they're visible */
+.daas-graphic-1,
+.daas-graphic-3 {
+	filter: invert(1);
+}
+
+/* Keep illustrations dark in light mode (no inversion) */
 :root.light-mode .daas-graphic {
+	filter: none;
+}
+
+/* Invert daas-disk in light mode so it's visible */
+:root.light-mode .daas-graphic-2 {
 	filter: invert(1);
 }
 
