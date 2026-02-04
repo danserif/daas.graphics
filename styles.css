@@ -60,19 +60,6 @@
 	padding: 0;
 }
 
-html,
-body {
-	font-family: "Departure Mono", monospace;
-}
-
-.untitled {
-	font-family: "Untitled Sans", sans-serif;
-}
-
-.departure {
-	font-family: "Departure Mono", monospace;
-}
-
 html {
 	line-height: 1.15;
 	-webkit-text-size-adjust: 100%;
@@ -346,6 +333,27 @@ h1.header-label {
 	-ms-user-select: none;
 }
 
+.hero::before,
+.hero::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 120px;
+	pointer-events: none;
+	z-index: 1;
+}
+
+.hero::before {
+	left: 0;
+	background: linear-gradient(to right, var(--color-bg) 0%, transparent 100%);
+}
+
+.hero::after {
+	right: 0;
+	background: linear-gradient(to left, var(--color-bg) 0%, transparent 100%);
+}
+
 .hero-title {
 	position: relative;
 	width: max-content;
@@ -529,102 +537,6 @@ h1.header-label {
 	transform: rotate(25.05deg);
 }
 
-.daas-graphics {
-	position: relative;
-	width: 100%;
-	max-width: 2320px;
-	margin: 2rem auto 0;
-	padding: 60px 60px 0;
-	box-sizing: border-box;
-	overflow: hidden;
-	max-height: 900px;
-	min-height: 900px;
-}
-
-.daas-graphics::before {
-	content: "";
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background: linear-gradient(to top, var(--color-bg), transparent);
-	pointer-events: none;
-	z-index: 1;
-	display: none;
-}
-
-.daas-graphic {
-	position: absolute;
-	display: block;
-	max-width: 100%;
-	height: auto;
-	z-index: 0;
-	user-select: none;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	pointer-events: none;
-}
-
-img.daas-graphic {
-	opacity: 0;
-	transition: opacity 1.5s ease-in-out;
-}
-
-img.daas-graphic.fade-in {
-	opacity: 1;
-}
-
-.daas-letter-wrapper {
-	position: absolute;
-	left: 5%;
-	top: 40%;
-	width: 20%;
-	max-width: 400px;
-	transform: rotate(-5deg);
-}
-
-.daas-letter-bg {
-	position: absolute;
-	left: 0;
-	top: 0;
-	width: 100%;
-	height: 100%;
-	background-color: var(--color-bg);
-	z-index: -1;
-	opacity: 1;
-	/* NOT AFFECTED BY FADE-IN ANIMATION - ALWAYS VISIBLE */
-	/* MATCH THE IMAGE DIMENSIONS */
-	min-height: 100%;
-}
-
-.daas-graphic-1 {
-	position: relative;
-	left: 0;
-	top: 0;
-	width: 100%;
-	max-width: 100%;
-	transform: none;
-	display: block;
-}
-
-.daas-graphic-2 {
-	left: 15%;
-	top: 12%;
-	width: 26%;
-	max-width: 604px;
-	transform: rotate(7.254deg);
-}
-
-.daas-graphic-3 {
-	right: 8%;
-	top: 30%;
-	width: 39%;
-	max-width: 900px;
-	transform: rotate(351.948deg);
-}
-
 /* CARDS SECTION*/
 .start,
 .end {
@@ -647,6 +559,38 @@ img.daas-graphic.fade-in {
 	opacity: 1;
 }
 
+.pattern {
+	max-width: var(--max-width);
+	margin: 0 auto;
+	padding: 0 60px;
+	width: 100%;
+	box-sizing: border-box;
+	font-family: "Departure Mono", monospace;
+	font-size: 22px;
+	line-height: 1.5;
+	color: var(--opacity-25);
+	overflow: hidden;
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	cursor: default;
+}
+
+.pattern-line {
+	display: block;
+	white-space: nowrap;
+	overflow: visible;
+	width: 100%;
+}
+
+.pattern-char {
+	display: inline-block;
+	transition: color 0.3s ease, opacity 0.6s ease-out;
+	opacity: 0.5;
+	padding-right: 0.5rem;
+}
+
 .end {
 	margin-top: 0;
 	margin-bottom: 4rem;
@@ -662,6 +606,14 @@ img.daas-graphic.fade-in {
 	color: var(--opacity-25);
 	margin: 0;
 	padding-bottom: 1rem;
+}
+
+/* Ensure Start/End progress lines use the mono loading style */
+.start p,
+.end p {
+	font-family: "Departure Mono", monospace;
+	line-height: normal;
+	text-transform: uppercase;
 }
 
 .arrow {
@@ -963,7 +915,7 @@ img.daas-graphic.fade-in {
 	max-width: var(--max-width);
 	margin: 0 auto;
 	padding: 0 60px;
-	margin-top: 240px;
+	margin-top: 340px;
 	width: 100%;
 	box-sizing: border-box;
 }
@@ -980,6 +932,15 @@ img.daas-graphic.fade-in {
 	flex-direction: column;
 	gap: var(--gap-section);
 	flex: 1;
+}
+
+/* Marquee column reuses footer column layout but is not part of the flex grid */
+.marquee-column {
+	display: flex;
+	flex-direction: column;
+	gap: var(--gap-section);
+	width: 100%;
+	padding: 100px 0 100px 0;
 }
 
 .footer-column .divider {
@@ -1024,36 +985,180 @@ img.daas-graphic.fade-in {
 	opacity: 0.5;
 }
 
-.pattern {
-	max-width: var(--max-width);
-	margin: 0 auto;
-	padding: 0 60px;
+/* MARQUEE */
+.marquee {
 	width: 100%;
-	box-sizing: border-box;
-	font-family: "Departure Mono", monospace;
-	font-size: 22px;
-	line-height: 1.5;
-	color: var(--opacity-25);
+	max-width: var(--max-width);
+	margin: 10px auto 0;
+	padding: 0;
 	overflow: hidden;
+	box-sizing: border-box;
+	position: relative;
+	border-top: 1px dashed var(--color-border);
+	border-bottom: 1px dashed var(--color-border);
+}
+
+.marquee-track {
+	display: inline-flex;
+	align-items: center;
+	white-space: nowrap;
+	animation: marquee-scroll 90s linear infinite;
+}
+
+.marquee ul {
+	display: inline-flex;
+	align-items: center;
+	gap: 1.5rem;
+	padding: 18px 0;
+	margin: 0;
+	margin-right: 1.5rem;
+	list-style: none;
+	white-space: nowrap;
+}
+
+.marquee li {
+	font-family: "Departure Mono", monospace;
+	font-size: 11px;
+	line-height: 22px;
+	text-transform: uppercase;
+	color: var(--color-text);
+	white-space: nowrap;
+}
+
+/* Align marquee icon/label spacing with footer columns */
+.marquee .footer-icon {
+	margin: 0;
+}
+
+.marquee .footer-label {
+	margin: 4px 0 var(--gap-section) 0;
+}
+
+@keyframes marquee-scroll {
+	0% {
+		transform: translateX(0);
+	}
+
+	100% {
+		transform: translateX(-50%);
+	}
+}
+
+.marquee::before,
+.marquee::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 80px;
+	pointer-events: none;
+	z-index: 1;
+}
+
+.marquee::before {
+	left: 0;
+	background: linear-gradient(to right, var(--color-bg) 0%, transparent 100%);
+}
+
+.marquee::after {
+	right: 0;
+	background: linear-gradient(to left, var(--color-bg) 0%, transparent 100%);
+}
+
+.daas-graphics {
+	position: relative;
+	width: 100%;
+	max-width: 2320px;
+	margin: 2rem auto 0;
+	padding: 60px 60px 0;
+	box-sizing: border-box;
+	overflow: hidden;
+	max-height: 900px;
+	min-height: 900px;
+}
+
+.daas-graphics::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: linear-gradient(to top, var(--color-bg), transparent);
+	pointer-events: none;
+	z-index: 1;
+	display: none;
+}
+
+.daas-graphic {
+	position: absolute;
+	display: block;
+	max-width: 100%;
+	height: auto;
+	z-index: 0;
 	user-select: none;
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
-	cursor: default;
+	pointer-events: none;
 }
 
-.pattern-line {
-	display: block;
-	white-space: nowrap;
-	overflow: visible;
+img.daas-graphic {
+	opacity: 0;
+	transition: opacity 1.5s ease-in-out;
+}
+
+img.daas-graphic.fade-in {
+	opacity: 1;
+}
+
+.daas-letter-wrapper {
+	position: absolute;
+	left: 5%;
+	top: 40%;
+	width: 20%;
+	max-width: 400px;
+	transform: rotate(-5deg);
+}
+
+.daas-letter-bg {
+	position: absolute;
+	left: 0;
+	top: 0;
 	width: 100%;
+	height: 100%;
+	background-color: var(--color-bg);
+	z-index: -1;
+	opacity: 1;
+	/* NOT AFFECTED BY FADE-IN ANIMATION - ALWAYS VISIBLE */
+	/* MATCH THE IMAGE DIMENSIONS */
+	min-height: 100%;
 }
 
-.pattern-char {
-	display: inline-block;
-	transition: color 0.3s ease, opacity 0.6s ease-out;
-	opacity: 0.5;
-	padding-right: 0.5rem;
+.daas-graphic-1 {
+	position: relative;
+	left: 0;
+	top: 0;
+	width: 100%;
+	max-width: 100%;
+	transform: none;
+	display: block;
+}
+
+.daas-graphic-2 {
+	left: 15%;
+	top: 12%;
+	width: 26%;
+	max-width: 604px;
+	transform: rotate(7.254deg);
+}
+
+.daas-graphic-3 {
+	right: 8%;
+	top: 30%;
+	width: 39%;
+	max-width: 900px;
+	transform: rotate(351.948deg);
 }
 
 .bonus-column,
@@ -1078,6 +1183,11 @@ img.daas-graphic.fade-in {
 
 	.hero-title {
 		min-height: 45vh;
+	}
+
+	/* Remove extra space above End arrow on widest viewport */
+	.end .arrow {
+		padding-top: 3rem;
 	}
 }
 
@@ -1277,10 +1387,6 @@ img.daas-graphic.fade-in {
 		margin-right: 4rem;
 	}
 
-	.hero-icon {
-		display: none;
-	}
-
 	/* START */
 	.start {
 		padding-left: 2rem;
@@ -1372,10 +1478,6 @@ img.daas-graphic.fade-in {
 	}
 
 	/* HERO */
-	.graphics {
-		display: none;
-	}
-
 	.hero {
 		max-width: none;
 		width: 100vw;
