@@ -1619,6 +1619,11 @@ img.daas-graphic.fade-in {
 		animation: scroll-horizontal-mobile 40s linear infinite;
 	}
 
+	/* Hide footer marquee on single-column mobile layout */
+	.marquee-column {
+		display: none;
+	}
+
 	.hero-ascii-daas .ascii-text {
 		padding-bottom: 22px;
 	}
