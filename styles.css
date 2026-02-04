@@ -1613,6 +1613,12 @@ img.daas-graphic.fade-in {
 		margin-right: -50vw;
 	}
 
+	/* Remove hero edge gradients over ASCII on mobile */
+	.hero::before,
+	.hero::after {
+		display: none;
+	}
+
 	.hero-title {
 		min-height: 360px;
 		align-items: end;
