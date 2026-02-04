@@ -2001,17 +2001,6 @@ img.daas-graphic.fade-in {
 	.loading-icon svg rect {
 		fill: var(--color-bg) !important;
 	}
-
-	/* MOBILE + LIGHT MODE: swap black and blue in loading globe icon */
-	:root.light-mode .loading-icon svg path {
-		/* Previously black (text) paths become blue (accent) */
-		fill: var(--color-accent) !important;
-	}
-
-	:root.light-mode .loading-icon svg path[d*="M79.9837"] {
-		/* Border frame becomes black (text) instead of blue */
-		fill: var(--color-text) !important;
-	}
 }
 
 .loading-icon.fade-out {
