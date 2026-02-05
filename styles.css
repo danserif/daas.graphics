@@ -1058,7 +1058,7 @@ h1.header-label {
 	max-width: var(--max-width);
 	margin: 0 auto;
 	padding: 0 60px;
-	margin-top: 340px;
+	margin-top: 240px;
 	width: 100%;
 	box-sizing: border-box;
 }
@@ -1083,7 +1083,7 @@ h1.header-label {
 	flex-direction: column;
 	gap: var(--gap-section);
 	width: 100%;
-	padding: 100px 0 100px 0;
+	padding: 0 0 100px 0;
 }
 
 .footer-column .divider {
@@ -1849,11 +1849,6 @@ img.daas-graphic.fade-in {
 		animation: scroll-horizontal-mobile 40s linear infinite;
 	}
 
-	/* Hide footer marquee on single-column mobile layout */
-	.marquee-column {
-		display: none;
-	}
-
 	.hero-ascii-daas .ascii-text {
 		padding-bottom: 22px;
 	}
@@ -1996,7 +1991,24 @@ img.daas-graphic.fade-in {
 	/* FOOTER */
 	.footer {
 		padding: 1.5rem;
-		margin-top: 4rem;
+		margin-top: 8rem;
+	}
+
+	.marquee-column {
+		padding-bottom: 2rem;
+	}
+
+	.marquee ul {
+		padding: 12px 0;
+	}
+
+	.marquee {
+		margin-top: 0;
+	}
+
+	.marquee::before,
+	.marquee::after {
+		display: none;
 	}
 
 	.pattern {
