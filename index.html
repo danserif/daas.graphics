@@ -266,7 +266,7 @@
 					DaaS <span class="opacity-50">(Dan as a Service)</span> is a design and coaching subscription service run
 					by
 					<a href="https://danserif.com" target="_blank" class="underline" onclick="fathom.trackEvent('Dan', 0);">Dan
-						Newman</a>. <span class="opacity-25">(^_^)/~</span>
+						Newman</a>. <span class="opacity-50">(^_^)/~</span>
 				</p>
 				<p>
 					Over the past two decades he’s led design teams and worked hands-on at startups like Xero, Axiom, and Stedi;
@@ -680,8 +680,8 @@
 							class="light-mode-toggle">Light</a> <span class="opacity-25">(Mode)</span></p>
 					<p class="uppercase">
 						<span class="opacity-50">#000000</span> <span class="opacity-25">+</span> <span
-							class="opacity-50">#ffffff</span> <span class="opacity-25">+</span> <span
-							class="opacity-50">#aaff00</span>
+							class="opacity-50">#ffffff</span> <span class="opacity-25">+</span> <span class="opacity-50"
+							id="accent-color-value"></span>
 					</p>
 				</div>
 			</div>
@@ -1058,6 +1058,23 @@
 			}
 		})();
 
+		// Update accent color value display based on current mode
+		window.updateAccentColorValue = function () {
+			const accentColorValue = document.getElementById("accent-color-value");
+			if (!accentColorValue) return;
+
+			const root = document.documentElement;
+			const isLightMode = root.classList.contains("light-mode");
+			accentColorValue.textContent = isLightMode ? "#0044FF" : "#aaff00";
+		};
+
+		// Update accent color value on initial load (after DOM is ready)
+		if (document.readyState === "loading") {
+			document.addEventListener("DOMContentLoaded", window.updateAccentColorValue);
+		} else {
+			window.updateAccentColorValue();
+		}
+
 		// Typewriter - Store original HTML immediately to prevent flash
 		(function () {
 			const headerLabels = document.querySelectorAll(".header-label");
@@ -1148,6 +1165,7 @@
 					e.preventDefault();
 					root.classList.remove("light-mode");
 					localStorage.setItem("colorMode", "dark");
+					updateAccentColorValue();
 					// Trigger loading screen in new color mode
 					if (typeof window.triggerLoadingScreen === "function") {
 						window.triggerLoadingScreen();
@@ -1156,6 +1174,7 @@
 					e.preventDefault();
 					root.classList.add("light-mode");
 					localStorage.setItem("colorMode", "light");
+					updateAccentColorValue();
 					// Trigger loading screen in new color mode
 					if (typeof window.triggerLoadingScreen === "function") {
 						window.triggerLoadingScreen();
@@ -1854,7 +1873,7 @@
 
 					function fadeOutTrail() {
 						const now = Date.now();
-						const fadeDuration = 600; // Match CSS transition duration
+						const fadeDuration = 1200; // Extended duration for accent color highlight
 
 						hoveredChars.forEach(function (timestamp, charEl) {
 							const elapsed = now - timestamp;
