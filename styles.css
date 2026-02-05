@@ -486,7 +486,7 @@ h1.header-label {
 	transform: rotate(356.498deg);
 }
 
-/* Swap colors for daas-icon-2 in dark mode (white becomes black, black becomes white) */
+/* SWAP COLORS FOR DAAS-ICON-2 IN DARK MODE (WHITE BECOMES BLACK, BLACK BECOMES WHITE) */
 .daas-icon-2 svg path[id="Face"] {
 	fill: var(--color-bg);
 }
@@ -495,7 +495,7 @@ h1.header-label {
 	fill: var(--color-text);
 }
 
-/* Swap colors for daas-icon-2 in light mode (white becomes black, black becomes white) */
+/* SWAP COLORS FOR DAAS-ICON-2 IN LIGHT MODE (WHITE BECOMES BLACK, BLACK BECOMES WHITE) */
 :root.light-mode .daas-icon-2 svg path[id="Face"] {
 	fill: var(--color-bg);
 }
@@ -608,7 +608,7 @@ h1.header-label {
 	padding-bottom: 1rem;
 }
 
-/* Ensure Start/End progress lines use the mono loading style */
+/* ENSURE START/END PROGRESS LINES USE THE MONO LOADING STYLE */
 .start p,
 .end p {
 	font-family: "Departure Mono", monospace;
@@ -1077,7 +1077,6 @@ h1.header-label {
 	flex: 1;
 }
 
-/* Marquee column reuses footer column layout but is not part of the flex grid */
 .marquee-column {
 	display: flex;
 	flex-direction: column;
@@ -1168,7 +1167,7 @@ h1.header-label {
 	white-space: nowrap;
 }
 
-/* Align marquee icon/label spacing with footer columns */
+/* ALIGN MARQUEE ICON/LABEL SPACING WITH FOOTER COLUMNS */
 .marquee .footer-icon {
 	margin: 0;
 }
@@ -1318,7 +1317,7 @@ img.daas-graphic.fade-in {
 /* WIDEST BREAKPOINT - DESKTOP */
 @media only screen and (min-width: 2421px) {
 	.hero {
-		/* Shorter hero and less top offset so the Start section is still visible */
+		/* SHORTER HERO AND LESS TOP OFFSET SO THE START SECTION IS STILL VISIBLE */
 		min-height: 45vh;
 		margin-top: 18vh;
 		margin-bottom: 4vh;
@@ -1328,7 +1327,7 @@ img.daas-graphic.fade-in {
 		min-height: 45vh;
 	}
 
-	/* Remove extra space above End arrow on widest viewport */
+	/* REMOVE EXTRA SPACE ABOVE END ARROW ON WIDEST VIEWPORT */
 	.end .arrow {
 		padding-top: 3rem;
 	}
@@ -1362,6 +1361,10 @@ img.daas-graphic.fade-in {
 		display: none;
 	}
 
+	.divider {
+		margin: 0;
+	}
+
 	/* HERO */
 	.hero {
 		max-width: none;
@@ -1372,7 +1375,7 @@ img.daas-graphic.fade-in {
 		right: 50%;
 		margin-left: -50vw;
 		margin-right: -50vw;
-		/* Use viewport height so the ASCII hero and Start section are visible together */
+		/* USE VIEWPORT HEIGHT SO THE ASCII HERO AND START SECTION ARE VISIBLE TOGETHER */
 		min-height: 45vh;
 		margin-top: 18vh;
 		margin-bottom: 4vh;
@@ -1837,7 +1840,7 @@ img.daas-graphic.fade-in {
 		margin-right: -50vw;
 	}
 
-	/* Remove hero edge gradients over ASCII on mobile */
+	/* REMOVE HERO EDGE GRADIENTS OVER ASCII ON MOBILE */
 	.hero::before,
 	.hero::after {
 		display: none;
@@ -2085,18 +2088,18 @@ img.daas-graphic.fade-in {
 	transition: filter 0.2s ease;
 }
 
-/* Invert daas-letter and daas-tape in dark mode so they're visible */
+/* INVERT DAAS-LETTER AND DAAS-TAPE IN DARK MODE SO THEY'RE VISIBLE */
 .daas-graphic-1,
 .daas-graphic-3 {
 	filter: invert(1);
 }
 
-/* Keep illustrations dark in light mode (no inversion) */
+/* KEEP ILLUSTRATIONS DARK IN LIGHT MODE (NO INVERSION) */
 :root.light-mode .daas-graphic {
 	filter: none;
 }
 
-/* Invert daas-disk in light mode so it's visible */
+/* INVERT DAAS-DISK IN LIGHT MODE SO IT'S VISIBLE */
 :root.light-mode .daas-graphic-2 {
 	filter: invert(1);
 }
