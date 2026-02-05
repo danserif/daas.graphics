@@ -235,18 +235,18 @@
 			</div>
 		</div>
 	</main>
-	<!-- ABOUT -->
-	<section class="start">
+	<!-- START -->
+	<div class="start">
 		<p class="start-label">Start</p>
 		<p><span class="opacity-50">0%</span> <span class="opacity-25">[</span> <span class="blink-container"><span
 					class="accent blink">█</span><span class="opacity-25 blink-underscore">_</span></span> <span
 				class="opacity-25">_ _ _ _ _ _ _ _ _ ]</span> <span class="opacity-50">100%</span></p>
 		<p class="arrow"><a href="#start">↓</a></p>
-	</section>
+	</div>
 	<!-- PATTERN-->
 	<div class="pattern"></div>
-	<!-- CARDS -->
 	<section class="cards">
+		<!-- ABOUT -->
 		<div class="card" id="start">
 			<p class="card-icon">&#68;</p>
 			<h4 class="card-label">Name / Acronym</h4>
@@ -257,8 +257,8 @@
 			</div>
 			<div class="card-text">
 				<p>
-					DaaS <span class="opacity-50">(Dan as a Service)</span> is a subscription service for design leadership and
-					branding run by
+					DaaS <span class="opacity-50">(Dan as a Service)</span> is a subscription service for coaching, design
+					leadership, and branding run by
 					<a href="https://danserif.com" target="_blank" class="underline" onclick="fathom.trackEvent('Dan', 0);">Dan
 						Newman</a>.
 				</p>
@@ -284,11 +284,13 @@
 				</p>
 			</div>
 			<div class="card-text">
-				<p>Get design and leadership support for your team, startup, or business — only when you need it.</p>
+				<p>Get coaching, leadership support, or branding design for you and your team, startup, or business — only when
+					you need it.</p>
 				<p>
-					Whether you’re after a new creative direction, brand, landing pages, pitch decks, swag, conference collateral,
-					or a website redesign, DaaS <span class="opacity-50">(Graphics)</span> offers plans that are
-					flexible for startups, early-stage founders, and go-to-market teams.
+					DaaS <span class="opacity-50">(Graphics)</span> offers plans that are flexible for individuals, early-stage
+					founders, and go-to-market teams. Whether you’re after coaching, or a new creative direction, Dan can help.
+					brand, swag,
+					conference collateral, pitch decks, or a website redesign.
 				</p>
 			</div>
 		</div>
@@ -387,6 +389,7 @@
 			</div>
 		</div>
 	</section>
+
 	<!-- WORK -->
 	<section class="work-samples">
 		<p class="work-icon">G</p>
@@ -423,6 +426,86 @@
 				</div>
 			</div>
 			<!-- experiments.json -->
+		</div>
+	</section>
+	<!-- QUOTES -->
+	<section class="quotes">
+		<p class="quotes-icon">&hearts;</p>
+		<h4 class="quotes-label">Quotes / Testimonials</h4>
+		<hr class="divider" />
+		<div class="quotes-content">
+			<!-- NEIL -->
+			<div class="quote">
+				<div class="quote-author-info">
+					<div class="author-image">
+						<img src="/images/quotes/neil-jagdish-patel.png" alt="Neil Jagdish Patel" />
+					</div>
+					<div class="quote-author">
+						<p>Neil Jagdish Patel</p>
+						<p>CEO / Co-founder</p>
+						<p>Axiom</p>
+					</div>
+				</div>
+				<div class="quote-text">
+					<blockquote>
+						<p><span class="accent">“Dan you are everything I’ve ever wanted in a sparring partner in design!</span> I
+							respect that you give me
+							space to try things out while guiding them into a good place with your experience. I’m very excited where
+							we are heading with our brand, and grateful you’ve helped us stand out in a sea of startups.</p>
+						<p>
+							I really appreciate you jumping into different areas of the business <span class="opacity-50">(marketing,
+								sales etc.)</span> to help us scale. Your fingerprints are all over Axiom and it’s amazing!”</p>
+					</blockquote>
+				</div>
+			</div>
+			<!-- LIZY -->
+			<div class="quote">
+				<div class="quote-author-info">
+					<div class="author-image">
+						<img src="/images/quotes/elizabeth-cretney.png" alt="Elizabeth Crentney" />
+					</div>
+					<div class="quote-author">
+						<p>Elizabeth Crentney</p>
+						<p>Design Director</p>
+						<p>Springload</p>
+					</div>
+				</div>
+				<div class="quote-text">
+					<blockquote>
+						<p>“Dan you are an absolute superhuman. I’ll always remember when I first met you for a coffee after you
+							were hired as my boss. You asked “How can I help?”. I appreciate so much how you listened and included
+							everyone in developing our team and practices.</p>
+						<p><span class="accent">I have seen the people and work flourish, and how thoughtfully you’ve looked after
+								the team members facing challenges.</span> You have been the bedrock of our wonderful, fun, and
+							inclusive team culture, thank you for all you have given <span class="opacity-50">(and all the sleep you
+								have lost!).”</span></p>
+					</blockquote>
+				</div>
+			</div>
+			<!-- PHIL -->
+			<div class="quote">
+				<div class="quote-author-info">
+					<div class="author-image">
+						<img src="/images/quotes/philip-fierlinger.png" alt="Philip Fierlinger" />
+					</div>
+					<div class="quote-author">
+						<p>Philip Fierlinger</p>
+						<p>Head of Design</p>
+						<p>Xero</p>
+					</div>
+				</div>
+				<div class="quote-text">
+					<blockquote>
+						<p>“I’m extremely grateful to Dan for always pushing us to deliver truly beautiful work, while building and
+							mentoring a powerhouse team <span class="opacity-50">(from 2 people to nearly 20),</span> under incredibly
+							challenging pressures and timeframes. Thanks to Dan’s talent, commitment and resilience our work and our
+							team delivered to an extremely high standard.</p>
+						<p>We couldn’t have scaled the team or maintained our high quality standards without him. <span
+								class="accent">It’s an understatement to say Dan had a huge and very positive impact on Xero.”</span>
+						</p>
+					</blockquote>
+				</div>
+			</div>
 		</div>
 	</section>
 	<!-- DETAILS-->
@@ -1491,8 +1574,9 @@
 			// Icon Flicker Effect - Same as ASCII text glitch, triggered when element enters viewport
 			const cardIcons = document.querySelectorAll(".card-icon");
 			const workIcons = document.querySelectorAll(".work-icon");
+			const quotesIcons = document.querySelectorAll(".quotes-icon");
 			const footerIcons = document.querySelectorAll(".footer-icon");
-			const allIcons = Array.from(cardIcons).concat(Array.from(workIcons)).concat(Array.from(footerIcons));
+			const allIcons = Array.from(cardIcons).concat(Array.from(workIcons)).concat(Array.from(quotesIcons)).concat(Array.from(footerIcons));
 			const animatedIcons = new Set();
 
 			allIcons.forEach(function (icon) {
@@ -1557,6 +1641,9 @@
 				let parentElement = icon.closest(".card");
 				if (!parentElement) {
 					parentElement = icon.closest(".work-samples");
+				}
+				if (!parentElement) {
+					parentElement = icon.closest(".quotes");
 				}
 				if (!parentElement) {
 					parentElement = icon.closest(".footer-column");
