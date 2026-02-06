@@ -1089,7 +1089,8 @@ h1.header-label {
 	margin: 8px 0;
 }
 
-.footer-icon {
+.footer-icon,
+.marquee-icon {
 	font-family: "Departure Mono", monospace;
 	font-size: 33px;
 	line-height: 33px;
@@ -1098,7 +1099,8 @@ h1.header-label {
 	margin: 0;
 }
 
-.footer-label {
+.footer-label,
+.marquee-label {
 	font-family: "Departure Mono", monospace;
 	font-size: 11px;
 	line-height: normal;
@@ -1168,11 +1170,13 @@ h1.header-label {
 }
 
 /* ALIGN MARQUEE ICON/LABEL SPACING WITH FOOTER COLUMNS */
-.marquee .footer-icon {
+.marquee .footer-icon,
+.marquee .marquee-icon {
 	margin: 0;
 }
 
-.marquee .footer-label {
+.marquee .footer-label,
+.marquee .marquee-label {
 	margin: 4px 0 var(--gap-section) 0;
 }
 
@@ -1205,6 +1209,70 @@ h1.header-label {
 .marquee::after {
 	right: 0;
 	background: linear-gradient(to left, var(--color-bg) 0%, transparent 100%);
+}
+
+/* LOGOS MARQUEE SECTION */
+.logos-marquee-section {
+	display: flex;
+	flex-direction: column;
+	gap: var(--gap-section);
+	max-width: var(--max-width);
+	margin: 0 auto;
+	padding: var(--gap-section) 60px;
+	margin-top: 240px;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.logos-marquee-section .marquee-column {
+	display: flex;
+	flex-direction: column;
+	gap: var(--gap-section);
+	width: 100%;
+	padding: 0;
+}
+
+.logos-marquee-section .divider {
+	margin: 8px 0;
+}
+
+.logos-marquee-section .marquee-icon {
+	color: var(--opacity-50);
+}
+
+.logos-marquee-section .marquee-track {
+	opacity: 0.50;
+}
+
+.logos-marquee-section .marquee ul {
+	gap: 6rem;
+	margin-right: 6rem;
+}
+
+.logos-marquee-section .marquee li {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 60px;
+}
+
+.logo-svg {
+	display: block;
+	max-height: 60px;
+	max-width: 200px;
+	width: auto;
+	height: auto;
+	object-fit: contain;
+	opacity: 0.75;
+	transition: opacity 0.3s ease;
+}
+
+.logo-svg:hover {
+	opacity: 1;
+}
+
+:root.light-mode .logo-svg {
+	filter: invert(1);
 }
 
 .daas-graphics {
@@ -1422,6 +1490,12 @@ img.daas-graphic.fade-in {
 		display: flex;
 	}
 
+	/* LOGOS MARQUEE */
+	.logos-marquee-section {
+		padding-left: 3rem;
+		padding-right: 3rem;
+	}
+
 	/* WORK SAMPLES */
 	.work-samples {
 		padding-left: 3rem;
@@ -1587,6 +1661,12 @@ img.daas-graphic.fade-in {
 		min-width: 300px;
 	}
 
+	/* LOGOS MARQUEE */
+	.logos-marquee-section {
+		padding-left: 2rem;
+		padding-right: 2rem;
+	}
+
 	/* WORK SAMPLES */
 	.work-samples {
 		padding-left: 2rem;
@@ -1722,6 +1802,12 @@ img.daas-graphic.fade-in {
 
 	.card .divider {
 		margin: 0;
+	}
+
+	/* LOGOS MARQUEE */
+	.logos-marquee-section {
+		padding-left: 2rem;
+		padding-right: 2rem;
 	}
 
 	/* WORK SAMPLES */
@@ -1991,6 +2077,34 @@ img.daas-graphic.fade-in {
 		padding-bottom: 2rem;
 	}
 
+	/* LOGOS MARQUEE */
+	.logos-marquee-section {
+		padding: 1.5rem;
+		margin-top: 3rem;
+	}
+
+	.logos-marquee-section .marquee-label {
+		margin: 0;
+	}
+
+	.logos-marquee-section .marquee {
+		margin-top: 8px;
+	}
+
+	.logos-marquee-section .marquee ul {
+		gap: 4rem;
+		margin-right: 4rem;
+	}
+
+	.logos-marquee-section .marquee li {
+		height: 50px;
+	}
+
+	.logo-svg {
+		max-height: 50px;
+		max-width: 160px;
+	}
+
 	/* FOOTER */
 	.footer {
 		padding: 1.5rem;
@@ -2011,7 +2125,8 @@ img.daas-graphic.fade-in {
 
 	.marquee::before,
 	.marquee::after {
-		display: none;
+		display: block;
+		width: 20px;
 	}
 
 	.pattern {
@@ -2036,6 +2151,16 @@ img.daas-graphic.fade-in {
 
 	.footer-icon {
 		display: none;
+		font-size: 22px;
+		line-height: 22px;
+	}
+
+	.footer .marquee-icon {
+		display: none;
+	}
+
+	.logos-marquee-section .marquee-icon {
+		display: block;
 		font-size: 22px;
 		line-height: 22px;
 	}
