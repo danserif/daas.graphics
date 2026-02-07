@@ -913,8 +913,10 @@
 			const CODE_LINE_DELAY = 100;
 			const LAST_BLOCK_DELAY = 400;
 			const PAUSE_TIME = 500;
-			const FADE_OUT_ICON_PROGRESS = 1200;
-			const FADE_OUT_OVERLAY = 2200;
+			const CONTENT_FADE_MS = 1000;
+			const SWIPE_DURATION_MS = 600;
+			// Run preload (ASCII DOM, fonts, cache) while overlay is up for smoother reveal
+			const PRELOAD_DELAY_MS = 1500;
 
 			// Store original progress text for reset
 			let originalProgressText = null;
@@ -925,7 +927,7 @@
 				if (!loadingOverlay) return;
 
 				// Remove all classes that affect visibility
-				loadingOverlay.classList.remove("hidden", "fade-out");
+				loadingOverlay.classList.remove("hidden", "fade-out", "swipe-up");
 
 				const loadingProgress = loadingOverlay.querySelector(".loading-progress");
 				const loadingIcon = loadingOverlay.querySelector(".loading-icon");
@@ -985,6 +987,13 @@
 
 				body.classList.add("loading");
 
+				// Preload header/ASCII/start during loading so reveal feels smooth
+				setTimeout(function () {
+					if (typeof window.__preloadDuringLoading === "function") {
+						window.__preloadDuringLoading();
+					}
+				}, PRELOAD_DELAY_MS);
+
 				// Cache elements for animations
 				const loadingProgressLines = loadingOverlay.querySelectorAll(".loading-progress > p");
 				const loadingCodeLines = loadingOverlay.querySelectorAll(".loading-code p");
@@ -1028,19 +1037,19 @@
 					return blockSpan;
 				}
 
-				// Helper function to fade out loading screen
+				// Fade out content (bar, code, icon), then swipe overlay background up and off
 				function fadeOutLoadingScreen() {
 					if (loadingIcon) loadingIcon.classList.add("fade-out");
 					if (loadingProgress) loadingProgress.classList.add("fade-out");
 
 					setTimeout(function () {
-						loadingOverlay.classList.add("fade-out");
+						loadingOverlay.classList.add("swipe-up");
 						setTimeout(function () {
 							loadingOverlay.classList.add("hidden");
 							body.classList.remove("loading");
 							window.dispatchEvent(new CustomEvent("loadingComplete"));
-						}, FADE_OUT_OVERLAY);
-					}, FADE_OUT_ICON_PROGRESS);
+						}, SWIPE_DURATION_MS);
+					}, CONTENT_FADE_MS);
 				}
 
 				// Animate loading progress
@@ -1199,6 +1208,100 @@
 		// ============================================
 		// DOM READY INITIALIZATION
 		// ============================================
+		// Shared character set for glitch (ASCII) animations
+		const glitchChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?/~`";
+		let asciiDomPrepared = false;
+		let cachedHeaderLabels = null;
+		let cachedStartSection = null;
+		let animationIntervals = [];
+		let animationTimeouts = [];
+
+		function prepareAsciiDOM() {
+			const asciiTextElements = document.querySelectorAll(".ascii-text");
+			asciiTextElements.forEach(function (element) {
+				const originalText = element.textContent;
+				const textArray = originalText.split("");
+				const newContent = [];
+				const animatePercentage = 0.15;
+				const charsToAnimate = Math.floor(textArray.length * animatePercentage);
+				const animateIndices = new Set();
+				while (animateIndices.size < charsToAnimate) {
+					const randomIndex = Math.floor(Math.random() * textArray.length);
+					if (textArray[randomIndex] !== " " && textArray[randomIndex] !== "\n") {
+						animateIndices.add(randomIndex);
+					}
+				}
+				textArray.forEach(function (char, index) {
+					if (animateIndices.has(index) && char !== " " && char !== "\n") {
+						newContent.push('<span class="ascii-char-animate" data-final="' + char.replace(/"/g, "&quot;") + '">' + char + "</span>");
+					} else {
+						newContent.push(char === "\n" ? "\n" : char === " " ? " " : char);
+					}
+				});
+				element.innerHTML = newContent.join("");
+			});
+		}
+
+		function startAsciiCharAnimations() {
+			const chars = glitchChars;
+			function animateChar(char, shouldLoop) {
+				const finalChar = char.getAttribute("data-final");
+				const duration = 1000 + Math.random() * 2000;
+				const steps = 10 + Math.floor(Math.random() * 20);
+				const stepDuration = duration / steps;
+				let currentStep = 0;
+				const animate = setInterval(function () {
+					if (currentStep < steps) {
+						const randomChar = chars[Math.floor(Math.random() * chars.length)];
+						char.textContent = randomChar;
+						currentStep++;
+					} else {
+						char.textContent = finalChar;
+						animationIntervals = animationIntervals.filter(function (interval) {
+							return interval !== animate;
+						});
+						clearInterval(animate);
+						if (shouldLoop) {
+							const delay = 2000 + Math.random() * 5000;
+							const timeout = setTimeout(function () {
+								animationTimeouts = animationTimeouts.filter(function (t) {
+									return t !== timeout;
+								});
+								animateChar(char, true);
+							}, delay);
+							animationTimeouts.push(timeout);
+						}
+					}
+				}, stepDuration);
+				animationIntervals.push(animate);
+			}
+			const animatedChars = document.querySelectorAll(".ascii-char-animate");
+			animatedChars.forEach(function (char) {
+				const initialDelay = Math.random() * 3000;
+				const timeout = setTimeout(function () {
+					animationTimeouts = animationTimeouts.filter(function (t) {
+						return t !== timeout;
+					});
+					animateChar(char, true);
+				}, initialDelay);
+				animationTimeouts.push(timeout);
+			});
+		}
+
+		function initAsciiAnimation() {
+			prepareAsciiDOM();
+			startAsciiCharAnimations();
+		}
+
+		// Called by loading screen during overlay to preload for smoother reveal
+		window.__preloadDuringLoading = function () {
+			prepareAsciiDOM();
+			asciiDomPrepared = true;
+			cachedHeaderLabels = document.querySelectorAll(".header-label");
+			cachedStartSection = document.querySelector(".start");
+			document.fonts.ready.then(function () { });
+		};
+
 		// Wait for loading screen to complete before starting animations
 		function initAfterLoading() {
 			// This function will be called after loading completes
@@ -1214,16 +1317,13 @@
 		function startAnimations() {
 			const root = document.documentElement;
 
-			// Fade in start section
-			const startSection = document.querySelector(".start");
+			// Fade in start section (use cached element if preloaded)
+			const startSection = cachedStartSection || document.querySelector(".start");
 			if (startSection) {
 				setTimeout(function () {
 					startSection.classList.add("fade-in");
 				}, 200);
 			}
-
-			// Shared character set for glitch animations
-			const glitchChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?/~`";
 
 			// Light/Dark Mode Toggle - Event delegation
 			document.addEventListener("click", function (e) {
@@ -1248,9 +1348,8 @@
 				}
 			});
 
-			// Typewriter effect for header labels
-			// Reuse headerLabels from immediate initialization if available, otherwise query
-			const headerLabels = document.querySelectorAll(".header-label");
+			// Typewriter effect for header labels (use cached list if preloaded)
+			const headerLabels = cachedHeaderLabels || document.querySelectorAll(".header-label");
 
 			function typeWriter(element, speed) {
 				const originalHTML = element.getAttribute("data-original") || element.innerHTML;
@@ -1261,6 +1360,8 @@
 				element.style.minHeight = originalHeight + "px";
 
 				let htmlIndex = 0;
+				let nextAdvanceAt = 0;
+				let rafId = null;
 				// Clear content and make visible when starting to type
 				element.innerHTML = "";
 				element.classList.add("typewriter-active");
@@ -1277,119 +1378,113 @@
 					"&#34;": true,
 				};
 
-				function typeHTML() {
-					if (htmlIndex < originalHTML.length) {
-						const char = originalHTML[htmlIndex];
+				// Advance one logical character (tag, entity, or single char). Returns delay in ms until next advance.
+				function advanceOne(now) {
+					if (htmlIndex >= originalHTML.length) return 0;
+					const char = originalHTML[htmlIndex];
+					let delay = speed;
 
-						// Check if we're in a tag
-						if (char === "<") {
-							// Find the closing >
-							const tagEnd = originalHTML.indexOf(">", htmlIndex);
-							if (tagEnd !== -1) {
-								element.innerHTML = originalHTML.substring(0, tagEnd + 1);
-								htmlIndex = tagEnd + 1;
-								// Check if next character is another tag (consecutive tags)
-								const nextIsTag = htmlIndex < originalHTML.length && originalHTML[htmlIndex] === "<";
-								// Consecutive tags process faster, single tags also fast
-								setTimeout(typeHTML, Math.max(1, speed * (nextIsTag ? 0.05 : 0.15)));
-							} else {
-								// Malformed tag, treat as regular character
-								htmlIndex++;
-								element.innerHTML = originalHTML.substring(0, htmlIndex);
-								setTimeout(typeHTML, speed);
-							}
-						} else if (char === "&") {
-							// Check if we're starting an HTML entity
-							const entityEnd = originalHTML.indexOf(";", htmlIndex);
-							if (entityEnd !== -1) {
-								const entity = originalHTML.substring(htmlIndex, entityEnd + 1);
-								if (validEntities[entity]) {
-									// Process entire entity at once
-									htmlIndex = entityEnd + 1;
-									element.innerHTML = originalHTML.substring(0, htmlIndex);
-									setTimeout(typeHTML, Math.max(1, speed * 0.3));
-								} else {
-									// Not a valid entity, treat as regular character
-									htmlIndex++;
-									element.innerHTML = originalHTML.substring(0, htmlIndex);
-									setTimeout(typeHTML, speed);
-								}
-							} else {
-								// No semicolon found, treat as regular character
-								htmlIndex++;
-								element.innerHTML = originalHTML.substring(0, htmlIndex);
-								setTimeout(typeHTML, speed);
-							}
+					if (char === "<") {
+						const tagEnd = originalHTML.indexOf(">", htmlIndex);
+						if (tagEnd !== -1) {
+							element.innerHTML = originalHTML.substring(0, tagEnd + 1);
+							htmlIndex = tagEnd + 1;
+							const nextIsTag = htmlIndex < originalHTML.length && originalHTML[htmlIndex] === "<";
+							delay = Math.max(1, speed * (nextIsTag ? 0.05 : 0.15));
 						} else {
-							// Regular character
 							htmlIndex++;
 							element.innerHTML = originalHTML.substring(0, htmlIndex);
-
-							// Optimize brackets adjacent to tags
-							let delay = speed;
-							if ((char === "[" || char === "]") && htmlIndex < originalHTML.length) {
-								const nextChar = originalHTML[htmlIndex];
-								if (nextChar === "<" || (htmlIndex > 1 && originalHTML[htmlIndex - 2] === ">")) {
-									delay = speed * 0.5;
-								}
+						}
+					} else if (char === "&") {
+						const entityEnd = originalHTML.indexOf(";", htmlIndex);
+						if (entityEnd !== -1) {
+							const entity = originalHTML.substring(htmlIndex, entityEnd + 1);
+							if (validEntities[entity]) {
+								htmlIndex = entityEnd + 1;
+								element.innerHTML = originalHTML.substring(0, htmlIndex);
+								delay = Math.max(1, speed * 0.3);
+							} else {
+								htmlIndex++;
+								element.innerHTML = originalHTML.substring(0, htmlIndex);
 							}
-
-							setTimeout(typeHTML, delay);
+						} else {
+							htmlIndex++;
+							element.innerHTML = originalHTML.substring(0, htmlIndex);
 						}
 					} else {
-						// Animation complete - keep visibility visible and allow clock updates
-						element.style.visibility = "visible";
-						element.classList.remove("typewriter-active");
+						htmlIndex++;
+						element.innerHTML = originalHTML.substring(0, htmlIndex);
+						if ((char === "[" || char === "]") && htmlIndex < originalHTML.length) {
+							const nextChar = originalHTML[htmlIndex];
+							if (nextChar === "<" || (htmlIndex > 1 && originalHTML[htmlIndex - 2] === ">")) {
+								delay = speed * 0.5;
+							}
+						}
 					}
+					nextAdvanceAt = now + delay;
+					return delay;
 				}
 
-				// Start typing immediately
-				typeHTML();
+				function tick(now) {
+					if (htmlIndex >= originalHTML.length) {
+						element.style.visibility = "visible";
+						element.classList.remove("typewriter-active");
+						return;
+					}
+					// Only advance at most one character per frame; prevents timer batching "jump"
+					if (now >= nextAdvanceAt) {
+						advanceOne(now);
+					}
+					rafId = requestAnimationFrame(tick);
+				}
+
+				// Start on next frame with first character due immediately
+				nextAdvanceAt = 0;
+				rafId = requestAnimationFrame(tick);
 			}
 
 			// Constants for typewriter timing
 			const TYPEWRITER_SPEED = 30;
-			const TYPEWRITER_DELAY = 150;
-			const CLOCK_WAIT_DELAY = 150;
+			const TYPEWRITER_DELAY = 350;
+			// Delay before first label so main thread can settle after loadingComplete (prevents jump)
+			const TYPEWRITER_START_DELAY = 280;
 
 			headerLabels.forEach(function (label, index) {
 				const clockElement = label.querySelector("#header-clock");
-				const startDelay = index * TYPEWRITER_DELAY;
+				const startDelay = TYPEWRITER_START_DELAY + index * TYPEWRITER_DELAY;
 
 				if (clockElement) {
-					// Wait for clock to be populated, then animate
-					setTimeout(function () {
-						const fullLabelHTML = label.innerHTML;
-						if (fullLabelHTML && clockElement.innerHTML) {
-							label.setAttribute("data-original", fullLabelHTML);
-							const headerColumn = label.closest(".header-column");
-							const isVisible = headerColumn && window.getComputedStyle(headerColumn).display !== "none";
+					// Clock is already populated by earlier script; no extra wait
+					const fullLabelHTML = label.innerHTML;
+					if (fullLabelHTML && clockElement.innerHTML) {
+						label.setAttribute("data-original", fullLabelHTML);
+						const headerColumn = label.closest(".header-column");
+						const isVisible = headerColumn && window.getComputedStyle(headerColumn).display !== "none";
 
-							if (isVisible) {
-								setTimeout(function () {
-									typeWriter(label, TYPEWRITER_SPEED);
-								}, startDelay);
-							} else {
-								// Observe for when it becomes visible
-								const observer = new IntersectionObserver(
-									function (entries) {
-										entries.forEach(function (entry) {
-											if (entry.isIntersecting && !label.classList.contains("typewriter-active")) {
-												const currentLabelHTML = label.innerHTML;
-												if (currentLabelHTML) {
-													label.setAttribute("data-original", currentLabelHTML);
-												}
-												typeWriter(label, TYPEWRITER_SPEED);
-												observer.disconnect();
+						if (isVisible) {
+							setTimeout(function () {
+								typeWriter(label, TYPEWRITER_SPEED);
+							}, startDelay);
+						} else {
+							// Observe for when it becomes visible
+							const observer = new IntersectionObserver(
+								function (entries) {
+									entries.forEach(function (entry) {
+										if (entry.isIntersecting && !label.classList.contains("typewriter-active")) {
+											const currentLabelHTML = label.innerHTML;
+											if (currentLabelHTML) {
+												label.setAttribute("data-original", currentLabelHTML);
 											}
-										});
-									},
-									{ threshold: 0.1 }
-								);
-								observer.observe(headerColumn);
-							}
+											typeWriter(label, TYPEWRITER_SPEED);
+											observer.disconnect();
+										}
+									});
+								},
+								{ threshold: 0.1 }
+							);
+							observer.observe(headerColumn);
 						}
-					}, CLOCK_WAIT_DELAY);
+					}
 				} else {
 					setTimeout(function () {
 						typeWriter(label, TYPEWRITER_SPEED);
@@ -1397,88 +1492,12 @@
 				}
 			});
 
-			// ASCII Character Cycling Animation
-			let animationIntervals = [];
-			let animationTimeouts = [];
-
-			function initAsciiAnimation() {
-				const asciiTextElements = document.querySelectorAll(".ascii-text");
-				const chars = glitchChars;
-
-				asciiTextElements.forEach(function (element) {
-					const originalText = element.textContent;
-					const textArray = originalText.split("");
-					const newContent = [];
-					const animatePercentage = 0.15;
-					const charsToAnimate = Math.floor(textArray.length * animatePercentage);
-					const animateIndices = new Set();
-
-					while (animateIndices.size < charsToAnimate) {
-						const randomIndex = Math.floor(Math.random() * textArray.length);
-						if (textArray[randomIndex] !== " " && textArray[randomIndex] !== "\n") {
-							animateIndices.add(randomIndex);
-						}
-					}
-
-					textArray.forEach(function (char, index) {
-						if (animateIndices.has(index) && char !== " " && char !== "\n") {
-							newContent.push('<span class="ascii-char-animate" data-final="' + char.replace(/"/g, "&quot;") + '">' + char + "</span>");
-						} else {
-							newContent.push(char === "\n" ? "\n" : char === " " ? " " : char);
-						}
-					});
-
-					element.innerHTML = newContent.join("");
-				});
-
-				function animateChar(char, shouldLoop) {
-					const finalChar = char.getAttribute("data-final");
-					const duration = 1000 + Math.random() * 2000;
-					const steps = 10 + Math.floor(Math.random() * 20);
-					const stepDuration = duration / steps;
-					let currentStep = 0;
-
-					const animate = setInterval(function () {
-						if (currentStep < steps) {
-							const randomChar = chars[Math.floor(Math.random() * chars.length)];
-							char.textContent = randomChar;
-							currentStep++;
-						} else {
-							char.textContent = finalChar;
-							animationIntervals = animationIntervals.filter(function (interval) {
-								return interval !== animate;
-							});
-							clearInterval(animate);
-
-							if (shouldLoop) {
-								const delay = 2000 + Math.random() * 5000;
-								const timeout = setTimeout(function () {
-									animationTimeouts = animationTimeouts.filter(function (t) {
-										return t !== timeout;
-									});
-									animateChar(char, true);
-								}, delay);
-								animationTimeouts.push(timeout);
-							}
-						}
-					}, stepDuration);
-					animationIntervals.push(animate);
-				}
-
-				const animatedChars = document.querySelectorAll(".ascii-char-animate");
-				animatedChars.forEach(function (char) {
-					const initialDelay = Math.random() * 3000;
-					const timeout = setTimeout(function () {
-						animationTimeouts = animationTimeouts.filter(function (t) {
-							return t !== timeout;
-						});
-						animateChar(char, true);
-					}, initialDelay);
-					animationTimeouts.push(timeout);
-				});
+			// ASCII: use preloaded DOM if loading screen ran, else prepare now; then start char animations after short defer
+			if (!asciiDomPrepared) {
+				prepareAsciiDOM();
+				asciiDomPrepared = true;
 			}
-
-			initAsciiAnimation();
+			setTimeout(startAsciiCharAnimations, 450);
 
 			let resizeTimeout;
 			window.addEventListener("resize", function () {
@@ -1504,7 +1523,7 @@
 
 			// Check if mobile to add delay for loading overlay
 			const isMobile = window.matchMedia("(max-width: 980px)").matches;
-			const asciiDelay = isMobile ? 1800 : 0; // Delay on mobile to account for loading overlay fade-out
+			const asciiDelay = isMobile ? 1800 : 0; // Delay on mobile to account for overlay swipe
 
 			requestAnimationFrame(function () {
 				requestAnimationFrame(function () {
@@ -1543,11 +1562,7 @@
 							}, index * 200);
 						});
 
-						const lastGraphicStart = (graphics.length - 1) * 0;
-						const fadeDuration = 1500;
-						const additionalDelay = 0;
-						const iconsStartDelay = lastGraphicStart + fadeDuration + additionalDelay;
-
+						const iconsStartDelay = 1500; // Start icons after graphics fade-in (1.5s CSS)
 						icons.forEach(function (icon, index) {
 							setTimeout(function () {
 								icon.classList.add("fade-in");
