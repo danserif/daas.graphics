@@ -165,6 +165,10 @@ code {
 	opacity: 0.25;
 }
 
+.opacity-35 {
+	opacity: 0.35;
+}
+
 .opacity-50 {
 	opacity: 0.5;
 }
@@ -313,6 +317,15 @@ h1.header-label {
 }
 
 .header-label a:hover {
+	opacity: 0.5;
+}
+
+/* Active mode toggle opacity */
+:root:not(.light-mode) .dark-mode-toggle {
+	opacity: 0.5;
+}
+
+:root.light-mode .light-mode-toggle {
 	opacity: 0.5;
 }
 
@@ -954,8 +967,7 @@ h1.header-label {
 	grid-column: span 4;
 }
 
-.work-image,
-.work-item-logo {
+.work-image {
 	width: 100%;
 	height: auto;
 	display: block;
@@ -974,15 +986,14 @@ h1.header-label {
 	filter: grayscale(0%);
 }
 
-.work-item-logo {
-	max-height: 120px;
-	object-fit: contain;
-	background-color: white;
-	padding: 2rem;
+/* Ensure image links display properly (only direct child links wrapping images) */
+.work-item>a {
+	display: block;
+	width: 100%;
 }
 
-:root.light-mode .work-item-logo {
-	border: 1px solid rgba(0, 0, 0, 0.1);
+.work-item>a:hover {
+	opacity: 1;
 }
 
 .work-caption,
@@ -1014,6 +1025,14 @@ h1.header-label {
 	opacity: 0.75;
 }
 
+/* Ensure links within client/number are inline */
+.work-client a,
+.work-number a {
+	display: inline;
+	color: inherit;
+	opacity: inherit;
+}
+
 .work-description {
 	color: var(--opacity-50);
 	margin-top: 0;
@@ -1024,6 +1043,15 @@ h1.header-label {
 	color: var(--color-text);
 	margin-top: 4px;
 	margin: 0;
+}
+
+.work-link {
+	font-family: "Departure Mono", monospace;
+	font-size: 11px;
+	line-height: 1.5;
+	color: var(--color-text);
+	margin-top: 4px;
+	display: block;
 }
 
 .load-more-button {
@@ -2062,11 +2090,6 @@ img.daas-graphic.fade-in {
 		grid-column: span 1 !important;
 	}
 
-	/* LOGO-ONLY ITEMS SHOULD VISUALLY TAKE UP 50% WIDTH ON MOBILE */
-	.work-logo-item {
-		max-width: 50%;
-	}
-
 	/* END */
 	.end {
 		margin-top: 3rem;
@@ -2258,7 +2281,7 @@ img.daas-graphic.fade-in {
 	padding-right: max(60px, env(safe-area-inset-right, 60px));
 	box-sizing: border-box;
 	opacity: 1;
-	transition: opacity 1s ease-out;
+	transition: opacity 1.8s ease-out;
 	pointer-events: none;
 }
 
@@ -2320,7 +2343,16 @@ img.daas-graphic.fade-in {
 	width: 92px;
 	height: 92px;
 	opacity: 1;
-	transition: opacity 0.6s ease-out;
+	transition: opacity 1.2s ease-out;
+}
+
+pre.ascii-disk {
+	font-size: 11px;
+	line-height: normal;
+	text-transform: uppercase;
+	color: var(--color-bg);
+	white-space: pre;
+	opacity: 0.5;
 }
 
 /* MATCH LOADING WRAPPER MAX-WIDTH AND PADDING TO HEADER BREAKPOINTS */
@@ -2420,7 +2452,7 @@ img.daas-graphic.fade-in {
 	text-transform: uppercase;
 	color: var(--color-bg);
 	opacity: 1;
-	transition: opacity 0.6s ease-out;
+	transition: opacity 1.2s ease-out;
 }
 
 /* LOADING BLOCKS SHOULD BE DARK/BLACK ON ACCENT BACKGROUND FOR VISIBILITY */
@@ -2450,6 +2482,10 @@ img.daas-graphic.fade-in {
 }
 
 @media only screen and (max-width: 980px) {
+	pre.ascii-disk {
+		display: none;
+	}
+
 	.loading-overlay {
 		padding: 2rem;
 		padding-bottom: 3rem;

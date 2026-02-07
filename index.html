@@ -70,8 +70,24 @@
 				</p>
 				<!-- CODE -->
 				<div class="loading-code">
+					<pre class="ascii-disk">
+.-----------------------------.
+|   |"""""""""""""""""""""|   |
+| > |---------------------| D |
+|   |---------------------|   |
+|   |---------------------|   |
+|   |---------------------|   |
+|   |---------------------|   |
+|   \---------------------/   |
+|                             |
+|    _____________________    |
+|   |    ||  _            |   |
+|   |    || | |           |   |
+|   |    || |_|           | G |
+|___|____||_______________|___|</pre>
+					<br />
 					<p class="opacity-25">/* ----------------------------------- */</p>
-					<p><span class="opacity-50">HTTPS://</span> DAAS.GRAPHICS</p>
+					<p><span class="opacity-50">~ $</span> DAAS_GRAPHICS</p>
 					<p class="opacity-25">/* ----------------------------------- */</p>
 					<p>USER_SIGNAL: <span class="opacity-50">[RECEIVED]</span></p>
 					<p>VISUAL_SYSTEM: <span class="opacity-50">[SYNCING]</span></p>
@@ -79,14 +95,18 @@
 					<p>LOAD_ASSETS<span class="opacity-50">();</span></p>
 					<p>DEPLOY_OUTPUT<span class="opacity-50">();</span></p>
 					<p class="opacity-25">/* ----------------------------------- */</p>
-					<p>[D-01] <span class="opacity-25">//</span> [D-02] <span class="opacity-25">//</span> [D-03] <span
-							class="opacity-25">//</span> [D-04] <span class="opacity-25">//</span></p>
+					<p>[D-01] <span class="opacity-25">//</span> [D-02] <span class="opacity-25">//</span> [D-03]
+						<span class="opacity-25">//</span> [D-04] <span class="opacity-25">//</span>
+					</p>
 					<p class="opacity-25">/* ----------------------------------- */</p>
 					<p>BOOT_SEQUENCE: <span class="opacity-50">[COMPLETE]</span></p>
 					<p>NETWORK_STATUS: <span class="opacity-50">[STABLE]</span></p>
 					<p>DAAS_GRAPHICS: <span class="opacity-50">[ONLINE]</span></p>
+					<p class="hide">ENTERING_SYSTEM: <span class="opacity-50">[NOW]</span></p>
 					<p class="opacity-25">/* ----------------------------------- */</p>
-					<p>TRANSMISSION_IN_PROGRESS: <span class="opacity-50">[\m/]</span></p>
+					<p class="hide"><span class="opacity-50">HTTPS://</span> DAAS.GRAPHICS <span class="opacity-50">>>></span></p>
+					<p class="opacity-25 hide">/* ----------------------------------- */</p>
+					<p>TRANSMISSION_IN_PROGRESS: <span class="opacity-50">\m/</span></p>
 					<p class="opacity-25">/* ----------------------------------- */</p>
 				</div>
 			</div>
@@ -891,8 +911,8 @@
 			const CODE_LINE_DELAY = 100;
 			const LAST_BLOCK_DELAY = 400;
 			const PAUSE_TIME = 500;
-			const FADE_OUT_ICON_PROGRESS = 800;
-			const FADE_OUT_OVERLAY = 1500;
+			const FADE_OUT_ICON_PROGRESS = 1200;
+			const FADE_OUT_OVERLAY = 2200;
 
 			// Store original progress text for reset
 			let originalProgressText = null;
@@ -1626,9 +1646,7 @@
 					e.preventDefault();
 					e.stopPropagation();
 					// Track with Fathom if available
-					if (typeof fathom !== "undefined" && fathom.trackEvent) {
-						fathom.trackEvent("Icon", 0);
-					}
+					if (typeof fathom !== "undefined" && fathom.trackEvent) fathom.trackEvent("Icon", 0);
 					// Create multiple confetti pieces for more effect
 					for (let i = 0; i < 5; i++) {
 						setTimeout(function () {
