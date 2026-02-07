@@ -320,15 +320,6 @@ h1.header-label {
 	opacity: 0.5;
 }
 
-/* Active mode toggle opacity */
-:root:not(.light-mode) .dark-mode-toggle {
-	opacity: 0.5;
-}
-
-:root.light-mode .light-mode-toggle {
-	opacity: 0.5;
-}
-
 /* HERO SECTION */
 .hero {
 	position: relative;
