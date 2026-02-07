@@ -1710,6 +1710,15 @@
 					if (animatedIcons.has(icon)) return; // Already animated
 					animatedIcons.add(icon);
 
+					// Reveal icon when animation starts; first character is random (no clear = no layout jump)
+					icon.style.visibility = "visible";
+					const firstRandomChar = glitchChars[Math.floor(Math.random() * glitchChars.length)];
+					if (isPlainText) {
+						icon.textContent = firstRandomChar;
+					} else {
+						icon.innerHTML = "&#" + firstRandomChar.charCodeAt(0) + ";";
+					}
+
 					const duration = 1000 + Math.random() * 2000; // 1-3 seconds
 					const steps = 10 + Math.floor(Math.random() * 20); // 10-30 steps
 					const stepDuration = Math.max(16, duration / steps); // Minimum 16ms for Safari compatibility
@@ -1718,17 +1727,16 @@
 
 					animateInterval = setInterval(function () {
 						if (currentStep < steps) {
-							// Show random character
+							// Show random character (first character shown is random)
 							const randomChar = glitchChars[Math.floor(Math.random() * glitchChars.length)];
 							if (isPlainText) {
 								icon.textContent = randomChar;
 							} else {
-								const randomCharCode = randomChar.charCodeAt(0);
-								icon.innerHTML = "&#" + randomCharCode + ";";
+								icon.innerHTML = "&#" + randomChar.charCodeAt(0) + ";";
 							}
 							currentStep++;
 						} else {
-							// Return to original character - animation complete, no loop
+							// Finish on the character from the HTML for this section
 							if (isPlainText) {
 								icon.textContent = originalHTMLToRestore;
 							} else {

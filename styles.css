@@ -660,6 +660,15 @@ h1.header-label {
 	margin: 8px 0;
 }
 
+/* Glitch icons hidden until animation starts (no flash of original character); visibility preserves layout height */
+.card-icon,
+.work-icon,
+.quotes-icon,
+.footer-icon,
+.marquee-icon {
+	visibility: hidden;
+}
+
 .card-icon {
 	font-family: "Departure Mono", monospace;
 	font-size: 33px;
