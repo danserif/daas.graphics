@@ -920,6 +920,14 @@ h1.header-label {
 	max-width: 520px;
 }
 
+.quotes .accent {
+	background-color: color-mix(in srgb, var(--color-accent) 20%, transparent);
+}
+
+:root.light-mode .quotes .accent {
+	background-color: color-mix(in srgb, var(--color-accent) 10%, transparent);
+}
+
 .quote-text blockquote p {
 	margin: 0;
 }
