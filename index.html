@@ -63,7 +63,7 @@
 	<div class="loading-overlay" id="loading-overlay">
 		<div class="loading-wrapper">
 			<div class="loading-progress">
-				<p class="loading-title">LOADING</p>
+				<p class="loading-title">LOADING <span class="loading-disk">DISK</span></p>
 				<p><span class="opacity-50">0%</span> <span class="opacity-25">[</span> <span
 						class="accent loading-block">█</span> <span class="opacity-25 loading-progress-text">_ _ _ _ _ _ _ _ _
 					</span><span class="opacity-25">]</span> <span class="opacity-50">100%</span>
@@ -97,7 +97,7 @@
 					<p>LOAD_ASSETS<span class="opacity-50">();</span></p>
 					<p>DEPLOY_OUTPUT<span class="opacity-50">();</span></p>
 					<p class="opacity-25">/* -------------------------------- */</p>
-					<p><span class="opacity-50">></span> [D-01] <span class="opacity-25">/</span> [D-02] <span
+					<p><span class="opacity-50">%</span> [D-01] <span class="opacity-25">/</span> [D-02] <span
 							class="opacity-25">/</span> [D-03]
 						<span class="opacity-25">/</span> [D-04]
 					</p>
@@ -274,6 +274,20 @@
 	</div>
 	<!-- PATTERN-->
 	<div class="pattern"></div>
+	<ul class="pattern-list uppercase">
+		<li><span class="opacity-25">Character:</span> <span class="accent">/</span> <span class="opacity-50">
+				Slash</span> &nbsp; <span class="opacity-25">U+0002F</span> <code class="opacity-25">(&amp;sol;)</code></li>
+		<li><span class="opacity-25">Number:</span> <span id="pattern-char-count" class="opacity-50">47</span></li>
+		<li>
+			<span class="opacity-25">Location:</span>
+			<span id="pattern-cursor-pos">
+				<span id="pattern-cursor-x" class="opacity-50">0</span>
+				<span class="opacity-25">x</span>
+				<span id="pattern-cursor-y" class="opacity-50">0</span>
+				<span class="opacity-25">y</span> <span class="opacity-25">(PX)</span>
+			</span>
+		</li>
+	</ul>
 	<!-- CARDS -->
 	<section class="cards">
 		<!-- ABOUT -->
@@ -430,10 +444,9 @@
 					<p>Dan’s designed everything from websites, apps, installations, and design systems to conferences, keynotes,
 						swag, office fitouts, posters, billboards, advertising campaigns, logos, and brands — both working hands-on
 						and directing teams.</p>
-					<p><span class="opacity-75">This is a selection of clients and graphics from the last few
-							years.</span> <span class="opacity-50">Work
-							completed <span class="no-break">in-house</span> at various startups and agencies. Don’t worry, I can
-							use color when required.</span>
+					<p><span class="opacity-75">This is a selection of graphics from the last few years.</span> <span
+							class="opacity-50">Work completed <span class="no-break">in-house</span> at various startups and agencies.
+							Don’t worry, I can use color when required.</span>
 					</p>
 					<p class="mono accent">Coming soon...</p>
 				</div>
@@ -1446,10 +1459,10 @@
 			}
 
 			// Constants for typewriter timing
-			const TYPEWRITER_SPEED = 30;
-			const TYPEWRITER_DELAY = 350;
+			const TYPEWRITER_SPEED = 22;
+			const TYPEWRITER_DELAY = 260;
 			// Delay before first label so main thread can settle after loadingComplete (prevents jump)
-			const TYPEWRITER_START_DELAY = 280;
+			const TYPEWRITER_START_DELAY = 200;
 
 			headerLabels.forEach(function (label, index) {
 				const clockElement = label.querySelector("#header-clock");
@@ -1892,6 +1905,8 @@
 					}
 					document.body.removeChild(testLine);
 
+					const totalChars = linesCount * charsPerLine;
+
 					// Generate the actual pattern lines
 					for (let i = 0; i < linesCount; i++) {
 						const line = document.createElement("div");
@@ -1911,6 +1926,11 @@
 						}
 
 						footerPattern.appendChild(line);
+					}
+
+					const countEl = document.getElementById("pattern-char-count");
+					if (countEl) {
+						countEl.textContent = totalChars.toLocaleString();
 					}
 
 					// Get accent color and base color from CSS variables
@@ -2050,6 +2070,20 @@
 			}
 
 			initFooterPattern();
+
+			// Live cursor position in pattern list
+			function initPatternCursorPosition() {
+				const pattern = document.querySelector(".pattern");
+				const xEl = document.getElementById("pattern-cursor-x");
+				const yEl = document.getElementById("pattern-cursor-y");
+				if (!pattern || !xEl || !yEl) return;
+
+				pattern.addEventListener("mousemove", function (e) {
+					xEl.textContent = e.clientX;
+					yEl.textContent = e.clientY;
+				});
+			}
+			initPatternCursorPosition();
 
 			// End Section Progress Bar Animation
 			function initEndProgressAnimation() {
