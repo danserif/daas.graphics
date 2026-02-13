@@ -542,7 +542,7 @@ h1.header-label {
 	transform: rotate(25.05deg);
 }
 
-/* CARDS SECTION*/
+/* CARDS SECTION */
 .start,
 .end {
 	max-width: var(--max-width);
@@ -676,7 +676,7 @@ h1.header-label {
 	margin: 8px 0;
 }
 
-/* Glitch icons hidden until animation starts (no flash of original character); visibility preserves layout height */
+/* GLITCH ICONS HIDDEN UNTIL ANIMATION STARTS (NO FLASH OF ORIGINAL CHARACTER); VISIBILITY PRESERVES LAYOUT HEIGHT */
 .card-icon,
 .work-icon,
 .quotes-icon,
@@ -1043,7 +1043,7 @@ h1.header-label {
 	margin-top: var(--gap-section);
 }
 
-/* Same style as Graphics/Experiments caption */
+/* SAME STYLE AS GRAPHICS/EXPERIMENTS CAPTION */
 .award-caption,
 .award-caption p {
 	font-family: "Departure Mono", monospace;
@@ -1069,19 +1069,19 @@ h1.header-label {
 	color: var(--color-text);
 }
 
-/* Match quote section: first column ≈ author block (min-width 200px), second column takes rest; gap between = var(--gap-flex) */
+/* MATCH QUOTE SECTION: FIRST COLUMN ≈ AUTHOR BLOCK (MIN-WIDTH 200PX), SECOND COLUMN TAKES REST; GAP BETWEEN = VAR(--GAP-FLEX) */
 .awards-table td:first-child {
 	width: 250px;
 	min-width: 250px;
 	padding-right: var(--gap-flex);
 }
 
-/* Second awards table: match quote blockquote max-width */
+/* SECOND AWARDS TABLE: MATCH QUOTE BLOCKQUOTE MAX-WIDTH */
 .award:nth-child(3) .awards-table {
 	max-width: 740px;
 }
 
-/* Reduce td padding when tables are horizontal (1461px up to next breakpoint) */
+/* REDUCE TD PADDING WHEN TABLES ARE HORIZONTAL (1461PX UP TO NEXT BREAKPOINT) */
 @media only screen and (min-width: 1461px) and (max-width: 1860px) {
 	.awards-table td {
 		padding: 0.25em 0;
@@ -1092,7 +1092,7 @@ h1.header-label {
 	}
 }
 
-/* Stack second td under first td (1461px to 2420px, like on mobile) */
+/* STACK SECOND TD UNDER FIRST TD (1461PX TO 2420PX, LIKE ON MOBILE) */
 @media only screen and (min-width: 1461px) and (max-width: 2420px) {
 	.awards-table tr {
 		display: block;
@@ -1164,7 +1164,7 @@ h1.header-label {
 	filter: grayscale(0%);
 }
 
-/* Ensure image links display properly (only direct child links wrapping images) */
+/* ENSURE IMAGE LINKS DISPLAY PROPERLY (ONLY DIRECT CHILD LINKS WRAPPING IMAGES) */
 .work-item>a {
 	display: block;
 	width: 100%;
@@ -1203,7 +1203,7 @@ h1.header-label {
 	opacity: 0.75;
 }
 
-/* Ensure links within client/number are inline */
+/* ENSURE LINKS WITHIN CLIENT/NUMBER ARE INLINE */
 .work-client a,
 .work-number a {
 	display: inline;
@@ -2327,12 +2327,11 @@ img.daas-graphic.fade-in {
 		margin-top: 0.25rem;
 	}
 
-	/* Remove gap between the two tables when stacked */
 	.award:nth-child(3) {
-		margin-top: calc(-1 * var(--gap-row-cards));
+		display: none;
 	}
 
-	/* Stack second td under first td in each row */
+	/* STACK SECOND TD UNDER FIRST TD IN EACH ROW */
 	.awards-table tr {
 		display: block;
 		padding: 1.35em 0;
