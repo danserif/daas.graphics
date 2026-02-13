@@ -680,6 +680,7 @@ h1.header-label {
 .card-icon,
 .work-icon,
 .quotes-icon,
+.awards-icon,
 .footer-icon,
 .marquee-icon {
 	visibility: hidden;
@@ -956,6 +957,159 @@ h1.header-label {
 .quote-text blockquote p+p {
 	margin-top: 15px;
 	padding-left: 0.5em;
+}
+
+/* AWARDS SECTION */
+.awards {
+	display: flex;
+	flex-direction: column;
+	gap: var(--gap-section);
+	max-width: var(--max-width);
+	margin: 0 auto;
+	padding: var(--gap-section) 60px;
+	margin-top: 240px;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.awards .divider {
+	margin: 8px 0;
+}
+
+.awards-icon {
+	font-family: "Departure Mono", monospace;
+	font-size: 33px;
+	line-height: 33px;
+	color: var(--color-accent);
+	text-transform: uppercase;
+	margin: 0;
+}
+
+.awards-label {
+	font-family: "Departure Mono", monospace;
+	font-size: 11px;
+	line-height: normal;
+	text-transform: uppercase;
+	color: var(--opacity-25);
+	margin: 0;
+}
+
+.awards-content {
+	display: flex;
+	gap: var(--gap-flex);
+	width: 100%;
+	flex-wrap: wrap;
+}
+
+.award {
+	display: flex;
+	flex-direction: column;
+	gap: var(--gap-section);
+	flex: 1 1 calc(33.333% - var(--gap-flex) * 2 / 3);
+	min-width: 300px;
+}
+
+.award:first-child {
+	gap: 0;
+}
+
+.award-image {
+	display: block;
+	width: auto;
+	max-width: 70%;
+	object-fit: contain;
+	color: var(--color-text);
+	padding-right: 4rem;
+}
+
+:root.light-mode .award .award-image {
+	color: var(--color-text);
+}
+
+@media only screen and (max-width: 1440px) {
+	.award-image {
+		max-width: 520px;
+	}
+}
+
+@media only screen and (max-width: 1040px) {
+	.award-image {
+		max-width: 80%;
+	}
+}
+
+.award .award-caption {
+	margin-bottom: 0;
+	margin-top: var(--gap-section);
+}
+
+/* Same style as Graphics/Experiments caption */
+.award-caption,
+.award-caption p {
+	font-family: "Departure Mono", monospace;
+	font-size: 11px;
+	line-height: 1.5;
+	margin: 0;
+	color: var(--color-text);
+	opacity: 0.75;
+}
+
+.awards-table {
+	width: 100%;
+	table-layout: fixed;
+	border-collapse: collapse;
+	font-family: "Departure Mono", monospace;
+	font-size: 11px;
+	line-height: 1.5;
+}
+
+.awards-table td {
+	padding: 0.5em 0;
+	vertical-align: top;
+	color: var(--color-text);
+}
+
+/* Match quote section: first column ≈ author block (min-width 200px), second column takes rest; gap between = var(--gap-flex) */
+.awards-table td:first-child {
+	width: 250px;
+	min-width: 250px;
+	padding-right: var(--gap-flex);
+}
+
+/* Second awards table: match quote blockquote max-width */
+.award:nth-child(3) .awards-table {
+	max-width: 740px;
+}
+
+/* Reduce td padding when tables are horizontal (1461px up to next breakpoint) */
+@media only screen and (min-width: 1461px) and (max-width: 1860px) {
+	.awards-table td {
+		padding: 0.25em 0;
+	}
+
+	.awards-table td:first-child {
+		padding-right: 12px;
+	}
+}
+
+/* Stack second td under first td (1461px to 2420px, like on mobile) */
+@media only screen and (min-width: 1461px) and (max-width: 2420px) {
+	.awards-table tr {
+		display: block;
+		padding: 0.75em 0;
+	}
+
+	.awards-table td {
+		display: block;
+		width: 100%;
+	}
+
+	.awards-table td:first-child {
+		width: 100%;
+		min-width: 0;
+		padding-right: 0;
+		padding-bottom: 0.25em;
+	}
 }
 
 /* WORK GRID */
@@ -1569,6 +1723,12 @@ img.daas-graphic.fade-in {
 		padding-right: 3rem;
 	}
 
+	/* AWARDS */
+	.awards {
+		padding-left: 3rem;
+		padding-right: 3rem;
+	}
+
 	.quote {
 		flex: 1 1 calc(33.333% - var(--gap-flex) * 2 / 3);
 		flex-direction: column;
@@ -1750,6 +1910,27 @@ img.daas-graphic.fade-in {
 		gap: var(--gap-row-cards);
 	}
 
+	/* AWARDS */
+	.awards {
+		padding-left: 2rem;
+		padding-right: 2rem;
+	}
+
+	.awards-content {
+		flex-direction: column;
+		gap: var(--gap-row-cards);
+	}
+
+	.award {
+		width: 100%;
+		flex: 1 1 100%;
+		max-width: 100%;
+	}
+
+	.award .award-image {
+		padding-right: 0;
+	}
+
 	.quote {
 		width: 100%;
 		flex: 1 1 100%;
@@ -1769,6 +1950,10 @@ img.daas-graphic.fade-in {
 
 	.quote .quote-text blockquote {
 		max-width: 600px;
+	}
+
+	.award:nth-child(3) .awards-table {
+		max-width: 740px;
 	}
 
 	/* FOOTER */
@@ -1903,6 +2088,26 @@ img.daas-graphic.fade-in {
 		max-width: 600px;
 	}
 
+	.award:nth-child(3) .awards-table {
+		max-width: 740px;
+	}
+
+	/* AWARDS */
+	.awards {
+		padding-left: 2rem;
+		padding-right: 2rem;
+	}
+
+	.award {
+		width: 100%;
+		flex: 1 1 100%;
+		max-width: 100%;
+	}
+
+	.award .award-image {
+		padding-right: 0;
+	}
+
 	/* FOOTER */
 	.footer {
 		padding-left: 2rem;
@@ -1920,6 +2125,9 @@ img.daas-graphic.fade-in {
 }
 
 @media only screen and (max-width: 980px) {
+	:root {
+		--gap-mobile-sections: 3rem;
+	}
 
 	/* HEADER */
 	.header {
@@ -2086,6 +2294,63 @@ img.daas-graphic.fade-in {
 		line-height: 22px;
 	}
 
+	.awards-icon {
+		font-size: 22px;
+		line-height: 22px;
+	}
+
+	/* AWARDS */
+	.awards {
+		padding: 1.5rem;
+		margin-top: 4rem;
+	}
+
+	.awards-content {
+		flex-direction: column;
+	}
+
+	.award {
+		width: 100%;
+		flex: 1 1 100%;
+		max-width: 100%;
+	}
+
+	.award .award-image {
+		padding-right: 0;
+	}
+
+	.award:first-child {
+		gap: 0.5rem;
+	}
+
+	.award .award-caption {
+		margin-top: 0.25rem;
+	}
+
+	/* Remove gap between the two tables when stacked */
+	.award:nth-child(3) {
+		margin-top: calc(-1 * var(--gap-row-cards));
+	}
+
+	/* Stack second td under first td in each row */
+	.awards-table tr {
+		display: block;
+		padding: 1.35em 0;
+	}
+
+	.awards-table td {
+		display: block;
+		width: 100%;
+		padding: 0.25em 0;
+	}
+
+	.awards-table td:first-child {
+		width: 100%;
+		min-width: 0;
+		padding-right: 0;
+		padding-bottom: 0.15em;
+	}
+
 	.work-icon {
 		font-size: 22px;
 		line-height: 22px;
@@ -2094,7 +2359,7 @@ img.daas-graphic.fade-in {
 	/* WORK SAMPLES */
 	.work-samples {
 		padding: 1.5rem;
-		margin-top: 3rem;
+		margin-top: var(--gap-mobile-sections);
 	}
 
 	.work-grid {
@@ -2104,7 +2369,7 @@ img.daas-graphic.fade-in {
 	/* QUOTES */
 	.quotes {
 		padding: 1.5rem;
-		margin-top: 3rem;
+		margin-top: var(--gap-mobile-sections);
 	}
 
 	.quotes-content {
