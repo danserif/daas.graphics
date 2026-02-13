@@ -1020,6 +1020,7 @@ h1.header-label {
 	object-fit: contain;
 	color: var(--color-text);
 	opacity: 0.375;
+	/* MATCH CLIENT LOGOS */
 	padding-right: 4rem;
 }
 
