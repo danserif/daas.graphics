@@ -1019,6 +1019,7 @@ h1.header-label {
 	max-width: 70%;
 	object-fit: contain;
 	color: var(--color-text);
+	opacity: 0.375;
 	padding-right: 4rem;
 }
 
