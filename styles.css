@@ -2315,6 +2315,7 @@ img.daas-graphic.fade-in {
 
 	.awards-content {
 		flex-direction: column;
+		gap: var(--gap-row-cards);
 	}
 
 	.award {
@@ -2336,7 +2337,7 @@ img.daas-graphic.fade-in {
 	}
 
 	.award:nth-child(3) {
-		display: none;
+		margin-top: -2.5rem;
 	}
 
 	/* STACK SECOND TD UNDER FIRST TD IN EACH ROW */
