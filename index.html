@@ -1103,9 +1103,14 @@
 			const SWIPE_DURATION_MS = 600;
 			// Run preload (ASCII DOM, fonts, cache) while overlay is up for smoother reveal
 			const PRELOAD_DELAY_MS = 1500;
+			// ASCII disk: hidden, then lines load in one by one (scramble → original); code starts after disk completes
+			const DISK_SHOW_DELAY = 200;
+			const DISK_LINE_DELAY = 75; // ms between revealing each line of the disk
+			const DISK_SCRAMBLE_SPACE_CHANCE = 0.6; // chance of space in unscrambled cells so it's not a solid block
 
-			// Store original progress text for reset
+			// Store original progress text and ASCII disk for reset
 			let originalProgressText = null;
+			let originalAsciiDisk = null;
 
 			// Function to reset loading screen state
 			function resetLoadingScreen() {
@@ -1152,6 +1157,13 @@
 					line.classList.remove("progress-line-visible");
 				});
 
+				// Restore original ASCII disk and hide for next run
+				const asciiDiskPre = loadingOverlay.querySelector(".ascii-disk");
+				if (asciiDiskPre && originalAsciiDisk) {
+					asciiDiskPre.textContent = originalAsciiDisk;
+					asciiDiskPre.classList.add("ascii-disk-hidden");
+				}
+
 				// Add loading class to body
 				document.body.classList.add("loading");
 			}
@@ -1173,6 +1185,10 @@
 
 				body.classList.add("loading");
 
+				// ASCII disk: hidden, then lines load in one by one; when done, start code + progress
+				const asciiDiskPre = loadingOverlay.querySelector(".ascii-disk");
+				var startCodeAndProgress = null; // set below after helpers exist
+
 				// Preload header/ASCII/start during loading so reveal feels smooth
 				setTimeout(function () {
 					if (typeof window.__preloadDuringLoading === "function") {
@@ -1185,13 +1201,6 @@
 				const loadingCodeLines = loadingOverlay.querySelectorAll(".loading-code p");
 				const loadingIcon = loadingOverlay.querySelector(".loading-icon");
 				const loadingProgress = loadingOverlay.querySelector(".loading-progress");
-
-				// Reveal loading-progress lines immediately
-				setTimeout(function () {
-					loadingProgressLines.forEach(function (line) {
-						line.classList.add("progress-line-visible");
-					});
-				}, INITIAL_DELAY);
 
 				// Count underscores in the progress text
 				const currentText = loadingProgressText.textContent;
@@ -1238,31 +1247,84 @@
 					}, CONTENT_FADE_MS);
 				}
 
-				// Animate loading progress
+				// Start code lines + progress (called when disk finishes, or after delay if no disk)
+				startCodeAndProgress = function () {
+					loadingCodeLines.forEach(function (line, index) {
+						setTimeout(function () {
+							line.classList.add("code-line-visible");
+						}, index * CODE_LINE_DELAY);
+					});
+					for (let i = 0; i < underscoreCount; i++) {
+						setTimeout(function () {
+							loadingProgressText.textContent = removeUnderscore(loadingProgressText.textContent);
+							insertAfterElement = insertProgressBlock();
+							if (i === underscoreCount - 1) {
+								setTimeout(function () {
+									setTimeout(fadeOutLoadingScreen, PAUSE_TIME);
+								}, LAST_BLOCK_DELAY);
+							}
+						}, i * BLOCK_DELAY);
+					}
+				};
+
+				// Disk: line-by-line reveal, then start code
+				if (asciiDiskPre) {
+					if (!originalAsciiDisk) originalAsciiDisk = asciiDiskPre.textContent;
+					const diskChars = "!@#$%^&*()_+-=[]{}|;':\",.<>?/~`0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+					function randomDiskChar() {
+						if (Math.random() < DISK_SCRAMBLE_SPACE_CHANCE) return " ";
+						return diskChars[Math.floor(Math.random() * diskChars.length)];
+					}
+					var lines = originalAsciiDisk.split("\n");
+					var lineRanges = [];
+					var pos = 0;
+					for (var l = 0; l < lines.length; l++) {
+						var start = pos;
+						pos += lines[l].length;
+						var end = pos;
+						lineRanges.push({ start: start, end: end });
+						pos += 1; // newline
+					}
+					asciiDiskPre.classList.add("ascii-disk-hidden");
+					asciiDiskPre.textContent = originalAsciiDisk.split("").map(function (c) {
+						return c === "\n" ? "\n" : randomDiskChar();
+					}).join("");
+					setTimeout(function () {
+						asciiDiskPre.classList.remove("ascii-disk-hidden");
+						var len = originalAsciiDisk.length;
+						var revealed = new Set();
+						function buildFrame() {
+							var out = [];
+							for (var i = 0; i < len; i++) {
+								out.push(revealed.has(i) ? originalAsciiDisk[i] : (originalAsciiDisk[i] === "\n" ? "\n" : randomDiskChar()));
+							}
+							asciiDiskPre.textContent = out.join("");
+						}
+						var lineIndex = 0;
+						var diskInterval = setInterval(function () {
+							var r = lineRanges[lineIndex];
+							for (var i = r.start; i < r.end; i++) revealed.add(i);
+							if (lineIndex < lineRanges.length - 1) revealed.add(r.end); // newline
+							buildFrame();
+							lineIndex++;
+							if (lineIndex >= lineRanges.length) {
+								clearInterval(diskInterval);
+								asciiDiskPre.textContent = originalAsciiDisk;
+								startCodeAndProgress();
+							}
+						}, DISK_LINE_DELAY);
+					}, DISK_SHOW_DELAY);
+				} else {
+					setTimeout(startCodeAndProgress, ANIMATION_START_DELAY);
+				}
+
+				// Animate loading progress (show title + bar; code starts when disk completes)
 				function animateLoading() {
 					setTimeout(function () {
-						// Start animating code lines
-						loadingCodeLines.forEach(function (line, index) {
-							setTimeout(function () {
-								line.classList.add("code-line-visible");
-							}, index * CODE_LINE_DELAY);
+						loadingProgressLines.forEach(function (line) {
+							line.classList.add("progress-line-visible");
 						});
-
-						// Animate each progress block
-						for (let i = 0; i < underscoreCount; i++) {
-							setTimeout(function () {
-								loadingProgressText.textContent = removeUnderscore(loadingProgressText.textContent);
-								insertAfterElement = insertProgressBlock();
-
-								// Handle fade-out after last block
-								if (i === underscoreCount - 1) {
-									setTimeout(function () {
-										setTimeout(fadeOutLoadingScreen, PAUSE_TIME);
-									}, LAST_BLOCK_DELAY);
-								}
-							}, i * BLOCK_DELAY);
-						}
-					}, ANIMATION_START_DELAY);
+					}, INITIAL_DELAY);
 				}
 
 				animateLoading();

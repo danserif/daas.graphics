@@ -2675,6 +2675,11 @@ pre.ascii-disk {
 	opacity: 0.5;
 }
 
+pre.ascii-disk.ascii-disk-hidden {
+	opacity: 0;
+	visibility: hidden;
+}
+
 /* MATCH LOADING WRAPPER MAX-WIDTH AND PADDING TO HEADER BREAKPOINTS */
 @media only screen and (max-width: 2420px) {
 	pre.ascii-disk {
