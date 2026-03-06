@@ -611,6 +611,47 @@ h1.header-label {
 	padding-right: 0.5rem;
 }
 
+.end-wrapper {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 2rem;
+	max-width: var(--max-width);
+	margin: 0 auto 4rem;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.end-wrapper .end {
+	flex: 1;
+	flex-basis: auto;
+	min-width: 0;
+	width: auto;
+	max-width: none;
+	margin-bottom: 0;
+}
+
+.end-wrapper .daas-logo {
+	flex-shrink: 0;
+	align-self: flex-end;
+}
+
+.daas-logo-link {
+	display: block;
+	line-height: 0;
+}
+
+.daas-logo-link:hover .daas-logo-img {
+	opacity: 0.8;
+}
+
+.daas-logo-img {
+	display: block;
+	width: 80px;
+	height: 80px;
+	transition: opacity 0.2s ease;
+}
+
 .end {
 	margin-top: 0;
 	margin-bottom: 4rem;
@@ -1798,6 +1839,11 @@ img.daas-graphic.fade-in {
 		max-width: 1200px;
 	}
 
+	.end-wrapper .daas-logo-img {
+		width: 64px;
+		height: 64px;
+	}
+
 	/* HEADER */
 	.header {
 		flex-wrap: wrap;
@@ -2408,6 +2454,13 @@ img.daas-graphic.fade-in {
 	}
 
 	/* END */
+	.end-wrapper {
+		margin-bottom: 1rem;
+	}
+	.end-wrapper .daas-logo-img {
+		width: 56px;
+		height: 56px;
+	}
 	.end {
 		margin-top: 3rem;
 		margin-bottom: 1rem;
@@ -2511,6 +2564,22 @@ img.daas-graphic.fade-in {
 
 	.footer-content {
 		font-size: 11px;
+	}
+}
+
+@media only screen and (max-width: 600px) {
+	.end-wrapper {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 6rem;
+	}
+	.end-wrapper .end {
+		margin-left: 0;
+		margin-right: 0;
+		width: 100%;
+	}
+	.end-wrapper .daas-logo {
+		align-self: flex-start;
 	}
 }
 
