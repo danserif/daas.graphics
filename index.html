@@ -115,9 +115,9 @@
 					<p class="opacity-25">/* -------------------------------- */</p>
 				</div>
 			</div>
-			<!-- ICON -->
-			<div class="loading-icon">
-				<svg id="daas-icon-loading" width="84" height="84" viewBox="0 0 84 84" fill="none"
+			<!-- LOGO -->
+			<div class="loading-logo">
+				<svg id="daas-logo-loading" width="84" height="84" viewBox="0 0 84 84" fill="none"
 					xmlns="http://www.w3.org/2000/svg">
 					<path d="M75.9934 60.0076H72.0034V67.9876H75.9934V60.0076Z" fill="var(--color-text, white)" />
 					<path d="M75.9934 15.9863H72.0034V23.9926H75.9934V15.9863Z" fill="var(--color-text, white)" />
@@ -1089,7 +1089,7 @@
 			</div>
 			<div class="daas-logo">
 				<a href="#top" class="daas-logo-link">
-					<svg class="daas-logo-img" width="80" height="80" viewBox="0 0 84 84" fill="none"
+					<svg class="daas-logo-globe" width="80" height="80" viewBox="0 0 84 84" fill="none"
 						xmlns="http://www.w3.org/2000/svg">
 						<path d="M75.9934 60.0076H72.0034V67.9876H75.9934V60.0076Z" fill="var(--color-text, white)" />
 						<path d="M75.9934 15.9863H72.0034V23.9926H75.9934V15.9863Z" fill="var(--color-text, white)" />
@@ -1153,6 +1153,42 @@
 						<rect x="16.001" y="48.0001" width="4" height="4" fill="var(--color-bg, black)" />
 						<rect x="20.0005" y="36" width="4" height="12" fill="var(--color-bg, black)" />
 					</svg>
+					<svg class="daas-logo-face" viewBox="0 0 92.989 92.1479" fill="none" xmlns="http://www.w3.org/2000/svg"
+						aria-hidden="true">
+						<path
+							d="M36 92H56V88H64V84H72V80H76V76H80V72H84V64H88V52H92V40H88V28H84V20H80V16H76V12H72V8H64V4H56V0H36V4H28V8H20V12H16V16H12V20H8V28H4V40H0V52H4V64H8V72H12V76H16V80H20V84H28V88H36V92Z"
+							fill="var(--color-accent, #aaff00)" />
+						<rect x="35.9987" y="71.9993" width="20" height="4" fill="var(--color-bg, black)" />
+						<rect x="28.0001" y="68.0003" width="8" height="4" fill="var(--color-bg, black)" />
+						<rect x="56.0012" y="68.0006" width="8" height="4" fill="var(--color-bg, black)" />
+						<rect x="24.0006" y="64.0008" width="4" height="4" fill="var(--color-bg, black)" />
+						<rect x="64.0009" y="63.9997" width="4" height="4" fill="var(--color-bg, black)" />
+						<rect x="20.0013" y="60.0003" width="4" height="4" fill="var(--color-bg, black)" />
+						<rect x="67.9995" y="60.0001" width="4" height="4" fill="var(--color-bg, black)" />
+						<rect x="68.001" y="36.0002" width="4" height="4" fill="var(--color-bg, black)" />
+						<rect x="24.0003" y="39.9997" width="4" height="4" transform="rotate(-180 24.0003 39.9997)"
+							fill="var(--color-bg, black)" />
+						<rect x="64.0003" y="40.0005" width="4" height="4" fill="var(--color-bg, black)" />
+						<rect x="28.0008" y="36.0003" width="4" height="4" transform="rotate(-180 28.0008 36.0003)"
+							fill="var(--color-bg, black)" />
+						<rect x="60" y="44" width="4" height="4" fill="var(--color-bg, black)" />
+						<rect x="32.0014" y="32" width="4" height="4" transform="rotate(-180 32.0014 32)"
+							fill="var(--color-bg, black)" />
+						<rect x="53.999" y="32.0003" width="4" height="8" transform="rotate(-180 53.999 32.0003)"
+							fill="var(--color-bg, black)" />
+						<rect x="50.0008" y="40.0001" width="4" height="8" transform="rotate(-180 50.0008 40.0001)"
+							fill="var(--color-bg, black)" />
+						<rect x="45.9988" y="47.9992" width="4" height="8" transform="rotate(-180 45.9988 47.9992)"
+							fill="var(--color-bg, black)" />
+						<rect x="42.0005" y="55.9999" width="4" height="8" transform="rotate(-180 42.0005 55.9999)"
+							fill="var(--color-bg, black)" />
+						<rect x="63.9995" y="32.0004" width="4" height="4" fill="var(--color-bg, black)" />
+						<rect x="27.9997" y="44.0002" width="4" height="4" transform="rotate(-180 27.9997 44.0002)"
+							fill="var(--color-bg, black)" />
+						<rect x="59.9999" y="28" width="4" height="4" fill="var(--color-bg, black)" />
+						<rect x="31.9992" y="47.9997" width="4" height="4" transform="rotate(-180 31.9992 47.9997)"
+							fill="var(--color-bg, black)" />
+					</svg>
 				</a>
 			</div>
 		</div>
@@ -1191,9 +1227,9 @@
 				loadingOverlay.classList.remove("hidden", "fade-out", "swipe-up");
 
 				const loadingProgress = loadingOverlay.querySelector(".loading-progress");
-				const loadingIcon = loadingOverlay.querySelector(".loading-icon");
+				const loadingLogo = loadingOverlay.querySelector(".loading-logo");
 				if (loadingProgress) loadingProgress.classList.remove("fade-out");
-				if (loadingIcon) loadingIcon.classList.remove("fade-out");
+				if (loadingLogo) loadingLogo.classList.remove("fade-out");
 
 				// Reset progress text to original
 				const loadingProgressText = loadingOverlay.querySelector(".loading-progress-text");
@@ -1269,7 +1305,7 @@
 				// Cache elements for animations
 				const loadingProgressLines = loadingOverlay.querySelectorAll(".loading-progress > p");
 				const loadingCodeLines = loadingOverlay.querySelectorAll(".loading-code p");
-				const loadingIcon = loadingOverlay.querySelector(".loading-icon");
+				const loadingLogo = loadingOverlay.querySelector(".loading-logo");
 				const loadingProgress = loadingOverlay.querySelector(".loading-progress");
 
 				// Count underscores in the progress text
@@ -1304,7 +1340,7 @@
 
 				// Fade out content (bar, code, icon), then swipe overlay background up and off
 				function fadeOutLoadingScreen() {
-					if (loadingIcon) loadingIcon.classList.add("fade-out");
+					if (loadingLogo) loadingLogo.classList.add("fade-out");
 					if (loadingProgress) loadingProgress.classList.add("fade-out");
 
 					setTimeout(function () {

@@ -641,11 +641,15 @@ h1.header-label {
 	line-height: 0;
 }
 
-.daas-logo-link:hover .daas-logo-img {
+.daas-logo-link:hover .daas-logo-globe {
 	opacity: 0.8;
 }
 
-.daas-logo-img {
+.daas-logo-face {
+	display: none;
+}
+
+.daas-logo-globe {
 	display: block;
 	width: 80px;
 	height: 80px;
@@ -1839,9 +1843,20 @@ img.daas-graphic.fade-in {
 		max-width: 1200px;
 	}
 
-	.end-wrapper .daas-logo-img {
+	.end-wrapper .daas-logo-globe {
 		width: 64px;
 		height: 64px;
+	}
+	.end-wrapper .daas-logo-link {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+	.end-wrapper .daas-logo-face {
+		display: block;
+		width: 64px;
+		height: 64px;
+		flex-shrink: 0;
 	}
 
 	/* HEADER */
@@ -2457,9 +2472,13 @@ img.daas-graphic.fade-in {
 	.end-wrapper {
 		margin-bottom: 1rem;
 	}
-	.end-wrapper .daas-logo-img {
-		width: 56px;
-		height: 56px;
+	.end-wrapper .daas-logo-globe {
+		width: 60px;
+		height: 60px;
+	}
+	.end-wrapper .daas-logo-face {
+		width: 60px;
+		height: 60px;
 	}
 	.end {
 		margin-top: 3rem;
@@ -2569,17 +2588,33 @@ img.daas-graphic.fade-in {
 
 @media only screen and (max-width: 600px) {
 	.end-wrapper {
-		flex-direction: column;
+		flex-direction: column-reverse;
 		align-items: flex-start;
 		gap: 6rem;
 	}
 	.end-wrapper .end {
 		margin-left: 0;
 		margin-right: 0;
+		margin-top: 0;
 		width: 100%;
+	}
+	.end-wrapper .end .arrow {
+		padding-top: 0;
 	}
 	.end-wrapper .daas-logo {
 		align-self: flex-start;
+		margin-top: 7rem;
+	}
+	.end-wrapper .daas-logo-link {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+	.end-wrapper .daas-logo-face {
+		display: block;
+		width: 60px;
+		height: 60px;
+		flex-shrink: 0;
 	}
 }
 
@@ -2725,7 +2760,7 @@ img.daas-graphic.fade-in {
 	display: none;
 }
 
-.loading-icon {
+.loading-logo {
 	position: absolute;
 	bottom: 0;
 	left: 0;
@@ -2814,45 +2849,45 @@ pre.ascii-disk.ascii-disk-hidden {
 	}
 }
 
-.loading-icon svg {
+.loading-logo svg {
 	width: 100%;
 	height: 100%;
 	display: block;
 }
 
 /* DESKTOP: SVG PATHS SHOULD BE BLACK ON YELLOW BACKGROUND (EXCEPT ACCENT BORDER) */
-.loading-icon svg path {
+.loading-logo svg path {
 	fill: var(--color-bg) !important;
 }
 
 /* BORDER FRAME PATH SHOULD BE BLACK ON ALL BREAKPOINTS */
-.loading-icon svg path[d*="M79.9837"] {
+.loading-logo svg path[d*="M79.9837"] {
 	fill: var(--color-bg) !important;
 }
 
 /* DESKTOP: SVG RECTANGLES SHOULD BE ACCENT-COLORED ON YELLOW BACKGROUND */
-.loading-icon svg rect {
+.loading-logo svg rect {
 	fill: var(--color-accent) !important;
 }
 
 /* MOBILE: SVG PATHS SHOULD BE WHITE ON BLACK BACKGROUND (EXCEPT ACCENT BORDER) */
 @media only screen and (max-width: 980px) {
-	.loading-icon svg path {
+	.loading-logo svg path {
 		fill: var(--color-text) !important;
 	}
 
 	/* KEEP ACCENT BORDER FRAME ACCENT-COLORED ON MOBILE */
-	.loading-icon svg path[d*="M79.9837"] {
+	.loading-logo svg path[d*="M79.9837"] {
 		fill: var(--color-accent) !important;
 	}
 
 	/* MOBILE: SVG RECTANGLES SHOULD BE BLACK ON BLACK BACKGROUND */
-	.loading-icon svg rect {
+	.loading-logo svg rect {
 		fill: var(--color-bg) !important;
 	}
 }
 
-.loading-icon.fade-out {
+.loading-logo.fade-out {
 	opacity: 0;
 }
 
@@ -2912,7 +2947,7 @@ pre.ascii-disk.ascii-disk-hidden {
 		min-height: calc(100dvh - 4rem);
 	}
 
-	.loading-icon {
+	.loading-logo {
 		width: 60px;
 		height: 60px;
 	}
