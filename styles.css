@@ -105,6 +105,7 @@ body {
 	background-color: color-mix(in srgb, var(--color-accent) 20%, transparent);
 	color: var(--color-accent);
 }
+
 :root ::-moz-selection {
 	background-color: color-mix(in srgb, var(--color-accent) 20%, transparent);
 	color: var(--color-accent);
@@ -115,6 +116,7 @@ body {
 	background-color: color-mix(in srgb, var(--color-accent) 10%, transparent);
 	color: var(--color-accent);
 }
+
 :root.light-mode ::-moz-selection {
 	background-color: color-mix(in srgb, var(--color-accent) 10%, transparent);
 	color: var(--color-accent);
@@ -434,13 +436,16 @@ h1.header-label {
 	left: 17%;
 	top: 80%;
 }
+
 .hero-icons .daas-icon-2 {
 	top: 28%;
 }
+
 .hero-icons .daas-icon-3 {
 	left: 66%;
 	top: 8%;
 }
+
 .hero-icons .daas-icon-4 {
 	left: 32%;
 }
@@ -1139,8 +1144,8 @@ h2.card-title {
 }
 
 .profile-image {
-	width: 100px;
-	height: 100px;
+	width: 120px;
+	height: 120px;
 	flex-shrink: 0;
 	background-color: var(--color-accent);
 	max-width: 200px;
@@ -2606,23 +2611,28 @@ img.daas-graphic.fade-in {
 		max-width: 64px;
 		max-height: 64px;
 	}
+
 	.hero-icons .daas-icon-3,
 	.hero-icons .daas-icon-4 {
 		min-width: 56px;
 		max-width: 56px;
 		max-height: 56px;
 	}
+
 	.hero-icons .daas-icon-1 {
 		left: 8%;
 		top: 48%;
 	}
+
 	.hero-icons .daas-icon-2 {
 		left: 80%;
 		top: 24%;
 	}
+
 	.hero-icons .daas-icon-3 {
 		top: 3%;
 	}
+
 	.hero-icons .daas-icon-4 {
 		top: 24%;
 	}
@@ -2631,15 +2641,19 @@ img.daas-graphic.fade-in {
 	.hero-icons .daas-icon {
 		transition: opacity 0.8s ease-in-out;
 	}
+
 	.hero-icons .daas-icon-1:hover {
 		transform: rotate(6.034deg);
 	}
+
 	.hero-icons .daas-icon-2:hover {
 		transform: rotate(351.498deg);
 	}
+
 	.hero-icons .daas-icon-3:hover {
 		transform: rotate(255.093deg);
 	}
+
 	.hero-icons .daas-icon-4:hover {
 		transform: rotate(20.05deg);
 	}
@@ -2855,6 +2869,11 @@ img.daas-graphic.fade-in {
 		flex-direction: row;
 		align-items: center;
 		gap: var(--gap-section);
+	}
+
+	.profile-image {
+		width: 100px;
+		height: 100px;
 	}
 
 	.work-item[data-columns] {
