@@ -843,6 +843,10 @@ h1.header-label {
 	margin-top: calc(var(--gap-section) * 1.5);
 }
 
+.tldr .card-content {
+	max-width: 1560px;
+}
+
 .tldr+.cards {
 	margin-top: 0;
 }
@@ -904,9 +908,14 @@ h1.header-label {
 	font-weight: normal;
 }
 
-h2.card-title,
-.tldr h3.card-title {
+h2.card-title {
 	font-size: 55px;
+	line-height: 1.2;
+}
+
+.tldr h2.card-title,
+.tldr h3.card-title {
+	font-size: 44px;
 	line-height: 1.2;
 }
 
@@ -1883,7 +1892,7 @@ img.daas-graphic.fade-in {
 	}
 
 	.tldr .card-content {
-		max-width: 1800px;
+		max-width: 1560px;
 	}
 }
 
@@ -1973,11 +1982,15 @@ img.daas-graphic.fade-in {
 
 	.tldr h2.card-title,
 	.tldr h3.card-title {
-		font-size: 44px;
+		font-size: 33px;
 	}
 
 	.tldr .card-content {
-		max-width: 1560px;
+		max-width: 1180px;
+	}
+
+	.card-subtitle {
+		font-size: 18px;
 	}
 
 	/* CARDS */
