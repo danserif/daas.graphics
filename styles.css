@@ -8,11 +8,31 @@
 }
 
 @font-face {
+	font-family: "Adhesion";
+	src: url("fonts/adhesion-regular.woff2") format("woff2");
+	font-weight: normal;
+	font-style: normal;
+	font-display: block;
+}
+
+@font-face {
 	font-family: "Untitled Sans";
 	src: url("fonts/untitled-sans-regular.woff2") format("woff2");
 	font-weight: normal;
 	font-style: normal;
 	font-display: block;
+}
+
+.font-adhesion {
+	font-family: "Adhesion", sans-serif;
+}
+
+.font-untitled {
+	font-family: "Untitled Sans", sans-serif;
+}
+
+.font-departure {
+	font-family: "Departure Mono", monospace;
 }
 
 /* CSS CUSTOM PROPERTIES */
@@ -699,15 +719,51 @@ h1.header-label {
 	scroll-margin-top: 60px;
 }
 
+#about {
+	scroll-margin-top: 60px;
+}
+
+/* TL;DR and cards: same padding/margin (left, right, above) so they align */
+.tldr,
 .cards {
-	display: flex;
-	gap: var(--gap-flex);
 	max-width: var(--max-width);
 	margin: 0 auto;
 	margin-top: 240px;
 	padding: 0 60px;
 	width: 100%;
 	box-sizing: border-box;
+}
+
+.tldr {
+	margin-bottom: 240px;
+}
+
+.tldr .card {
+	width: 100%;
+}
+
+/* Space between the two card divs in tldr (intro card + contact card) */
+.tldr .card > .card {
+	margin-top: var(--gap-row-cards);
+}
+
+/* TL;DR card icon: same as Graphics section icon (no accent, opacity-50) */
+.tldr .card-icon {
+	color: var(--opacity-50);
+}
+
+.tldr .card-subtitle {
+	margin-top: var(--gap-section);
+}
+
+/* No extra top margin on .cards when it follows .tldr; tldr margin-bottom handles the gap */
+.tldr+.cards {
+	margin-top: 0;
+}
+
+.cards {
+	display: flex;
+	gap: var(--gap-flex);
 }
 
 .card {
@@ -763,11 +819,25 @@ h1.header-label {
 	font-weight: normal;
 }
 
+/* h2.card-title: larger at widest, 22px at smallest */
+h2.card-title {
+	font-size: 55px;
+	line-height: 1.2;
+}
+
 .card-subtitle {
 	font-size: 22px;
 	line-height: 33px;
 	margin: 0;
 	font-weight: normal;
+}
+
+.card-cta {
+	font-size: 22px;
+	line-height: 33px;
+	margin: 0;
+	font-weight: normal;
+	padding-top: 0;
 }
 
 .card-text {
@@ -1326,7 +1396,7 @@ h1.header-label {
 	display: flex;
 	gap: var(--gap-flex);
 	width: 100%;
-	margin-bottom: 60px;
+	margin-bottom: 240px;
 }
 
 .footer-column {
@@ -1542,8 +1612,8 @@ h1.header-label {
 	padding: 60px 60px 0;
 	box-sizing: border-box;
 	overflow: hidden;
-	max-height: 900px;
-	min-height: 900px;
+	max-height: 1100px;
+	min-height: 1100px;
 }
 
 .daas-graphics::before {
@@ -1658,6 +1728,10 @@ img.daas-graphic.fade-in {
 	.end .arrow {
 		padding-top: 3rem;
 	}
+
+	.tldr .card-content {
+		max-width: 80%;
+	}
 }
 
 @media only screen and (max-width: 2420px) {
@@ -1714,6 +1788,8 @@ img.daas-graphic.fade-in {
 
 	.daas-graphics {
 		margin-top: 4rem;
+		max-height: 900px;
+		min-height: 900px;
 	}
 
 	/* START */
@@ -1735,12 +1811,25 @@ img.daas-graphic.fade-in {
 		padding-right: 3rem;
 	}
 
+	/* TL;DR + CARDS */
+	.tldr,
+	.cards {
+		padding-left: 3rem;
+		padding-right: 3rem;
+	}
+
+	.tldr h2.card-title {
+		font-size: 44px;
+	}
+
+	.tldr .card-content {
+		max-width: 90%;
+	}
+
 	/* CARDS */
 	.cards {
 		flex-wrap: wrap;
 		row-gap: var(--gap-row-cards);
-		padding-left: 3rem;
-		padding-right: 3rem;
 	}
 
 	.card,
@@ -1847,11 +1936,13 @@ img.daas-graphic.fade-in {
 		width: 64px;
 		height: 64px;
 	}
+
 	.end-wrapper .daas-logo-link {
 		display: flex;
 		align-items: center;
 		gap: 0.5rem;
 	}
+
 	.end-wrapper .daas-logo-face {
 		display: block;
 		width: 64px;
@@ -1937,13 +2028,26 @@ img.daas-graphic.fade-in {
 		padding-right: 2rem;
 	}
 
+	/* TL;DR + CARDS */
+	.tldr,
+	.cards {
+		padding-left: 2rem;
+		padding-right: 2rem;
+		margin-top: 10rem;
+	}
+
+	.tldr h2.card-title {
+		font-size: 44px;
+	}
+
+	.tldr .card-content {
+		max-width: 90%;
+	}
+
 	/* CARDS */
 	.cards {
 		flex-wrap: wrap;
 		row-gap: var(--gap-row-cards);
-		padding-left: 2rem;
-		padding-right: 2rem;
-		margin-top: 10rem;
 	}
 
 	.card {
@@ -2107,12 +2211,17 @@ img.daas-graphic.fade-in {
 		padding-right: 2rem;
 	}
 
+	/* TL;DR + CARDS */
+	.tldr,
+	.cards {
+		padding-left: 2rem;
+		padding-right: 2rem;
+	}
+
 	/* CARDS */
 	.cards {
 		flex-wrap: wrap;
 		row-gap: var(--gap-row-cards);
-		padding-left: 2rem;
-		padding-right: 2rem;
 	}
 
 	.card {
@@ -2215,6 +2324,11 @@ img.daas-graphic.fade-in {
 		padding-right: 1.5rem;
 	}
 
+	.pattern-list li:nth-child(2),
+	.pattern-list li:nth-child(3) {
+		display: none;
+	}
+
 	.header-column {
 		width: 100%;
 		flex: 1 1 100%;
@@ -2306,10 +2420,27 @@ img.daas-graphic.fade-in {
 		padding-top: 2rem;
 	}
 
+	/* TL;DR + CARDS */
+	.tldr,
+	.cards {
+		padding: 1.5rem;
+	}
+
+	.tldr h2.card-title {
+		font-size: 22px;
+	}
+
+	.tldr .card-content {
+		max-width: none;
+	}
+
+	.tldr .card-subtitle {
+		font-size: 14px;
+	}
+
 	/* CARDS */
 	.cards {
 		flex-direction: column;
-		padding: 1.5rem;
 	}
 
 	.card {
@@ -2319,9 +2450,15 @@ img.daas-graphic.fade-in {
 	}
 
 	.card-title,
-	.card-subtitle {
+	.card-subtitle,
+	.card-cta {
 		font-size: 16.5px;
 		line-height: 22px;
+	}
+
+	h2.card-title {
+		font-size: 22px;
+		line-height: 1.2;
 	}
 
 	.card-title {
@@ -2472,14 +2609,17 @@ img.daas-graphic.fade-in {
 	.end-wrapper {
 		margin-bottom: 1rem;
 	}
+
 	.end-wrapper .daas-logo-globe {
 		width: 60px;
 		height: 60px;
 	}
+
 	.end-wrapper .daas-logo-face {
 		width: 60px;
 		height: 60px;
 	}
+
 	.end {
 		margin-top: 3rem;
 		margin-bottom: 1rem;
@@ -2541,14 +2681,6 @@ img.daas-graphic.fade-in {
 		width: 20px;
 	}
 
-	.pattern {
-		display: none;
-	}
-
-	.pattern-list {
-		display: none;
-	}
-
 	.footer-columns-wrapper {
 		flex-direction: column;
 		row-gap: calc(var(--gap-row-footer) / 1.5);
@@ -2592,24 +2724,29 @@ img.daas-graphic.fade-in {
 		align-items: flex-start;
 		gap: 6rem;
 	}
+
 	.end-wrapper .end {
 		margin-left: 0;
 		margin-right: 0;
 		margin-top: 0;
 		width: 100%;
 	}
+
 	.end-wrapper .end .arrow {
 		padding-top: 0;
 	}
+
 	.end-wrapper .daas-logo {
 		align-self: flex-start;
 		margin-top: 7rem;
 	}
+
 	.end-wrapper .daas-logo-link {
 		display: flex;
 		align-items: center;
 		gap: 0.5rem;
 	}
+
 	.end-wrapper .daas-logo-face {
 		display: block;
 		width: 60px;

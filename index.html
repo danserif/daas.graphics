@@ -273,6 +273,35 @@
 				class="opacity-25">_ _ _ _ _ _ _ _ _ ]</span> <span class="opacity-50">100%</span></p>
 		<p class="arrow"><a href="#start">↓</a></p>
 	</div>
+	<!-- TL;DR -->
+	<section class="tldr">
+		<div class="card" id="start">
+			<p class="card-icon">TL;DR</p>
+			<h4 class="card-label">Intro / Summary</h4>
+			<hr class="divider" />
+			<div class="card-content">
+				<h2 class="card-title"><span class="accent font-adhesion">A new era of design is here.</span> Get
+					design and leadership support for your startup, team, or business — only when you need it.</h2>
+				<p class="card-subtitle font-untitled"><span class="opacity-50">From coaching to creative direction, <a
+							href="#about" class="underline">DaaS</a></span> <span class="opacity-25">(Graphics)</span> <span
+						class="opacity-50">provides
+						flexible plans to help you or your team.</span>
+				</p>
+			</div>
+			<div class="card">
+				<p class="card-icon">@</p>
+				<h4 class="card-label">Contact</h4>
+				<hr class="divider" />
+				<div class="card-content">
+					<p class="card-cta">
+						<span class="opacity-25">mailto:</span> <a href="mailto:dan@newman.is"
+							onclick="fathom.trackEvent('Email', 0);">dan <span class="opacity-50">[at]</span> newman <span
+								class="opacity-50">[dot]</span> is</a>
+						<span class="accent">→</span>
+					</p>
+				</div>
+			</div>
+	</section>
 	<!-- PATTERN-->
 	<div class="pattern"></div>
 	<ul class="pattern-list uppercase">
@@ -292,7 +321,7 @@
 	<!-- CARDS -->
 	<section class="cards">
 		<!-- ABOUT -->
-		<div class="card" id="start">
+		<div class="card" id="about">
 			<p class="card-icon">&#68;</p>
 			<h4 class="card-label">Name / Acronym</h4>
 			<hr class="divider" />
@@ -329,11 +358,11 @@
 				</p>
 			</div>
 			<div class="card-text">
-				<p>Get coaching, leadership support, or branding design for your team, startup, or business — only when
-					you need it.</p>
+				<p>Whether you’re in San Francisco or on Stewart Island, get an experienced design partner whenever you need it.
+				</p>
 				<p>
 					DaaS <span class="opacity-50">(Graphics)</span> offers plans that are flexible for individuals, early-stage
-					founders, and go-to-market teams. Whether you’re after advice, or a new creative direction <span
+					founders, and go-to-market teams. If you’re after advice, or a new creative direction <span
 						class="opacity-50">(branding, logos, swag, conference collateral, or a site),</span> there’s a plan
 					to help.
 				</p>
@@ -345,7 +374,8 @@
 			<h4 class="card-label">Tagline / Mission</h4>
 			<hr class="divider" />
 			<div class="card-content">
-				<h3 class="card-title">Authenticity <span class="accent">&</span> Aesthetics</h3>
+				<h3 class="card-title">Authenticity <span class="accent">&</span> <span class="font-adhesion">Aesthetics</span>
+				</h3>
 				<p class="card-subtitle"><span class="opacity-50">0% </span><span class="opacity-75">[</span> <span
 						class="accent">█ █ ▄</span> <span class="opacity-75">_ _ ]</span> <span class="opacity-50">100%</span></p>
 			</div>
@@ -905,10 +935,14 @@
 				<hr class="divider" />
 				<div class="footer-content">
 					<p>
-						<a href="https://departuremono.com" target="_blank" onclick="fathom.trackEvent('Fonts', 0);">Departure
-							Mono</a> <span class="opacity-25">/</span>
-						<a href="https://klim.co.nz/fonts/untitled-sans" target="_blank"
-							onclick="fathom.trackEvent('Fonts', 0);">Untitled Sans</a>
+						<a href="https://foundry.basement.studio/fonts/adhesion" target="_blank"
+							onclick="fathom.trackEvent('Fonts', 0);" class="font-adhesion">Adhesion</a> <span
+							class="opacity-25">/</span>
+						<a href="https://departuremono.com" target="_blank" onclick="fathom.trackEvent('Fonts', 0);"
+							class="font-departure">Departure</a>
+						<span class="opacity-25">/</span>
+						<a href="https://klim.co.nz/fonts/untitled-sans" target="_blank" onclick="fathom.trackEvent('Fonts', 0);"
+							class="font-untitled">Untitled</a>
 						<span class="opacity-25">(Fonts)</span>
 					</p>
 					<p>
@@ -2048,25 +2082,64 @@
 				let entityMatch = originalHTML.match(/&#(\d+);/);
 				let originalCharCode = null;
 				let isPlainText = false;
+				let isMultiCharIcon = false; // e.g. .card-icon with "TL;DR" in .tldr section
 
-				// If no match in innerHTML, try to get char code from textContent
-				if (!entityMatch && originalText.length > 0) {
-					originalCharCode = originalText.charCodeAt(0);
-					isPlainText = true; // work-icon is plain text "G"
-				} else if (entityMatch) {
+				if (entityMatch) {
 					originalCharCode = parseInt(entityMatch[1]);
+				} else if (originalText.length > 0) {
+					isPlainText = true;
+					if (icon.classList.contains("card-icon") && originalText.length > 1) {
+						isMultiCharIcon = true;
+						// Replace content with one span per character so each can animate
+						const chars = originalText.split("");
+						const spans = chars.map(function (c) {
+							const escaped = c.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+							return "<span class=\"card-icon-char\" data-final=\"" + escaped + "\">" + c + "</span>";
+						});
+						icon.innerHTML = spans.join("");
+					} else {
+						originalCharCode = originalText.charCodeAt(0);
+					}
 				} else {
 					return;
 				}
 
-				const originalHTMLToRestore = isPlainText ? originalText : "&#" + originalCharCode + ";";
+				const originalHTMLToRestore = isPlainText && !isMultiCharIcon ? originalText : (isPlainText ? originalText : "&#" + originalCharCode + ";");
 
 				function animateIcon() {
 					if (animatedIcons.has(icon)) return; // Already animated
 					animatedIcons.add(icon);
 
-					// Reveal icon when animation starts; first character is random (no clear = no layout jump)
 					icon.style.visibility = "visible";
+
+					if (isMultiCharIcon) {
+						// Animate each character span (all 5 for "TL;DR")
+						const charSpans = icon.querySelectorAll(".card-icon-char");
+						charSpans.forEach(function (span, index) {
+							const finalChar = span.getAttribute("data-final").replace(/&quot;/g, "\"").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+							const duration = 1000 + Math.random() * 2000;
+							const steps = 10 + Math.floor(Math.random() * 20);
+							const stepDuration = Math.max(16, duration / steps);
+							let currentStep = 0;
+							// Stagger start so chars don't all flip in lockstep
+							const stagger = index * (stepDuration * 0.3);
+							const startTimeout = setTimeout(function () {
+								span.textContent = glitchChars[Math.floor(Math.random() * glitchChars.length)];
+								const animateInterval = setInterval(function () {
+									if (currentStep < steps) {
+										span.textContent = glitchChars[Math.floor(Math.random() * glitchChars.length)];
+										currentStep++;
+									} else {
+										span.textContent = finalChar;
+										clearInterval(animateInterval);
+									}
+								}, stepDuration);
+							}, stagger);
+						});
+						return;
+					}
+
+					// Single-character icon (entity or one plain char)
 					const firstRandomChar = glitchChars[Math.floor(Math.random() * glitchChars.length)];
 					if (isPlainText) {
 						icon.textContent = firstRandomChar;
@@ -2157,7 +2230,7 @@
 					default: 24,
 					1460: 8,
 					1040: 6,
-					980: 4,
+					980: 8,
 				};
 
 				function getLinesCount() {
