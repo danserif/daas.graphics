@@ -1769,13 +1769,23 @@
 			// Typewriter effect for header labels (use cached list if preloaded)
 			const headerLabels = cachedHeaderLabels || document.querySelectorAll(".header-label");
 
+			// Compute shared min-height from tallest visible label so all labels use the same height
+			let sharedMinHeight = 0;
+			headerLabels.forEach(function (label) {
+				const headerColumn = label.closest(".header-column");
+				if (!headerColumn || window.getComputedStyle(headerColumn).display === "none") return;
+				label.style.visibility = "visible";
+				const h = label.offsetHeight;
+				if (h > sharedMinHeight) sharedMinHeight = h;
+				label.style.visibility = "";
+			});
+
 			function typeWriter(element, speed) {
 				const originalHTML = element.getAttribute("data-original") || element.innerHTML;
 
-				// Measure and preserve the height before clearing
+				// Use shared min-height so all labels stay the same height during typewriter
 				element.style.visibility = "visible";
-				const originalHeight = element.offsetHeight;
-				element.style.minHeight = originalHeight + "px";
+				element.style.minHeight = sharedMinHeight + "px";
 
 				let htmlIndex = 0;
 				let nextAdvanceAt = 0;
