@@ -584,7 +584,7 @@ h1.header-label {
 	opacity: 1;
 }
 
-.pattern {
+.pattern-graphic {
 	max-width: var(--max-width);
 	margin: 0 auto;
 	padding: 0 60px;
@@ -611,6 +611,7 @@ h1.header-label {
 	width: 100%;
 	box-sizing: border-box;
 	list-style: none;
+	text-transform: uppercase;
 }
 
 .pattern-list li {
@@ -751,6 +752,10 @@ h1.header-label {
 	color: var(--opacity-50);
 }
 
+.tldr h3.card-title {
+	margin-top: var(--gap-section);
+}
+
 .tldr .card-subtitle {
 	margin-top: var(--gap-section);
 }
@@ -817,7 +822,8 @@ h1.header-label {
 	font-weight: normal;
 }
 
-h2.card-title {
+h2.card-title,
+.tldr h3.card-title {
 	font-size: 55px;
 	line-height: 1.2;
 }
@@ -1049,11 +1055,13 @@ h2.card-title {
 	max-width: 520px;
 }
 
-.quotes .accent {
+.quotes .accent,
+.highlight {
 	background-color: color-mix(in srgb, var(--color-accent) 20%, transparent);
 }
 
-:root.light-mode .quotes .accent {
+:root.light-mode .quotes .accent,
+:root.light-mode .highlight {
 	background-color: color-mix(in srgb, var(--color-accent) 10%, transparent);
 }
 
@@ -1727,7 +1735,7 @@ img.daas-graphic.fade-in {
 	}
 
 	.tldr .card-content {
-		max-width: 80%;
+		max-width: 1800px;
 	}
 }
 
@@ -1798,7 +1806,7 @@ img.daas-graphic.fade-in {
 	}
 
 	/* PATTERN */
-	.pattern {
+	.pattern-graphic {
 		padding-left: 3rem;
 		padding-right: 3rem;
 	}
@@ -1815,12 +1823,13 @@ img.daas-graphic.fade-in {
 		padding-right: 3rem;
 	}
 
-	.tldr h2.card-title {
+	.tldr h2.card-title,
+	.tldr h3.card-title {
 		font-size: 44px;
 	}
 
 	.tldr .card-content {
-		max-width: 90%;
+		max-width: 1560px;
 	}
 
 	/* CARDS */
@@ -1922,6 +1931,10 @@ img.daas-graphic.fade-in {
 	.quote-text {
 		padding-right: 2rem;
 	}
+
+	.tldr .card-content {
+		max-width: 1070px;
+	}
 }
 
 @media only screen and (max-width: 1460px) {
@@ -2015,7 +2028,7 @@ img.daas-graphic.fade-in {
 	}
 
 	/* PATTERN */
-	.pattern {
+	.pattern-graphic {
 		padding-left: 2rem;
 		padding-right: 2rem;
 	}
@@ -2033,12 +2046,15 @@ img.daas-graphic.fade-in {
 		margin-top: 10rem;
 	}
 
-	.tldr h2.card-title {
-		font-size: 44px;
+	.tldr h2.card-title,
+	.tldr h3.card-title,
+	h2.card-title {
+		font-size: 33px;
 	}
 
-	.tldr .card-content {
-		max-width: 90%;
+	.tldr .card-content,
+	.card .card-content {
+		max-width: 100%;
 	}
 
 	/* CARDS */
@@ -2198,7 +2214,7 @@ img.daas-graphic.fade-in {
 	}
 
 	/* PATTERN */
-	.pattern {
+	.pattern-graphic {
 		padding-left: 2rem;
 		padding-right: 2rem;
 	}
@@ -2213,6 +2229,15 @@ img.daas-graphic.fade-in {
 	.cards {
 		padding-left: 2rem;
 		padding-right: 2rem;
+	}
+
+	h2.card-title,
+	.tldr h3.card-title {
+		font-size: 33px;
+	}
+
+	.card .card-content {
+		max-width: 100%;
 	}
 
 	/* CARDS */
@@ -2311,7 +2336,7 @@ img.daas-graphic.fade-in {
 	}
 
 	/* PATTERN */
-	.pattern {
+	.pattern-graphic {
 		padding-left: 1.5rem;
 		padding-right: 1.5rem;
 	}
@@ -2423,7 +2448,8 @@ img.daas-graphic.fade-in {
 		padding: 1.5rem;
 	}
 
-	.tldr h2.card-title {
+	.tldr h2.card-title,
+	.tldr h3.card-title {
 		font-size: 22px;
 	}
 
@@ -2453,7 +2479,8 @@ img.daas-graphic.fade-in {
 		line-height: 22px;
 	}
 
-	h2.card-title {
+	h2.card-title,
+	.tldr h3.card-title {
 		font-size: 22px;
 		line-height: 1.2;
 	}
