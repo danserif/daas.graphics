@@ -723,7 +723,6 @@ h1.header-label {
 	scroll-margin-top: 60px;
 }
 
-/* TL;DR and cards: same padding/margin (left, right, above) so they align */
 .tldr,
 .cards {
 	max-width: var(--max-width);
@@ -742,12 +741,12 @@ h1.header-label {
 	width: 100%;
 }
 
-/* Space between the two card divs in tldr (intro card + contact card) */
-.tldr .card > .card {
+
+.tldr .card>.card {
 	margin-top: var(--gap-row-cards);
 }
 
-/* TL;DR card icon: same as Graphics section icon (no accent, opacity-50) */
+
 .tldr .card-icon {
 	color: var(--opacity-50);
 }
@@ -756,7 +755,6 @@ h1.header-label {
 	margin-top: var(--gap-section);
 }
 
-/* No extra top margin on .cards when it follows .tldr; tldr margin-bottom handles the gap */
 .tldr+.cards {
 	margin-top: 0;
 }
@@ -819,7 +817,6 @@ h1.header-label {
 	font-weight: normal;
 }
 
-/* h2.card-title: larger at widest, 22px at smallest */
 h2.card-title {
 	font-size: 55px;
 	line-height: 1.2;
