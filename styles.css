@@ -320,6 +320,7 @@ code {
 	color: var(--opacity-50);
 	visibility: hidden;
 	display: inline-block;
+	min-height: 1.65em; /* match first column (Adhesion "D") so dividers align */
 }
 
 .header-label.typewriter-active {
@@ -1990,7 +1991,7 @@ img.daas-graphic.fade-in {
 	}
 
 	.tldr .card-content {
-		max-width: 1070px;
+		max-width: 1080px;
 	}
 }
 
@@ -2416,6 +2417,10 @@ img.daas-graphic.fade-in {
 
 	.header-column:nth-child(3) {
 		display: flex;
+	}
+
+	.header .header-label {
+		min-height: unset;
 	}
 
 	.header-column:nth-child(3) .divider {
