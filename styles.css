@@ -409,8 +409,48 @@ h1.header-label {
 	background: linear-gradient(to left, var(--color-bg) 0%, transparent 100%);
 }
 
+/* Hero inner: contains static icons overlay + scrolling ASCII */
+.hero-inner {
+	position: relative;
+	width: 100%;
+	min-height: 512px;
+}
+
+/* Icons overlay: same placement as footer, does not scroll; ASCII scrolls underneath */
+.hero-icons {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	min-height: 512px;
+	z-index: 2;
+	pointer-events: none;
+}
+
+.hero-icons .daas-icon {
+	pointer-events: auto;
+}
+
+/* Hero icon positions (footer keeps default positions above) */
+.hero-icons .daas-icon-1 {
+	left: 17%;
+	top: 80%;
+}
+.hero-icons .daas-icon-2 {
+	top: 28%;
+}
+.hero-icons .daas-icon-3 {
+	left: 66%;
+	top: 8%;
+}
+.hero-icons .daas-icon-4 {
+	left: 32%;
+}
+
 .hero-title {
 	position: relative;
+	z-index: 1;
 	width: max-content;
 	min-height: 512px;
 	display: flex;
@@ -541,22 +581,21 @@ h1.header-label {
 	transform: rotate(356.498deg);
 }
 
-/* SWAP COLORS FOR DAAS-ICON-2 IN DARK MODE (WHITE BECOMES BLACK, BLACK BECOMES WHITE) */
+/* DAAS-ICON-2: black/white swapped (face = text color, pixels = bg color) */
 .daas-icon-2 svg path[id="Face"] {
-	fill: var(--color-bg);
+	fill: var(--color-text);
 }
 
 .daas-icon-2 svg rect {
-	fill: var(--color-text);
-}
-
-/* SWAP COLORS FOR DAAS-ICON-2 IN LIGHT MODE (WHITE BECOMES BLACK, BLACK BECOMES WHITE) */
-:root.light-mode .daas-icon-2 svg path[id="Face"] {
 	fill: var(--color-bg);
 }
 
-:root.light-mode .daas-icon-2 svg rect {
+:root.light-mode .daas-icon-2 svg path[id="Face"] {
 	fill: var(--color-text);
+}
+
+:root.light-mode .daas-icon-2 svg rect {
+	fill: var(--color-bg);
 }
 
 /* RULER */
@@ -1815,6 +1854,11 @@ img.daas-graphic.fade-in {
 		margin-bottom: 4vh;
 	}
 
+	.hero-inner,
+	.hero-icons {
+		min-height: 45vh;
+	}
+
 	.hero-title {
 		min-height: 45vh;
 	}
@@ -2091,6 +2135,11 @@ img.daas-graphic.fade-in {
 	/* HERO */
 	.daas-graphics {
 		display: none;
+	}
+
+	.hero-inner,
+	.hero-icons {
+		min-height: 400px;
 	}
 
 	.hero {
@@ -2517,6 +2566,34 @@ img.daas-graphic.fade-in {
 	.hero::before,
 	.hero::after {
 		display: none;
+	}
+
+	.hero-inner,
+	.hero-icons {
+		min-height: 360px;
+	}
+
+	/* Header icons smaller in single-column layout: 1 & 2 = 64px, 3 & 4 = 56px */
+	.hero-icons .daas-icon {
+		min-width: 64px;
+		max-width: 64px;
+		max-height: 64px;
+	}
+	.hero-icons .daas-icon-3,
+	.hero-icons .daas-icon-4 {
+		min-width: 56px;
+		max-width: 56px;
+		max-height: 56px;
+	}
+	.hero-icons .daas-icon-1 {
+		left: 8%;
+		top: 88%;
+	}
+	.hero-icons .daas-icon-2 {
+		left: 80%;
+	}
+	.hero-icons .daas-icon-4 {
+		top: 30%;
 	}
 
 	.hero-title {
