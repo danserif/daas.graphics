@@ -2601,13 +2601,17 @@ img.daas-graphic.fade-in {
 	}
 	.hero-icons .daas-icon-1 {
 		left: 8%;
-		top: 72%;
+		top: 48%;
 	}
 	.hero-icons .daas-icon-2 {
 		left: 80%;
+		top: 24%;
+	}
+	.hero-icons .daas-icon-3 {
+		top: 3%;
 	}
 	.hero-icons .daas-icon-4 {
-		top: 30%;
+		top: 24%;
 	}
 
 	/* Disable hover/click animation on header icons on mobile */
