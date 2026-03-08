@@ -99,6 +99,27 @@ body {
 	background: var(--color-bg);
 }
 
+/* Text selection: accent colour with opacity */
+/* Dark mode: 20% accent */
+:root ::selection {
+	background-color: color-mix(in srgb, var(--color-accent) 20%, transparent);
+	color: var(--color-accent);
+}
+:root ::-moz-selection {
+	background-color: color-mix(in srgb, var(--color-accent) 20%, transparent);
+	color: var(--color-accent);
+}
+
+/* Light mode: 10% accent */
+:root.light-mode ::selection {
+	background-color: color-mix(in srgb, var(--color-accent) 10%, transparent);
+	color: var(--color-accent);
+}
+:root.light-mode ::-moz-selection {
+	background-color: color-mix(in srgb, var(--color-accent) 10%, transparent);
+	color: var(--color-accent);
+}
+
 body.loading {
 	overflow: hidden;
 	/* ENSURE BODY BACKGROUND MATCHES DURING LOADING TO PREVENT IOS SAFARI COLOR FLASH */
