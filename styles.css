@@ -762,11 +762,11 @@ h1.header-label {
 }
 
 .tldr h3.card-title {
-	margin-top: var(--gap-section);
+	margin-top: calc(var(--gap-section) * 1.5);
 }
 
 .tldr .card-subtitle {
-	margin-top: var(--gap-section);
+	margin-top: calc(var(--gap-section) * 1.5);
 }
 
 .tldr+.cards {
@@ -841,6 +841,8 @@ h2.card-title,
 	line-height: 33px;
 	margin: 0;
 	font-weight: normal;
+	color: var(--opacity-90);
+	opacity: 0.8;
 }
 
 .card-cta {
@@ -2136,6 +2138,10 @@ img.daas-graphic.fade-in {
 		min-width: 300px;
 	}
 
+	.card-subtitle {
+		font-size: 15px;
+	}
+
 	/* LOGOS MARQUEE */
 	.logos-marquee-section {
 		padding-left: 2rem;
@@ -2528,12 +2534,17 @@ img.daas-graphic.fade-in {
 		font-size: 22px;
 	}
 
+	.tldr h3.card-title {
+		margin-top: var(--gap-section);
+	}
+
 	.tldr .card-content {
 		max-width: none;
 	}
 
 	.tldr .card-subtitle {
 		font-size: 14px;
+		margin-top: var(--gap-section);
 	}
 
 	/* CARDS */
