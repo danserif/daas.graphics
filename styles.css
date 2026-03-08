@@ -312,19 +312,28 @@ code {
 	flex: 1;
 }
 
+.header-column hr.divider {
+	padding-bottom: 2px;
+}
+
 .header-label {
 	font-family: "Departure Mono", monospace;
 	font-size: 11px;
 	line-height: normal;
+	min-height: 16px;
 	text-transform: uppercase;
 	color: var(--opacity-50);
 	visibility: hidden;
 	display: inline-block;
-	min-height: 1.65em; /* match first column (Adhesion "D") so dividers align */
 }
 
 .header-label.typewriter-active {
 	visibility: visible;
+}
+
+h1.header-label,
+h2.header-label {
+	font-size: 11px;
 }
 
 h1.header-label {
@@ -2393,6 +2402,14 @@ img.daas-graphic.fade-in {
 		padding: 1.5rem;
 	}
 
+	.header-label {
+		min-height: 0;
+	}
+
+	.header-column hr.divider {
+		padding-bottom: 0;
+	}
+
 	/* PATTERN */
 	.pattern-graphic {
 		padding-left: 1.5rem;
@@ -2417,10 +2434,6 @@ img.daas-graphic.fade-in {
 
 	.header-column:nth-child(3) {
 		display: flex;
-	}
-
-	.header .header-label {
-		min-height: unset;
 	}
 
 	.header-column:nth-child(3) .divider {
