@@ -2216,11 +2216,15 @@
 				requestAnimationFrame(animate);
 			}
 
-			// Add click handlers to all hero icons
+			// Add click handlers to all icons (confetti disabled for header icons on mobile)
 			icons.forEach(function (icon) {
 				icon.addEventListener("click", function (e) {
 					e.preventDefault();
 					e.stopPropagation();
+					// No confetti for header icons on mobile
+					if (icon.closest(".hero-icons") && window.matchMedia("(max-width: 980px)").matches) {
+						return;
+					}
 					// Track with Fathom if available
 					if (typeof fathom !== "undefined" && fathom.trackEvent) fathom.trackEvent("Icon", 0);
 					// Create multiple confetti pieces for more effect

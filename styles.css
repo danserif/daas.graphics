@@ -409,14 +409,12 @@ h1.header-label {
 	background: linear-gradient(to left, var(--color-bg) 0%, transparent 100%);
 }
 
-/* Hero inner: contains static icons overlay + scrolling ASCII */
 .hero-inner {
 	position: relative;
 	width: 100%;
 	min-height: 512px;
 }
 
-/* Icons overlay: same placement as footer, does not scroll; ASCII scrolls underneath */
 .hero-icons {
 	position: absolute;
 	top: 0;
@@ -432,7 +430,6 @@ h1.header-label {
 	pointer-events: auto;
 }
 
-/* Hero icon positions (footer keeps default positions above) */
 .hero-icons .daas-icon-1 {
 	left: 17%;
 	top: 80%;
@@ -581,20 +578,37 @@ h1.header-label {
 	transform: rotate(356.498deg);
 }
 
-/* DAAS-ICON-2: black/white swapped (face = text color, pixels = bg color) */
-.daas-icon-2 svg path[id="Face"] {
-	fill: var(--color-text);
-}
-
-.daas-icon-2 svg rect {
+/* DAAS-ICON-2: Footer = face black, pixels white (inverted for dark footer) */
+.daas-graphics .daas-icon-2 svg path[id="Face"] {
 	fill: var(--color-bg);
 }
 
-:root.light-mode .daas-icon-2 svg path[id="Face"] {
+.daas-graphics .daas-icon-2 svg rect {
 	fill: var(--color-text);
 }
 
-:root.light-mode .daas-icon-2 svg rect {
+:root.light-mode .daas-graphics .daas-icon-2 svg path[id="Face"] {
+	fill: var(--color-bg);
+}
+
+:root.light-mode .daas-graphics .daas-icon-2 svg rect {
+	fill: var(--color-text);
+}
+
+/* DAAS-ICON-2: Hero = face white, pixels black (swap only in hero) */
+.hero-icons .daas-icon-2 svg path[id="Face"] {
+	fill: var(--color-text);
+}
+
+.hero-icons .daas-icon-2 svg rect {
+	fill: var(--color-bg);
+}
+
+:root.light-mode .hero-icons .daas-icon-2 svg path[id="Face"] {
+	fill: var(--color-text);
+}
+
+:root.light-mode .hero-icons .daas-icon-2 svg rect {
 	fill: var(--color-bg);
 }
 
@@ -2587,13 +2601,30 @@ img.daas-graphic.fade-in {
 	}
 	.hero-icons .daas-icon-1 {
 		left: 8%;
-		top: 88%;
+		top: 72%;
 	}
 	.hero-icons .daas-icon-2 {
 		left: 80%;
 	}
 	.hero-icons .daas-icon-4 {
 		top: 30%;
+	}
+
+	/* Disable hover/click animation on header icons on mobile */
+	.hero-icons .daas-icon {
+		transition: opacity 0.8s ease-in-out;
+	}
+	.hero-icons .daas-icon-1:hover {
+		transform: rotate(6.034deg);
+	}
+	.hero-icons .daas-icon-2:hover {
+		transform: rotate(351.498deg);
+	}
+	.hero-icons .daas-icon-3:hover {
+		transform: rotate(255.093deg);
+	}
+	.hero-icons .daas-icon-4:hover {
+		transform: rotate(20.05deg);
 	}
 
 	.hero-title {
