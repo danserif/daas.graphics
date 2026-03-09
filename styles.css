@@ -2174,6 +2174,10 @@ img.daas-graphic.fade-in {
 		min-height: 400px;
 	}
 
+	.hero-icons .daas-icon-1 {
+		top: 60%;
+	}
+
 	.hero {
 		min-height: 400px;
 		padding: 0;
@@ -2612,11 +2616,16 @@ img.daas-graphic.fade-in {
 		max-height: 64px;
 	}
 
-	.hero-icons .daas-icon-3,
-	.hero-icons .daas-icon-4 {
+	.hero-icons .daas-icon-3 {
 		min-width: 56px;
 		max-width: 56px;
 		max-height: 56px;
+	}
+
+	.hero-icons .daas-icon-4 {
+		min-width: 48px;
+		max-width: 48px;
+		max-height: 48px;
 	}
 
 	.hero-icons .daas-icon-1 {
