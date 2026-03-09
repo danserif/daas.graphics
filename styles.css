@@ -2175,7 +2175,11 @@ img.daas-graphic.fade-in {
 	}
 
 	.hero-icons .daas-icon-1 {
-		top: 60%;
+		top: 50%;
+	}
+
+	.hero-icons .daas-icon-4 {
+		top: 70%;
 	}
 
 	.hero {
@@ -2646,27 +2650,6 @@ img.daas-graphic.fade-in {
 		top: 24%;
 	}
 
-	/* Disable hover/click animation on header icons on mobile */
-	.hero-icons .daas-icon {
-		transition: opacity 0.8s ease-in-out;
-	}
-
-	.hero-icons .daas-icon-1:hover {
-		transform: rotate(6.034deg);
-	}
-
-	.hero-icons .daas-icon-2:hover {
-		transform: rotate(351.498deg);
-	}
-
-	.hero-icons .daas-icon-3:hover {
-		transform: rotate(255.093deg);
-	}
-
-	.hero-icons .daas-icon-4:hover {
-		transform: rotate(20.05deg);
-	}
-
 	.hero-title {
 		min-height: 360px;
 		align-items: end;
@@ -2732,6 +2715,10 @@ img.daas-graphic.fade-in {
 	.card-cta {
 		font-size: 16.5px;
 		line-height: 22px;
+	}
+
+	.card-cta {
+		font-size: 11px;
 	}
 
 	h2.card-title,
