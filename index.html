@@ -1441,12 +1441,15 @@
 		// ============================================
 		(function () {
 			// Constants
+			const isMobileViewport = window.matchMedia("(max-width: 980px)").matches;
 			const INITIAL_DELAY = 10;
 			const ANIMATION_START_DELAY = 800;
 			const BLOCK_DELAY = 200;
 			const CODE_LINE_DELAY = 100;
 			const LAST_BLOCK_DELAY = 400;
-			const PAUSE_TIME = 500;
+			// Give mobile extra pause time before the overlay swipes away so
+			// header layout (including dividers) is fully ready and not seen loading.
+			const PAUSE_TIME = isMobileViewport ? 1400 : 500;
 			const CONTENT_FADE_MS = 1000;
 			const SWIPE_DURATION_MS = 600;
 			// Run preload (ASCII DOM, fonts, cache) while overlay is up for smoother reveal
@@ -1537,7 +1540,14 @@
 				const asciiDiskPre = loadingOverlay.querySelector(".ascii-disk");
 				var startCodeAndProgress = null; // set below after helpers exist
 
-				// Preload header/ASCII/start during loading so reveal feels smooth
+				// Preload header/ASCII/start during loading so reveal feels smooth.
+				// Call immediately so header layout (including dividers) is finalized
+				// well before the overlay finishes, avoiding any visible delay—
+				// especially on mobile where the overall loading sequence is shorter.
+				if (typeof window.__preloadDuringLoading === "function") {
+					window.__preloadDuringLoading();
+				}
+				// Keep the delayed call as a fallback in case of slow font/layout initialization.
 				setTimeout(function () {
 					if (typeof window.__preloadDuringLoading === "function") {
 						window.__preloadDuringLoading();
@@ -1809,8 +1819,16 @@
 		let asciiDomPrepared = false;
 		let cachedHeaderLabels = null;
 		let cachedStartSection = null;
+		let headerSharedMinHeight = 0;
 		let animationIntervals = [];
 		let animationTimeouts = [];
+
+		function markHeaderLinesReady() {
+			const header = document.querySelector(".header");
+			if (header) {
+				header.classList.add("header-lines-ready");
+			}
+		}
 
 		function prepareAsciiDOM() {
 			const asciiTextElements = document.querySelectorAll(".ascii-text");
@@ -1895,6 +1913,31 @@
 			asciiDomPrepared = true;
 			cachedHeaderLabels = document.querySelectorAll(".header-label");
 			cachedStartSection = document.querySelector(".start");
+			// Compute and apply shared min-height for header labels while the loading
+			// overlay is still covering the page so header row heights (and dividers)
+			// are stable before they are visible, especially on mobile.
+			if (cachedHeaderLabels && cachedHeaderLabels.length && !headerSharedMinHeight) {
+				let localSharedMinHeight = 0;
+				cachedHeaderLabels.forEach(function (label) {
+					const headerColumn = label.closest(".header-column");
+					if (!headerColumn || window.getComputedStyle(headerColumn).display === "none") return;
+					const previousVisibility = label.style.visibility;
+					label.style.visibility = "visible";
+					const h = label.offsetHeight;
+					if (h > localSharedMinHeight) localSharedMinHeight = h;
+					label.style.visibility = previousVisibility;
+				});
+				if (localSharedMinHeight > 0) {
+					headerSharedMinHeight = localSharedMinHeight;
+					cachedHeaderLabels.forEach(function (label) {
+						const headerColumn = label.closest(".header-column");
+						if (!headerColumn || window.getComputedStyle(headerColumn).display === "none") return;
+						label.style.minHeight = headerSharedMinHeight + "px";
+					});
+					// Header row heights (and dividers) are now stable; allow them to fade in.
+					markHeaderLinesReady();
+				}
+			}
 			document.fonts.ready.then(function () { });
 		};
 
@@ -1947,23 +1990,35 @@
 			// Typewriter effect for header labels (use cached list if preloaded)
 			const headerLabels = cachedHeaderLabels || document.querySelectorAll(".header-label");
 
-			// Compute shared min-height from tallest visible label so all labels use the same height
-			let sharedMinHeight = 0;
-			headerLabels.forEach(function (label) {
-				const headerColumn = label.closest(".header-column");
-				if (!headerColumn || window.getComputedStyle(headerColumn).display === "none") return;
-				label.style.visibility = "visible";
-				const h = label.offsetHeight;
-				if (h > sharedMinHeight) sharedMinHeight = h;
-				label.style.visibility = "";
-			});
+			// Compute shared min-height from tallest visible label so all labels use the same height.
+			// If we've already computed/applied it during the loading overlay, reuse that value
+			// to avoid any visible layout shift when animations start.
+			let sharedMinHeight = headerSharedMinHeight || 0;
+			if (!sharedMinHeight) {
+				headerLabels.forEach(function (label) {
+					const headerColumn = label.closest(".header-column");
+					if (!headerColumn || window.getComputedStyle(headerColumn).display === "none") return;
+					const previousVisibility = label.style.visibility;
+					label.style.visibility = "visible";
+					const h = label.offsetHeight;
+					if (h > sharedMinHeight) sharedMinHeight = h;
+					label.style.visibility = previousVisibility;
+				});
+				if (sharedMinHeight > 0) {
+					headerSharedMinHeight = sharedMinHeight;
+					headerLabels.forEach(function (label) {
+						const headerColumn = label.closest(".header-column");
+						if (!headerColumn || window.getComputedStyle(headerColumn).display === "none") return;
+						label.style.minHeight = sharedMinHeight + "px";
+					});
+					// In cases where the loading overlay didn't run (or preload was skipped),
+					// mark header lines as ready once we know their final height.
+					markHeaderLinesReady();
+				}
+			}
 
 			function typeWriter(element, speed) {
 				const originalHTML = element.getAttribute("data-original") || element.innerHTML;
-
-				// Use shared min-height so all labels stay the same height during typewriter
-				element.style.visibility = "visible";
-				element.style.minHeight = sharedMinHeight + "px";
 
 				let htmlIndex = 0;
 				let nextAdvanceAt = 0;
@@ -1971,7 +2026,6 @@
 				// Clear content and make visible when starting to type
 				element.innerHTML = "";
 				element.classList.add("typewriter-active");
-				element.style.visibility = ""; // Remove inline style to let CSS class take effect
 
 				// Pre-compile entity lookup for faster checking
 				const validEntities = {

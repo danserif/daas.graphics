@@ -241,6 +241,14 @@ code {
 	padding: 0;
 }
 
+.header .divider {
+	visibility: hidden;
+}
+
+.header.header-lines-ready .divider {
+	visibility: visible;
+}
+
 .uppercase {
 	text-transform: uppercase;
 }
