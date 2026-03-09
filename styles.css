@@ -601,19 +601,23 @@ h1.header-label {
 }
 
 /* DAAS-ICON-2: Hero = face white, pixels black (swap only in hero) */
-.hero-icons .daas-icon-2 svg path[id="Face"] {
+.hero-icons .daas-icon-2 svg path[id="Face"],
+.hero-confetti.daas-icon-2 svg path[id="Face"] {
 	fill: var(--color-text);
 }
 
-.hero-icons .daas-icon-2 svg rect {
+.hero-icons .daas-icon-2 svg rect,
+.hero-confetti.daas-icon-2 svg rect {
 	fill: var(--color-bg);
 }
 
-:root.light-mode .hero-icons .daas-icon-2 svg path[id="Face"] {
+:root.light-mode .hero-icons .daas-icon-2 svg path[id="Face"],
+:root.light-mode .hero-confetti.daas-icon-2 svg path[id="Face"] {
 	fill: var(--color-text);
 }
 
-:root.light-mode .hero-icons .daas-icon-2 svg rect {
+:root.light-mode .hero-icons .daas-icon-2 svg rect,
+:root.light-mode .hero-confetti.daas-icon-2 svg rect {
 	fill: var(--color-bg);
 }
 

@@ -2238,7 +2238,18 @@
 				iconClone.style.pointerEvents = "none";
 				iconClone.style.willChange = "transform, opacity";
 
-				document.body.appendChild(iconClone);
+				// For hero icons, append to body so animation can extend beyond the hero container
+				// while still allowing section-specific color styling via an extra class.
+				let parentForClone;
+				if (icon.closest(".hero-icons")) {
+					parentForClone = document.body;
+					iconClone.classList.add("hero-confetti");
+				} else {
+					// For footer / other sections, keep within the same DOM context
+					// so existing section-specific color styling continues to apply.
+					parentForClone = icon.parentNode || document.body;
+				}
+				parentForClone.appendChild(iconClone);
 
 				// Random trajectory
 				const angle = Math.random() * Math.PI * 2;
@@ -2276,7 +2287,7 @@
 					} else {
 						// Animation complete, remove clone
 						if (iconClone.parentNode) {
-							document.body.removeChild(iconClone);
+							iconClone.parentNode.removeChild(iconClone);
 						}
 					}
 				}
