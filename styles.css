@@ -3282,12 +3282,12 @@ pre.ascii-disk.ascii-disk-hidden {
 }
 
 /* BORDER FRAME PATH SHOULD BE BLACK ON ALL BREAKPOINTS */
-.loading-logo svg path[d*="M79.9837"] {
+.loading-logo svg path[data-role="border"] {
 	fill: var(--color-bg) !important;
 }
 
-/* DESKTOP: SVG RECTANGLES SHOULD BE ACCENT-COLORED ON YELLOW BACKGROUND */
-.loading-logo svg rect {
+/* DESKTOP: "PIXELS" SHOULD BE ACCENT-COLORED ON YELLOW BACKGROUND */
+.loading-logo svg [data-role="pixel"] {
 	fill: var(--color-accent) !important;
 }
 
@@ -3298,12 +3298,12 @@ pre.ascii-disk.ascii-disk-hidden {
 	}
 
 	/* KEEP ACCENT BORDER FRAME ACCENT-COLORED ON MOBILE */
-	.loading-logo svg path[d*="M79.9837"] {
+	.loading-logo svg path[data-role="border"] {
 		fill: var(--color-accent) !important;
 	}
 
-	/* MOBILE: SVG RECTANGLES SHOULD BE BLACK ON BLACK BACKGROUND */
-	.loading-logo svg rect {
+	/* MOBILE: "PIXELS" SHOULD BE BLACK ON BLACK BACKGROUND */
+	.loading-logo svg [data-role="pixel"] {
 		fill: var(--color-bg) !important;
 	}
 }
