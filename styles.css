@@ -96,7 +96,7 @@ body {
 	font-family: "Departure Mono", monospace;
 	max-width: 100%;
 	/* PREVENT IOS SAFARI ADDRESS BAR COLOR FLASH */
-	background: var(--color-bg);
+	background-color: var(--color-bg);
 }
 
 /* Text selection: accent colour with opacity */
@@ -606,6 +606,23 @@ h1.header-label {
 
 :root.light-mode .daas-graphics .daas-icon-2 svg rect {
 	fill: var(--color-text);
+}
+
+/* DAAS-ICON-2: Footer only – swap colours (black ↔ white) */
+.footer .daas-icon-2 svg path[id="Face"] {
+	fill: var(--color-text);
+}
+
+.footer .daas-icon-2 svg rect {
+	fill: var(--color-bg);
+}
+
+:root.light-mode .footer .daas-icon-2 svg path[id="Face"] {
+	fill: var(--color-text);
+}
+
+:root.light-mode .footer .daas-icon-2 svg rect {
+	fill: var(--color-bg);
 }
 
 /* DAAS-ICON-2: Hero = face white, pixels black (swap only in hero) */
@@ -1176,13 +1193,15 @@ h2.card-title {
 	mix-blend-mode: lighten;
 }
 
-.profile-details {
+.profile-details,
+.profile-links {
 	font-family: "Departure Mono", monospace;
 	font-size: 11px;
 	line-height: 1.5;
 }
 
-.profile-details p {
+.profile-details p,
+.profile-links p {
 	margin: 0;
 	color: var(--color-text);
 }
@@ -1195,13 +1214,14 @@ h2.card-title {
 	color: var(--opacity-50);
 }
 
-.profile-details p:last-child {
+.profile-details p:last-child,
+.profile-links p:last-child {
 	color: var(--opacity-25);
 	margin-top: 4px;
 }
 
 .profile-links {
-	font-size: 11px;
+	margin-top: 8px;
 }
 
 .quote-text {
@@ -1320,9 +1340,9 @@ h2.card-title {
 	color: var(--color-text);
 }
 
-@media only screen and (min-width: 1440px) and (max-width: 2420px) {
+@media only screen and (min-width: 1440px) and (max-width: 2660px) {
 	.award-image {
-		max-width: 90%;
+		max-width: 400px;
 	}
 }
 
@@ -1334,7 +1354,7 @@ h2.card-title {
 
 @media only screen and (max-width: 1040px) {
 	.award-image {
-		max-width: 80%;
+		max-width: 400px;
 	}
 }
 
@@ -1392,8 +1412,8 @@ h2.card-title {
 	}
 }
 
-/* STACK SECOND TD UNDER FIRST TD (1461PX TO 2420PX, LIKE ON MOBILE) */
-@media only screen and (min-width: 1461px) and (max-width: 2420px) {
+/* STACK SECOND TD UNDER FIRST TD (1461PX TO 2660PX, LIKE ON MOBILE) */
+@media only screen and (min-width: 1461px) and (max-width: 2660px) {
 	.awards-table tr {
 		display: block;
 		padding: 0.75em 0;
@@ -1913,7 +1933,7 @@ img.daas-graphic.fade-in {
 	}
 }
 
-@media only screen and (max-width: 2420px) {
+@media only screen and (max-width: 2660px) {
 	body {
 		max-width: 1840px;
 	}
@@ -1956,7 +1976,7 @@ img.daas-graphic.fade-in {
 		margin-left: -50vw;
 		margin-right: -50vw;
 		/* USE VIEWPORT HEIGHT SO THE ASCII HERO AND START SECTION ARE VISIBLE TOGETHER */
-		min-height: 45vh;
+		min-height: 55vh;
 		margin-top: 18vh;
 		margin-bottom: 4vh;
 	}
@@ -3087,9 +3107,21 @@ img.daas-graphic.fade-in {
 	filter: invert(1);
 }
 
+/* FOOTER: SWAP TAPE AND LETTER COLOURS (WHITE ↔ BLACK) */
+.footer .daas-graphic-1,
+.footer .daas-graphic-3 {
+	filter: none;
+}
+
 /* KEEP ILLUSTRATIONS DARK IN LIGHT MODE (NO INVERSION) */
 :root.light-mode .daas-graphic {
 	filter: none;
+}
+
+/* IN LIGHT MODE, FOOTER TAPE AND LETTER STILL SWAPPED (WHITE ↔ BLACK) */
+:root.light-mode .footer .daas-graphic-1,
+:root.light-mode .footer .daas-graphic-3 {
+	filter: invert(1);
 }
 
 /* INVERT DAAS-DISK IN LIGHT MODE SO IT'S VISIBLE */
@@ -3205,7 +3237,7 @@ pre.ascii-disk.ascii-disk-hidden {
 }
 
 /* MATCH LOADING WRAPPER MAX-WIDTH AND PADDING TO HEADER BREAKPOINTS */
-@media only screen and (max-width: 2420px) {
+@media only screen and (max-width: 2660px) {
 	pre.ascii-disk {
 		display: none;
 	}
