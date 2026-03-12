@@ -2001,6 +2001,16 @@ img.daas-graphic.fade-in {
 		font-size: 22px;
 		line-height: 33px;
 	}
+
+	/* Ensure small pattern matches large pattern spacing */
+	.pattern-graphic--small {
+		max-width: var(--max-width);
+		margin-left: auto;
+		margin-right: auto;
+		padding-left: 60px;
+		padding-right: 60px;
+	}
+
 }
 
 @media only screen and (max-width: 2660px) {
@@ -2329,6 +2339,16 @@ img.daas-graphic.fade-in {
 		padding-left: 2rem;
 		padding-right: 2rem;
 	}
+
+	/* Small repeated pattern should match its parent section width */
+	.pattern-graphic--small {
+		max-width: var(--max-width);
+		margin-left: auto;
+		margin-right: auto;
+		padding-left: 2rem;
+		padding-right: 2rem;
+	}
+
 
 	/* TL;DR + CARDS */
 	.tldr,

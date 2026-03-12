@@ -1001,7 +1001,7 @@
 	</section>
 	<!-- PATTERN -->
 	<section class="pattern">
-		<div class="pattern-graphic pattern-graphic--small" data-lines-default="8" data-lines-1460="4" data-lines-1040="3"
+		<div class="pattern-graphic pattern-graphic--small" data-lines-default="16" data-lines-1460="4" data-lines-1040="4"
 			data-lines-980="4" aria-hidden="true"></div>
 		<ul class="pattern-list">
 			<li><span class="opacity-25">Character:</span> <span class="accent">/</span> <span class="opacity-50">
@@ -2582,17 +2582,14 @@
 				function getLinesCountFor(patternEl) {
 					const width = window.innerWidth;
 
-					// Allow per-element overrides via data attributes:
+					// Per-element overrides via data attributes:
 					// data-lines-default / data-lines-1460 / data-lines-1040 / data-lines-980
-					const datasetLines = {
-						default: parseInt(patternEl.dataset.linesDefault || "", 10),
-						1460: parseInt(patternEl.dataset.lines1460 || "", 10),
-						1040: parseInt(patternEl.dataset.lines1040 || "", 10),
-						980: parseInt(patternEl.dataset.lines980 || "", 10),
-					};
-
+					// Use getAttribute for robustness (dataset mapping with numeric segments can be inconsistent).
 					function getVal(key) {
-						return Number.isFinite(datasetLines[key]) ? datasetLines[key] : defaultLinesPerViewport[key];
+						const attrName = key === "default" ? "data-lines-default" : `data-lines-${key}`;
+						const raw = patternEl.getAttribute(attrName);
+						const parsed = raw == null ? NaN : parseInt(raw, 10);
+						return Number.isFinite(parsed) ? parsed : defaultLinesPerViewport[key];
 					}
 
 					if (width <= 980) return getVal("980");
