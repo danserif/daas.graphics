@@ -505,17 +505,18 @@
 	</section>
 	<!-- PATTERN-->
 	<section class="pattern">
-		<div class="pattern-graphic"></div>
+		<div class="pattern-graphic pattern-graphic--large" data-lines-default="24" data-lines-1460="8" data-lines-1040="6"
+			data-lines-980="8"></div>
 		<ul class="pattern-list">
 			<li><span class="opacity-25">Character:</span> <span class="accent">/</span> <span class="opacity-50">
 					Slash</span> <span class="opacity-25">U+0002F</span> <code class="opacity-25">(&amp;sol;)</code></li>
-			<li><span class="opacity-25">Number:</span> <span id="pattern-char-count" class="opacity-50">01</span></li>
+			<li><span class="opacity-25">Number:</span> <span class="pattern-char-count opacity-50">01</span></li>
 			<li>
 				<span class="opacity-25">Location:</span>
-				<span id="pattern-cursor-pos">
-					<span id="pattern-cursor-x" class="opacity-50">0</span>
+				<span class="pattern-cursor-pos">
+					<span class="pattern-cursor-x opacity-50">0</span>
 					<span class="opacity-25">x</span>
-					<span id="pattern-cursor-y" class="opacity-50">0</span>
+					<span class="pattern-cursor-y opacity-50">0</span>
 					<span class="opacity-25">y</span> <span class="opacity-25">(PX)</span>
 				</span>
 			</li>
@@ -997,6 +998,25 @@
 				</div>
 			</div>
 		</div>
+	</section>
+	<!-- PATTERN -->
+	<section class="pattern">
+		<div class="pattern-graphic pattern-graphic--small" data-lines-default="8" data-lines-1460="4" data-lines-1040="3"
+			data-lines-980="4" aria-hidden="true"></div>
+		<ul class="pattern-list">
+			<li><span class="opacity-25">Character:</span> <span class="accent">/</span> <span class="opacity-50">
+					Slash</span> <span class="opacity-25">U+0002F</span> <code class="opacity-25">(&amp;sol;)</code></li>
+			<li><span class="opacity-25">Number:</span> <span class="pattern-char-count opacity-50">01</span></li>
+			<li>
+				<span class="opacity-25">Location:</span>
+				<span class="pattern-cursor-pos">
+					<span class="pattern-cursor-x opacity-50">0</span>
+					<span class="opacity-25">x</span>
+					<span class="pattern-cursor-y opacity-50">0</span>
+					<span class="opacity-25">y</span> <span class="opacity-25">(PX)</span>
+				</span>
+			</li>
+		</ul>
 	</section>
 	<!-- FOOTER-->
 	<footer class="footer" id="footer">
@@ -2546,35 +2566,49 @@
 				}
 			});
 
-			// Footer Pattern - Repeating slashes with hover effect
-			function initFooterPattern() {
-				const footerPattern = document.querySelector(".pattern-graphic");
-				if (!footerPattern) return;
+			// Slash patterns - repeating slashes with hover effect
+			function initSlashPatterns() {
+				const patterns = document.querySelectorAll(".pattern-graphic");
+				if (!patterns.length) return;
 
 				const char = "/";
-				const linesPerViewport = {
+				const defaultLinesPerViewport = {
 					default: 24,
 					1460: 8,
 					1040: 6,
 					980: 8,
 				};
 
-				function getLinesCount() {
+				function getLinesCountFor(patternEl) {
 					const width = window.innerWidth;
-					if (width <= 980) return linesPerViewport["980"];
-					if (width <= 1040) return linesPerViewport["1040"];
-					if (width <= 1460) return linesPerViewport["1460"];
-					return linesPerViewport.default;
+
+					// Allow per-element overrides via data attributes:
+					// data-lines-default / data-lines-1460 / data-lines-1040 / data-lines-980
+					const datasetLines = {
+						default: parseInt(patternEl.dataset.linesDefault || "", 10),
+						1460: parseInt(patternEl.dataset.lines1460 || "", 10),
+						1040: parseInt(patternEl.dataset.lines1040 || "", 10),
+						980: parseInt(patternEl.dataset.lines980 || "", 10),
+					};
+
+					function getVal(key) {
+						return Number.isFinite(datasetLines[key]) ? datasetLines[key] : defaultLinesPerViewport[key];
+					}
+
+					if (width <= 980) return getVal("980");
+					if (width <= 1040) return getVal("1040");
+					if (width <= 1460) return getVal("1460");
+					return getVal("default");
 				}
 
-				function generatePattern() {
-					footerPattern.innerHTML = "";
+				function generatePattern(patternEl) {
+					patternEl.innerHTML = "";
 
 					// Use the inner content width (excluding padding) so the pattern
 					// respects the same left/right padding as surrounding sections.
-					const containerRect = footerPattern.getBoundingClientRect();
+					const containerRect = patternEl.getBoundingClientRect();
 					const containerWidth = containerRect.width;
-					const computedStyle = window.getComputedStyle(footerPattern);
+					const computedStyle = window.getComputedStyle(patternEl);
 					const paddingLeft = parseFloat(computedStyle.paddingLeft) || 0;
 					const paddingRight = parseFloat(computedStyle.paddingRight) || 0;
 					const innerWidth = containerWidth - paddingLeft - paddingRight;
@@ -2618,7 +2652,7 @@
 					// right edge inside the available inner width.
 					const availableWidth = innerWidth - charWidth;
 					let charsPerLine = Math.max(1, Math.floor(availableWidth / charWithPaddingWidth) + 1);
-					const linesCount = getLinesCount();
+					const linesCount = getLinesCountFor(patternEl);
 
 					// Create a test line to verify the calculation
 					const testLine = document.createElement("div");
@@ -2667,76 +2701,81 @@
 							line.appendChild(charSpan);
 						}
 
-						footerPattern.appendChild(line);
+						patternEl.appendChild(line);
 					}
 
-					const countEl = document.getElementById("pattern-char-count");
-					if (countEl) {
-						countEl.textContent = totalChars.toLocaleString();
-					}
+					const infoList = patternEl.nextElementSibling && patternEl.nextElementSibling.classList.contains("pattern-list")
+						? patternEl.nextElementSibling
+						: null;
+					const countEl = infoList ? infoList.querySelector(".pattern-char-count") : null;
+					if (countEl) countEl.textContent = totalChars.toLocaleString();
+				}
 
-					// Get accent color and base color from CSS variables
-					function getCSSVariableColor(variable) {
-						const temp = document.createElement("div");
-						temp.style.color = `var(${variable})`;
-						temp.style.position = "absolute";
-						temp.style.visibility = "hidden";
-						document.body.appendChild(temp);
-						const computedColor = window.getComputedStyle(temp).color;
-						document.body.removeChild(temp);
-						return computedColor;
-					}
+				// Get accent color and base color from CSS variables
+				function getCSSVariableColor(variable) {
+					const temp = document.createElement("div");
+					temp.style.color = `var(${variable})`;
+					temp.style.position = "absolute";
+					temp.style.visibility = "hidden";
+					document.body.appendChild(temp);
+					const computedColor = window.getComputedStyle(temp).color;
+					document.body.removeChild(temp);
+					return computedColor;
+				}
 
-					// Convert rgb/rgba to hex for blending
-					function colorToHex(color) {
-						const match = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
-						if (match) {
-							const r = parseInt(match[1]).toString(16).padStart(2, "0");
-							const g = parseInt(match[2]).toString(16).padStart(2, "0");
-							const b = parseInt(match[3]).toString(16).padStart(2, "0");
-							return `#${r}${g}${b}`;
-						}
-						// If already hex, return as is
-						if (color.startsWith("#")) {
-							return color;
-						}
-						// Fallback: get accent color from CSS variable and convert
-						const fallbackColor = getCSSVariableColor("--color-accent");
-						const fallbackMatch = fallbackColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
-						if (fallbackMatch) {
-							const r = parseInt(fallbackMatch[1]).toString(16).padStart(2, "0");
-							const g = parseInt(fallbackMatch[2]).toString(16).padStart(2, "0");
-							const b = parseInt(fallbackMatch[3]).toString(16).padStart(2, "0");
-							return `#${r}${g}${b}`;
-						}
-						return fallbackColor.startsWith("#") ? fallbackColor : "#aaff00";
+				// Convert rgb/rgba to hex for blending
+				function colorToHex(color) {
+					const match = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+					if (match) {
+						const r = parseInt(match[1]).toString(16).padStart(2, "0");
+						const g = parseInt(match[2]).toString(16).padStart(2, "0");
+						const b = parseInt(match[3]).toString(16).padStart(2, "0");
+						return `#${r}${g}${b}`;
 					}
-
-					// Helper to always use the *current* accent color (updates with light/dark toggle)
-					function getAccentHex() {
-						const accentColor = getCSSVariableColor("--color-accent");
-						return colorToHex(accentColor);
+					// If already hex, return as is
+					if (color.startsWith("#")) {
+						return color;
 					}
+					// Fallback: get accent color from CSS variable and convert
+					const fallbackColor = getCSSVariableColor("--color-accent");
+					const fallbackMatch = fallbackColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+					if (fallbackMatch) {
+						const r = parseInt(fallbackMatch[1]).toString(16).padStart(2, "0");
+						const g = parseInt(fallbackMatch[2]).toString(16).padStart(2, "0");
+						const b = parseInt(fallbackMatch[3]).toString(16).padStart(2, "0");
+						return `#${r}${g}${b}`;
+					}
+					return fallbackColor.startsWith("#") ? fallbackColor : "#aaff00";
+				}
 
-					// Add hover effect with trail
-					const chars = footerPattern.querySelectorAll(".pattern-char");
+				// Helper to always use the *current* accent color (updates with light/dark toggle)
+				function getAccentHex() {
+					const accentColor = getCSSVariableColor("--color-accent");
+					return colorToHex(accentColor);
+				}
+
+				// Generate pattern on load
+				patterns.forEach(function (patternEl) {
 					const hoveredChars = new Map(); // Track hovered characters with timestamps
 					let fadeOutInterval = null;
+					const infoList = patternEl.nextElementSibling && patternEl.nextElementSibling.classList.contains("pattern-list")
+						? patternEl.nextElementSibling
+						: null;
+					const cursorXEl = infoList ? infoList.querySelector(".pattern-cursor-x") : null;
+					const cursorYEl = infoList ? infoList.querySelector(".pattern-cursor-y") : null;
 
 					function fadeOutTrail() {
 						const now = Date.now();
-						const fadeDuration = 1200; // Extended duration for accent color highlight
+						const fadeDuration = 1200;
 
 						hoveredChars.forEach(function (timestamp, charEl) {
 							const elapsed = now - timestamp;
 							if (elapsed >= fadeDuration) {
-								// Clear accent color but keep opacity at 0.75
 								charEl.style.color = "";
 								charEl.style.opacity = "1";
 								hoveredChars.delete(charEl);
 							} else {
 								const fadeProgress = elapsed / fadeDuration;
-								// Fade from opacity 1 to 0.75
 								charEl.style.opacity = (1 - fadeProgress * 0.25).toString();
 							}
 						});
@@ -2747,12 +2786,15 @@
 						}
 					}
 
-					footerPattern.addEventListener("mousemove", function (e) {
-						const rect = footerPattern.getBoundingClientRect();
+					patternEl.addEventListener("mousemove", function (e) {
+						const rect = patternEl.getBoundingClientRect();
 						const x = e.clientX - rect.left;
 						const y = e.clientY - rect.top;
 
-						// Find the single closest character
+						if (cursorXEl) cursorXEl.textContent = Math.round(e.clientX);
+						if (cursorYEl) cursorYEl.textContent = Math.round(e.clientY);
+
+						const chars = patternEl.querySelectorAll(".pattern-char");
 						let closestChar = null;
 						let minDistance = Infinity;
 
@@ -2762,30 +2804,24 @@
 							const charY = charRect.top + charRect.height / 2 - rect.top;
 
 							const distance = Math.sqrt(Math.pow(x - charX, 2) + Math.pow(y - charY, 2));
-
 							if (distance < minDistance) {
 								minDistance = distance;
 								closestChar = charEl;
 							}
 						});
 
-						// Apply accent color to the closest character
 						if (closestChar && !hoveredChars.has(closestChar)) {
-							// Recompute accent color on each hover so light/dark mode
-							// toggles immediately update the pattern color.
 							closestChar.style.color = getAccentHex();
 							closestChar.style.opacity = "1";
 							hoveredChars.set(closestChar, Date.now());
 
-							// Start fade-out interval if not already running
 							if (!fadeOutInterval) {
-								fadeOutInterval = setInterval(fadeOutTrail, 16); // ~60fps
+								fadeOutInterval = setInterval(fadeOutTrail, 16);
 							}
 						}
 					});
 
-					footerPattern.addEventListener("mouseleave", function () {
-						// Clear all hovered characters immediately
+					patternEl.addEventListener("mouseleave", function () {
 						hoveredChars.forEach(function (timestamp, charEl) {
 							charEl.style.color = "";
 							charEl.style.opacity = "1";
@@ -2797,35 +2833,24 @@
 							fadeOutInterval = null;
 						}
 					});
-				}
 
-				// Generate pattern on load and resize
-				generatePattern();
+					generatePattern(patternEl);
+				});
 
 				let resizeTimeout;
 				window.addEventListener("resize", function () {
 					clearTimeout(resizeTimeout);
 					resizeTimeout = setTimeout(function () {
-						generatePattern();
+						patterns.forEach(function (patternEl) {
+							generatePattern(patternEl);
+						});
 					}, 250);
 				});
 			}
 
-			initFooterPattern();
+			initSlashPatterns();
 
-			// Live cursor position in pattern list
-			function initPatternCursorPosition() {
-				const pattern = document.querySelector(".pattern-graphic");
-				const xEl = document.getElementById("pattern-cursor-x");
-				const yEl = document.getElementById("pattern-cursor-y");
-				if (!pattern || !xEl || !yEl) return;
-
-				pattern.addEventListener("mousemove", function (e) {
-					xEl.textContent = e.clientX;
-					yEl.textContent = e.clientY;
-				});
-			}
-			initPatternCursorPosition();
+			// Cursor position is handled per-pattern inside `initSlashPatterns()`
 
 			// End Section Progress Bar Animation
 			function initEndProgressAnimation() {
