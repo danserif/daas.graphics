@@ -837,7 +837,12 @@ h1.header-label {
 	scroll-margin-top: 60px;
 }
 
-#about {
+#about,
+#work,
+#lab,
+#testimonials,
+#contact,
+#footer {
 	scroll-margin-top: 60px;
 }
 
@@ -855,10 +860,54 @@ h1.header-label {
 	margin-bottom: 240px;
 }
 
+.tldr .anchor-links {
+	font-size: 16.5px;
+	line-height: 22px;
+	margin-bottom: 3rem;
+}
+
+.anchor-links {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0;
+}
+
+.anchor-links li {
+	display: inline;
+}
+
+/* Inline separators (desktop) */
+.anchor-links li + li::before {
+	content: "/";
+	opacity: 0.15;
+	margin: 0 1.25em;
+}
+
+/* Stack menu vertically at 980px breakpoint */
+@media (max-width: 980px) {
+	.anchor-links {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.75em;
+	}
+
+	.anchor-links li {
+		display: block;
+	}
+
+	.anchor-links li + li::before {
+		content: none;
+		margin: 0;
+	}
+}
+
 .tldr .card {
 	width: 100%;
 }
-
 
 .tldr .card>.card {
 	margin-top: var(--gap-row-cards);
@@ -1614,7 +1663,6 @@ h2.card-title {
 
 .footer-icon,
 .marquee-icon {
-	font-family: "Departure Mono", monospace;
 	font-size: 33px;
 	line-height: 33px;
 	color: var(--opacity-15);
@@ -1930,6 +1978,11 @@ img.daas-graphic.fade-in {
 
 	.tldr .card-content {
 		max-width: 1560px;
+	}
+
+	.tldr .anchor-links {
+		font-size: 22px;
+		line-height: 33px;
 	}
 }
 
@@ -3055,6 +3108,10 @@ img.daas-graphic.fade-in {
 		width: 60px;
 		height: 60px;
 		flex-shrink: 0;
+	}
+
+	.award-image {
+		max-width: 340px;
 	}
 }
 
