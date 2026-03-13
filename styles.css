@@ -898,7 +898,7 @@ h1.header-label {
 }
 
 /* Inline separators (desktop) */
-.anchor-links li + li::before {
+.anchor-links li+li::before {
 	content: "/";
 	opacity: 0.15;
 	margin: 0 1.25em;
@@ -916,7 +916,7 @@ h1.header-label {
 		display: block;
 	}
 
-	.anchor-links li + li::before {
+	.anchor-links li+li::before {
 		content: none;
 		margin: 0;
 	}
@@ -1239,8 +1239,8 @@ h2.card-title {
 }
 
 .profile-image {
-	width: 120px;
-	height: 120px;
+	width: 140px;
+	height: 140px;
 	flex-shrink: 0;
 	background-color: var(--color-accent);
 	max-width: 200px;
