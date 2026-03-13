@@ -505,7 +505,7 @@
 	</section>
 	<!-- PATTERN-->
 	<section class="pattern">
-		<div class="pattern-graphic pattern-graphic--large" data-lines-default="24" data-lines-1460="8" data-lines-1040="6"
+		<div class="pattern-graphic pattern-graphic--large" data-lines-default="24" data-lines-1640="8" data-lines-1040="6"
 			data-lines-980="8"></div>
 		<ul class="pattern-list">
 			<li><span class="opacity-25">Character:</span> <span class="accent">/</span> <span class="opacity-50">
@@ -626,20 +626,28 @@
 			<div class="card-text">
 				<p>DaaS <span class="opacity-50">(Graphics)</span> offers plans that can be configured based on your size,
 					stage, and the services you need:</p>
+			</div>
+			<div class="card-text card-text--full-width">
 				<table class="pricing-table">
 					<tr>
-						<td><span class="opacity-50 mono">D-01 </span><span class="opacity-25 mono">/</span> &nbsp; Coaching</td>
-						<td><span class="opacity-50 mono">D-02 </span><span class="opacity-25 mono">/</span> &nbsp; Design
-							Leadership</td>
+						<td><span class="opacity-50 mono">D-01 </span><span class="opacity-25 mono">/</span> &nbsp; Coaching &nbsp;
+							<span class="opacity-25 mono">($250 p/h)</span>
+						</td>
+						<td><span class="opacity-50 mono">D-02 </span><span class="opacity-25 mono">/</span> &nbsp; Advising &nbsp;
+							<span class="opacity-25 mono">($10k p/m)</span>
+						</td>
 					</tr>
 					<tr>
-						<td><span class="opacity-50 mono">D-03 </span><span class="opacity-25 mono">/</span> &nbsp; Branding Design
+						<td><span class="opacity-50 mono">D-03 </span><span class="opacity-25 mono">/</span> &nbsp; Designing &nbsp;
+							<span class="opacity-25 mono">($7k p/w)</span>
 						</td>
-						<td><span class="opacity-50 mono">D-04 </span><span class="opacity-25 mono">/</span> &nbsp; Expansion Pack
+						<td><span class="opacity-50 mono">D-04 </span><span class="opacity-25 mono">/</span> &nbsp; Vibing &nbsp;
+							<span class="opacity-25 mono">(POA)</span>
 						</td>
 					</tr>
 				</table>
-				<br />
+			</div>
+			<div class="card-text">
 				<p><a href="mailto:dan@newman.is?subject=DaaS%20(Graphics)%20%E2%80%93%20Pricing" class="underline"
 						onclick="fathom.trackEvent('Email', 0);">Email</a> to discuss what plan or configuration you need.</p>
 			</div>
@@ -1001,7 +1009,7 @@
 	</section>
 	<!-- PATTERN -->
 	<section class="pattern">
-		<div class="pattern-graphic pattern-graphic--small" data-lines-default="16" data-lines-1460="4" data-lines-1040="4"
+		<div class="pattern-graphic pattern-graphic--small" data-lines-default="16" data-lines-1640="4" data-lines-1040="4"
 			data-lines-980="4" aria-hidden="true"></div>
 		<ul class="pattern-list">
 			<li><span class="opacity-25">Character:</span> <span class="accent">/</span> <span class="opacity-50">
@@ -1041,7 +1049,7 @@
 							<span class="opacity-15">+</span> <span class="opacity-25">D-03</span>
 						</li>
 						<li><span class="opacity-25">//</span></li>
-						<li><span class="opacity-50">Expansion Pack</span></li>
+						<li><span class="opacity-50">Expansion Pack</span> <span class="opacity-25">(Vibing)</span></li>
 						<li><span class="opacity-25">//</span></li>
 						<li><span class="opacity-25">D-04</span></li>
 						<li><span class="opacity-25">//</span></li>
@@ -1082,7 +1090,7 @@
 							<span class="opacity-15">+</span> <span class="opacity-25">D-03</span>
 						</li>
 						<li><span class="opacity-25">//</span></li>
-						<li><span class="opacity-50">Expansion Pack</span></li>
+						<li><span class="opacity-50">Expansion Pack</span> <span class="opacity-25">(Vibing)</span></li>
 						<li><span class="opacity-25">//</span></li>
 						<li><span class="opacity-25">D-04</span></li>
 						<li><span class="opacity-25">//</span></li>
@@ -2574,7 +2582,7 @@
 				const char = "/";
 				const defaultLinesPerViewport = {
 					default: 24,
-					1460: 8,
+					1640: 8,
 					1040: 6,
 					980: 8,
 				};
@@ -2583,7 +2591,7 @@
 					const width = window.innerWidth;
 
 					// Per-element overrides via data attributes:
-					// data-lines-default / data-lines-1460 / data-lines-1040 / data-lines-980
+					// data-lines-default / data-lines-1640 / data-lines-1040 / data-lines-980
 					// Use getAttribute for robustness (dataset mapping with numeric segments can be inconsistent).
 					function getVal(key) {
 						const attrName = key === "default" ? "data-lines-default" : `data-lines-${key}`;
@@ -2594,7 +2602,7 @@
 
 					if (width <= 980) return getVal("980");
 					if (width <= 1040) return getVal("1040");
-					if (width <= 1460) return getVal("1460");
+					if (width <= 1640) return getVal("1640");
 					return getVal("default");
 				}
 

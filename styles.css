@@ -1045,6 +1045,10 @@ h2.card-title {
 	max-width: 444px;
 }
 
+.card-text--full-width {
+	max-width: none;
+}
+
 .card-text p {
 	margin: 0 0 15px 0;
 }
@@ -1058,9 +1062,8 @@ h2.card-title {
 }
 
 .pricing-table {
-	width: 100%;
 	border-collapse: collapse;
-	margin-top: 15px;
+	margin-bottom: 8px;
 }
 
 .pricing-table td {
@@ -1069,7 +1072,7 @@ h2.card-title {
 }
 
 .pricing-table td:first-child {
-	padding-right: 15px;
+	padding-right: 25px;
 }
 
 /* WORK SECTION */
@@ -2222,7 +2225,7 @@ img.daas-graphic.fade-in {
 	}
 }
 
-@media only screen and (max-width: 1460px) {
+@media only screen and (max-width: 1640px) {
 	body {
 		max-width: 1200px;
 	}
@@ -3381,7 +3384,7 @@ pre.ascii-disk.ascii-disk-hidden {
 	}
 }
 
-@media only screen and (max-width: 1460px) {
+@media only screen and (max-width: 1640px) {
 	pre.ascii-disk {
 		display: none;
 	}
