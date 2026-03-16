@@ -864,6 +864,7 @@ h1.header-label {
 }
 
 @media only screen and (max-width: 1080px) {
+
 	#start,
 	#about,
 	#work,
@@ -986,16 +987,13 @@ h1.header-label {
 	position: fixed;
 	inset: 0;
 	z-index: 9998;
-	background: var(--opacity-25);
+	background: transparent;
 	opacity: 0;
 	visibility: hidden;
 	pointer-events: none;
-	/* Match nav-panel slide duration (0.3s) to avoid iOS flash between overlay and panel */
-	transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-
-:root:not(.light-mode) .nav-overlay {
-	background: rgba(0, 0, 0, 0.5);
+	/* Match nav-panel slide duration (0.3s) to avoid iOS flash between overlay and panel.
+	   Keep visibility changes instant to reduce any perceived colour flash. */
+	transition: opacity 0.3s ease;
 }
 
 .nav-overlay.is-open {
@@ -1004,15 +1002,17 @@ h1.header-label {
 	pointer-events: auto;
 }
 
-@media only screen and (max-width: 1080px) {
-	/* On mobile, use solid accent overlay so menu tint matches accent fully */
-	.nav-overlay {
-		background: var(--color-accent);
-	}
+/* Overlay tint per theme */
+:root.light-mode .nav-overlay {
+	background: rgba(255, 255, 255, 0.9);
+}
 
-	:root:not(.light-mode) .nav-overlay {
-		background: var(--color-accent);
-	}
+:root:not(.light-mode) .nav-overlay {
+	background: rgba(0, 0, 0, 0.8);
+}
+
+@media only screen and (max-width: 1080px) {
+	/* Mobile keeps same light/dark overlay tints; no accent flood */
 }
 
 .nav-panel {
@@ -1023,8 +1023,8 @@ h1.header-label {
 	bottom: 0;
 	width: 100%;
 	max-width: 100%;
-	background: var(--color-accent);
-	color: var(--color-bg);
+	background: var(--color-bg);
+	color: var(--color-text);
 	transform: translateX(100%);
 	transition: transform 0.3s ease;
 	z-index: 9999;
@@ -1042,9 +1042,14 @@ h1.header-label {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: 32px 0 24px 40px;
 	box-sizing: border-box;
 	z-index: 10;
+}
+
+/* Divider under nav panel header should align with header padding */
+.nav-panel>.divider {
+	width: auto;
+	margin: 0 40px;
 }
 
 .nav-panel-label-text {
@@ -1053,13 +1058,17 @@ h1.header-label {
 	line-height: normal;
 	text-transform: uppercase;
 	color: inherit;
-	opacity: 0.5;
 	margin: 0;
 }
 
 @media only screen and (max-width: 1080px) {
 	.nav-panel-header {
-		padding: max(16px, env(safe-area-inset-top, 16px)) 0 24px 1.5rem;
+		padding: max(12px, env(safe-area-inset-top, 12px)) 0 6px 1.5rem;
+	}
+
+	.nav-panel>.divider {
+		width: auto;
+		margin: 0 1.5rem;
 	}
 }
 
@@ -1080,6 +1089,10 @@ h1.header-label {
 
 .nav-panel-close:hover {
 	opacity: 0.25;
+}
+
+.nav-panel-close:focus {
+	outline: none;
 }
 
 @media only screen and (max-width: 1080px) {
@@ -1122,7 +1135,7 @@ h1.header-label {
 
 .nav-panel-links a {
 	text-decoration: none;
-	color: inherit;
+	color: var(--color-text);
 	font-family: "Departure Mono", monospace;
 	font-size: 22px;
 	line-height: 33px;
@@ -1136,14 +1149,9 @@ h1.header-label {
 .nav-panel-links li>span {
 	font-size: 22px;
 	line-height: 33px;
-	padding-right: 5px;
-}
-
-@media only screen and (max-width: 1080px) {
-	.nav-panel-links a {
-		font-size: 22px;
-		line-height: 33px;
-	}
+	padding-right: 10px;
+	color: var(--color-accent);
+	opacity: 1;
 }
 
 .nav-panel-footer {
@@ -1332,6 +1340,7 @@ h2.card-title {
 }
 
 @media only screen and (max-width: 1080px) {
+
 	/* On mobile, use solid black overlay for pricing panel */
 	.plan-overlay {
 		background: #000000;

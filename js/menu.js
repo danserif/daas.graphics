@@ -82,14 +82,8 @@
 
 		function syncOverlayBackground() {
 			if (!overlay) return;
-			// Use current CSS-accent value so overlay matches theme immediately
-			var styles = window.getComputedStyle(root);
-			var accent = styles.getPropertyValue("--color-accent").trim();
-			if (accent) {
-				overlay.style.backgroundColor = accent;
-			} else {
-				overlay.style.backgroundColor = "";
-			}
+			// Let CSS control overlay colour (light/dark); clear any inline overrides.
+			overlay.style.backgroundColor = "";
 		}
 
 		function openOverlay(trigger) {
