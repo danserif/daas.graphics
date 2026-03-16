@@ -95,9 +95,10 @@
 
 			cloneLinks();
 
+			// Update theme colour before the overlay becomes visible to avoid any iOS flash.
+			setThemeColorForMenu(true);
 			overlay.classList.add("is-open");
 			syncOverlayBackground();
-			setThemeColorForMenu(true);
 			if (trigger) {
 				trigger.setAttribute("aria-expanded", "true");
 			}

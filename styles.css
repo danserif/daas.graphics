@@ -1015,11 +1015,12 @@ h1.header-label {
 
 @media only screen and (max-width: 1080px) {
 
-	/* On mobile, use a solid accent-colour overlay beneath the nav panel. */
+	/* On mobile, use a solid accent-colour overlay beneath the nav panel and avoid fading it to reduce iOS theme flashes. */
 	.nav-overlay,
 	:root.light-mode .nav-overlay,
 	:root:not(.light-mode) .nav-overlay {
 		background: var(--color-accent);
+		transition: none;
 	}
 }
 
