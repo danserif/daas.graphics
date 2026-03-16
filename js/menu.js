@@ -6,6 +6,7 @@
 		var overlay = document.querySelector("[data-nav-overlay]");
 		var root = document.documentElement;
 		var themeMeta = document.querySelector('meta[name="theme-color"]');
+		var originalThemeColor = themeMeta ? themeMeta.getAttribute("content") : null;
 		var panel = overlay ? overlay.querySelector(".nav-panel") : null;
 		var closeBtn = overlay ? overlay.querySelector(".nav-panel-close") : null;
 		var linksContainer = overlay ? overlay.querySelector("[data-nav-panel-links]") : null;
@@ -65,7 +66,7 @@
 
 		function getMenuThemeColor() {
 			// Match the accent background used for the mobile nav panel
-			if (!root) return themeMeta ? themeMeta.getAttribute("content") : "#000000";
+			if (!root) return originalThemeColor || "#000000";
 			var isLightMode = root.classList.contains("light-mode");
 			return isLightMode ? "#0044FF" : "#aaff00";
 		}
@@ -74,15 +75,8 @@
 			if (!themeMeta) return;
 			if (isOpen) {
 				themeMeta.setAttribute("content", getMenuThemeColor());
-			}
-		}
-
-		// Expose a hook so global theme changes (dark/light toggle) can
-		// update Safari's header/footer color while the nav is open.
-		window.updateNavThemeColor = function () {
-			if (!themeMeta) return;
-			if (overlay && overlay.classList.contains("is-open")) {
-				themeMeta.setAttribute("content", getMenuThemeColor());
+			} else if (originalThemeColor) {
+				themeMeta.setAttribute("content", originalThemeColor);
 			}
 		}
 
