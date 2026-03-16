@@ -88,7 +88,8 @@
 
 		var OVERLAY_FADE_MS = 280;
 		var PANEL_SLIDE_MS = 300;
-		var OVERLAY_FADE_OUT_MS = 220;
+		// Extra delay before removing overlay so it stays until panel is fully off; can reduce theme flash on close.
+		var OVERLAY_CLOSE_DELAY_MS = 380;
 
 		function openOverlay(trigger) {
 			if (!overlay || !panel) return;
@@ -116,23 +117,17 @@
 		function closeOverlay() {
 			if (!overlay) return;
 
-			// On mobile, is-closing enables a short overlay fade-out to mask theme-color flash.
-			overlay.classList.add("is-closing");
 			overlay.classList.remove("is-panel-open");
-
+			// Remove overlay and restore theme only after panel has fully slid off (no fade, just delay).
 			setTimeout(function () {
 				overlay.classList.remove("is-open");
-				// After overlay fade-out finishes, clean up and restore theme.
-				setTimeout(function () {
-					overlay.classList.remove("is-closing");
-					overlay.style.backgroundColor = "";
-					setThemeColorForMenu(false);
-					if (lastTrigger) {
-						lastTrigger.setAttribute("aria-expanded", "false");
-						lastTrigger.focus();
-					}
-				}, OVERLAY_FADE_OUT_MS);
-			}, PANEL_SLIDE_MS);
+				overlay.style.backgroundColor = "";
+				setThemeColorForMenu(false);
+				if (lastTrigger) {
+					lastTrigger.setAttribute("aria-expanded", "false");
+					lastTrigger.focus();
+				}
+			}, OVERLAY_CLOSE_DELAY_MS);
 		}
 
 		toggles.forEach(function (btn) {
