@@ -4,6 +4,9 @@
 
 	function initNavOverlay() {
 		var overlay = document.querySelector("[data-nav-overlay]");
+		var root = document.documentElement;
+		var themeMeta = document.querySelector('meta[name="theme-color"]');
+		var originalThemeColor = themeMeta ? themeMeta.getAttribute("content") : null;
 		var panel = overlay ? overlay.querySelector(".nav-panel") : null;
 		var closeBtn = overlay ? overlay.querySelector(".nav-panel-close") : null;
 		var linksContainer = overlay ? overlay.querySelector("[data-nav-panel-links]") : null;
@@ -61,6 +64,22 @@
 			}
 		}
 
+		function getMenuThemeColor() {
+			// Match the accent background used for the mobile nav panel
+			if (!root) return originalThemeColor || "#000000";
+			var isLightMode = root.classList.contains("light-mode");
+			return isLightMode ? "#0044FF" : "#aaff00";
+		}
+
+		function setThemeColorForMenu(isOpen) {
+			if (!themeMeta) return;
+			if (isOpen) {
+				themeMeta.setAttribute("content", getMenuThemeColor());
+			} else if (originalThemeColor) {
+				themeMeta.setAttribute("content", originalThemeColor);
+			}
+		}
+
 		function openOverlay(trigger) {
 			if (!overlay || !panel) return;
 			lastTrigger = trigger || null;
@@ -68,6 +87,7 @@
 			cloneLinks();
 
 			overlay.classList.add("is-open");
+			setThemeColorForMenu(true);
 			if (trigger) {
 				trigger.setAttribute("aria-expanded", "true");
 			}
@@ -86,6 +106,7 @@
 
 			overlay.classList.remove("is-panel-open");
 			overlay.classList.remove("is-open");
+			setThemeColorForMenu(false);
 
 			if (lastTrigger) {
 				lastTrigger.setAttribute("aria-expanded", "false");
