@@ -1482,6 +1482,10 @@ h2.card-title {
 	opacity: 0.5;
 }
 
+.plan-panel-close:focus {
+	outline: none;
+}
+
 .plan-panel-close:hover {
 	opacity: 0.25;
 }
