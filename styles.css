@@ -857,7 +857,7 @@ h1.header-label {
 #about,
 #work,
 #lab,
-#quotes,
+#testimonials,
 #contact,
 #footer {
 	scroll-margin-top: 60px;
@@ -904,8 +904,8 @@ h1.header-label {
 	margin: 0 1.25em;
 }
 
-/* Stack menu vertically at 980px breakpoint */
-@media (max-width: 980px) {
+/* Stack menu vertically at 1080px breakpoint */
+@media (max-width: 1080px) {
 	.anchor-links {
 		flex-direction: column;
 		align-items: flex-start;
@@ -1064,6 +1064,7 @@ h2.card-title {
 .pricing-table {
 	border-collapse: collapse;
 	margin-bottom: 8px;
+	font-size: 14.5px;
 }
 
 .pricing-table td {
@@ -1072,7 +1073,640 @@ h2.card-title {
 }
 
 .pricing-table td:first-child {
-	padding-right: 25px;
+	padding-right: 35px;
+}
+
+/* PLAN PANEL */
+.plan-overlay {
+	position: fixed;
+	inset: 0;
+	z-index: 9999;
+	background: var(--opacity-25);
+	opacity: 0;
+	visibility: hidden;
+	transition: opacity 0.25s ease, visibility 0.25s ease;
+	pointer-events: none;
+	overflow: visible;
+	/* avoid clipping panel when content is taller than viewport */
+}
+
+.plan-overlay ::selection {
+	background-color: rgba(0, 0, 0, 0.2);
+	color: inherit;
+}
+
+.plan-overlay ::-moz-selection {
+	background-color: rgba(0, 0, 0, 0.2);
+	color: inherit;
+}
+
+:root.light-mode .plan-overlay ::selection {
+	background-color: rgba(0, 0, 0, 0.2);
+	color: inherit;
+}
+
+:root.light-mode .plan-overlay ::-moz-selection {
+	background-color: rgba(0, 0, 0, 0.2);
+	color: inherit;
+}
+
+:root:not(.light-mode) .plan-overlay {
+	background: rgba(0, 0, 0, 0.5);
+}
+
+.plan-overlay.is-open {
+	opacity: 1;
+	visibility: visible;
+	pointer-events: auto;
+}
+
+.plan-panel {
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	width: 576px;
+	max-width: 100%;
+	/* height from top/bottom so panel always fills viewport when content is short */
+	background: #000;
+	box-shadow: -4px 0 24px rgba(0, 0, 0, 0.2);
+	transform: translateX(100%);
+	transition: transform 0.3s ease;
+	z-index: 10000;
+	display: flex;
+	flex-direction: column;
+	overflow: visible;
+	/* only .plan-panel-scroll should clip/scroll */
+}
+
+/* Panel slides in only when .is-panel-open is set (after one frame), so the transition is visible on desktop too */
+.plan-overlay.is-open.is-panel-open .plan-panel {
+	transform: translateX(0);
+}
+
+:root:not(.light-mode) .plan-panel {
+	box-shadow: -4px 0 24px rgba(0, 0, 0, 0.2), -8px 0 48px rgba(0, 0, 0, 0.4);
+}
+
+.plan-panel-gradient-fixed {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 150px;
+	background: linear-gradient(to bottom, #000 0%, transparent 100%);
+	pointer-events: none;
+	z-index: 1;
+}
+
+/* Header: plan toggles (D-01 / D-02 / D-03 / D-04) + close — above gradients */
+.plan-panel-header {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 20;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 32px 0 20px 40px;
+	box-sizing: border-box;
+	pointer-events: none;
+}
+
+.plan-panel-header>* {
+	pointer-events: auto;
+}
+
+.plan-panel-tabs {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 0;
+	font-family: "Departure Mono", monospace;
+	font-size: 22px;
+	line-height: 33px;
+	color: #fff;
+}
+
+.plan-panel-tab-sep {
+	margin: 0 14px;
+	color: rgba(255, 255, 255, 0.25);
+	user-select: none;
+}
+
+.plan-panel-tab {
+	background: none;
+	border: none;
+	padding: 0;
+	font: inherit;
+	color: inherit;
+	cursor: pointer;
+}
+
+.plan-panel-tab:hover {
+	color: #fff;
+	opacity: 0.5;
+}
+
+.plan-panel-tab.is-active {
+	color: var(--color-accent);
+}
+
+.plan-panel-tab.is-active:hover {
+	opacity: 0.5;
+}
+
+.plan-panel-close {
+	width: 44px;
+	height: 44px;
+	padding: 0;
+	margin-right: 24px;
+	font-size: 22px;
+	line-height: 33px;
+	font-family: "Departure Mono", monospace;
+	color: #fff;
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	opacity: 0.5;
+}
+
+.plan-panel-close:hover {
+	opacity: 0.25;
+}
+
+.plan-panel-scroll {
+	flex: 1 1 0;
+	min-height: 0;
+	overflow-y: auto;
+	overflow-x: hidden;
+	display: flex;
+	flex-direction: column;
+}
+
+.plan-panel-hero {
+	position: relative;
+	width: 100%;
+	height: 0;
+	padding-bottom: 100%;
+	flex-shrink: 0;
+	overflow: hidden;
+	isolation: isolate;
+}
+
+.plan-panel-image {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	z-index: 0;
+}
+
+.plan-panel-image-pixelation {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+	z-index: 1;
+}
+
+.plan-panel-gradient {
+	position: absolute;
+	left: 0;
+	width: 100%;
+	height: 150px;
+	pointer-events: none;
+	z-index: 10;
+	transform: translateZ(0);
+}
+
+.plan-panel-gradient--top {
+	top: 0;
+	background: linear-gradient(to bottom, #000 0%, transparent 100%);
+}
+
+.plan-panel-gradient--bottom {
+	bottom: 0;
+	background: linear-gradient(to top, #000 0%, transparent 100%);
+}
+
+/* Overlay on image: status (bottom-left) — always light for contrast on dark image */
+.plan-panel-hero .plan-panel-status {
+	position: absolute;
+	bottom: 24px;
+	left: 40px;
+	right: 40px;
+	z-index: 20;
+	font-family: "Departure Mono", monospace;
+	font-size: 11px;
+	line-height: 15px;
+	text-transform: uppercase;
+	color: #fff;
+	margin: 0;
+}
+
+/* Content strips to match Figma: name+desc (light), price+features (accent), CTA (dark) */
+.plan-panel-content {
+	padding: 0 36px;
+	box-sizing: border-box;
+}
+
+.plan-panel-content--name-desc {
+	padding-top: 40px;
+	padding-bottom: 48px;
+	padding-left: 36px;
+	padding-right: 40px;
+	background: #fff;
+	color: #000;
+}
+
+.plan-panel-name {
+	font-family: "Departure Mono", monospace;
+	font-size: 33px;
+	line-height: 44px;
+	margin: 0 0 16px 0;
+	font-weight: 400;
+}
+
+.plan-panel-name-subtitle {
+	font-size: 22px;
+	line-height: 33px;
+}
+
+.plan-panel-description {
+	font-family: "Untitled Sans", sans-serif;
+	font-size: 16px;
+	line-height: 22px;
+	margin: 0;
+	max-width: 440px;
+}
+
+.plan-panel-content--name-desc .plan-panel-description {
+	color: rgba(0, 0, 0, 0.75);
+}
+
+.plan-panel-content--name-desc .plan-panel-name-subtitle.opacity-50 {
+	color: rgba(0, 0, 0, 0.5);
+}
+
+.plan-panel-content--name-desc .divider {
+	margin-bottom: 24px;
+	border-top-color: var(--color-border);
+}
+
+:root:not(.light-mode) .plan-panel-content--name-desc .divider {
+	border-top-color: #e5e5e5;
+}
+
+.plan-panel-content--accent {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	background: var(--color-accent);
+	color: var(--color-bg);
+	padding: 48px 40px 0 36px;
+	min-height: min-content;
+	/* flex: 1 fills viewport when content short; min-height: min-content lets content overflow and scroll when tall */
+}
+
+.plan-panel-price-prefix {
+	display: block;
+	line-height: 22px;
+}
+
+.plan-panel-content--accent .plan-panel-price-prefix {
+	color: var(--color-bg);
+	opacity: 0.9;
+}
+
+.plan-panel-content--accent .plan-panel-price-prefix.opacity-50 {
+	opacity: 0.5;
+}
+
+.plan-panel-content--accent .plan-panel-price-suffix.opacity-50 {
+	color: var(--color-bg);
+	opacity: 0.5;
+}
+
+.plan-panel-content--accent .plan-panel-price-amount {
+	color: var(--color-bg);
+}
+
+.plan-panel-content--accent .plan-panel-features {
+	color: var(--color-bg);
+}
+
+.plan-panel-content--accent .plan-panel-features li::before {
+	color: var(--color-bg);
+}
+
+.plan-panel-content--accent .plan-panel-features .opacity-50 {
+	opacity: 0.7;
+}
+
+.plan-panel-price {
+	font-family: "Departure Mono", monospace;
+	font-size: 11px;
+	line-height: 44px;
+	text-transform: uppercase;
+	margin: 0 0 20px 0;
+	letter-spacing: 0.02em;
+}
+
+.plan-note {
+	font-family: "Untitled Sans", sans-serif;
+	font-size: 16px;
+	line-height: 22px;
+	color: var(--color-bg);
+	margin: 0 0 40px 0;
+	max-width: 400px;
+}
+
+.plan-panel-price-amount {
+	font-size: 33px;
+	line-height: 44px;
+	text-transform: none;
+	letter-spacing: 0;
+}
+
+.plan-panel-price-suffix {
+	font-size: 22px;
+	line-height: 33px;
+}
+
+.plan-panel-features {
+	list-style: none;
+	margin: 0 0 48px 0;
+	padding: 0;
+	font-family: "Untitled Sans", sans-serif;
+	font-size: 16px;
+	line-height: 22px;
+	opacity: 0.9;
+}
+
+.plan-panel-features li {
+	position: relative;
+	padding-left: 29px;
+	margin-bottom: 8px;
+}
+
+.plan-panel-features li:last-child {
+	margin-bottom: 0;
+}
+
+.plan-panel-features li::before {
+	content: "›";
+	position: absolute;
+	left: 0;
+	font-family: "Departure Mono", monospace;
+	font-size: 22px;
+	opacity: 0.5;
+}
+
+.plan-panel-cta-panel {
+	margin-top: auto;
+	background: rgba(0, 0, 0, 0.2);
+	padding: 40px 40px 32px 36px;
+	margin-left: -36px;
+	margin-right: -40px;
+	margin-bottom: 0;
+	box-sizing: border-box;
+}
+
+:root:not(.light-mode) .plan-panel-cta-panel {
+	background: rgba(0, 0, 0, 0.1);
+}
+
+.plan-panel-cta-wrap {
+	margin: 0;
+}
+
+.plan-panel-cta {
+	font-family: "Departure Mono", monospace;
+	font-size: 22px;
+	line-height: 33px;
+	text-decoration: none;
+	color: var(--color-bg);
+	display: inline-block;
+}
+
+a.plan-panel-cta:hover {
+	opacity: 0.5;
+}
+
+.plan-panel-content--accent a.plan-panel-cta .accent {
+	color: var(--color-bg);
+	opacity: 0.85;
+}
+
+.plan-panel-content--accent a.plan-panel-cta .accent.opacity-50,
+.plan-panel-content--accent .plan-panel-cta--text .accent.opacity-50 {
+	opacity: 0.5;
+}
+
+.plan-panel-content--accent .plan-panel-cta--text .accent {
+	color: var(--color-bg);
+	opacity: 0.85;
+}
+
+/* Step down with main page: at 2660px */
+@media only screen and (max-width: 2660px) {
+	.plan-panel-name {
+		font-size: 27.5px;
+		line-height: 33px;
+		margin-bottom: 12px;
+	}
+
+	.plan-panel-name-subtitle {
+		font-size: 16.5px;
+		line-height: 22px;
+	}
+
+	.plan-panel-price-amount {
+		font-size: 22px;
+		line-height: 33px;
+	}
+
+	.plan-panel-price-suffix {
+		font-size: 16.5px;
+		line-height: 22px;
+	}
+
+	.plan-panel-tabs {
+		font-size: 18px;
+		line-height: 27px;
+	}
+
+	.plan-panel-description,
+	.plan-note,
+	.plan-panel-features {
+		font-size: 15px;
+	}
+
+	.plan-panel-description {
+		max-width: 410px;
+	}
+
+	.plan-note {
+		max-width: 375px;
+	}
+
+	.plan-panel-cta {
+		font-size: 16.5px;
+		line-height: 22px;
+	}
+
+	.plan-panel-content--name-desc {
+		padding-top: 28px;
+		padding-bottom: 32px;
+	}
+
+	.plan-panel-content--name-desc .divider {
+		margin-bottom: 16px;
+	}
+
+	.plan-panel-content--accent {
+		padding-top: 32px;
+	}
+
+	.plan-panel-price {
+		margin-bottom: 14px;
+	}
+
+	.plan-note {
+		margin-bottom: 28px;
+	}
+
+	.plan-panel-features {
+		margin-bottom: 32px;
+	}
+
+	.plan-panel-features li {
+		margin-bottom: 6px;
+	}
+
+	.plan-panel-cta-panel {
+		padding-top: 28px;
+		padding-bottom: 24px;
+	}
+}
+
+/* Two-column layout: narrower pricing panel */
+@media only screen and (min-width: 1081px) and (max-width: 1640px) {
+	.plan-panel {
+		width: 480px;
+	}
+}
+
+@media only screen and (max-width: 1080px) {
+	.plan-overlay.is-open .plan-panel {
+		width: 100%;
+		max-width: 100%;
+	}
+
+	.plan-panel {
+		width: 100%;
+		max-width: 100%;
+	}
+
+	.plan-panel-header {
+		padding: max(12px, env(safe-area-inset-top, 12px)) 0 20px 1.5rem;
+	}
+
+	.plan-panel-close {
+		margin-right: 8px;
+	}
+
+	.plan-panel-content--name-desc {
+		padding-top: 24px;
+		padding-bottom: 16px;
+		padding-left: 1.5rem;
+		padding-right: 1.5rem;
+	}
+
+	.plan-panel-content--name-desc .divider {
+		margin-top: 12px;
+		margin-bottom: 12px;
+	}
+
+	.plan-panel-content--accent {
+		padding-top: 24px;
+		padding-bottom: 0;
+		padding-left: 1.5rem;
+		padding-right: 1.5rem;
+	}
+
+	.plan-panel-cta-panel {
+		margin-left: -1.5rem;
+		margin-right: -1.5rem;
+		padding-top: 32px;
+		padding-left: 1.5rem;
+		padding-right: 1.5rem;
+	}
+
+	.plan-panel-hero .plan-panel-status {
+		left: 1.5rem;
+		right: 1.5rem;
+	}
+
+	.plan-panel-name {
+		font-size: 22px;
+		line-height: 22px;
+	}
+
+	.plan-panel-name-subtitle {
+		font-size: 16.5px;
+		line-height: 22px;
+	}
+
+	.plan-panel-price-amount {
+		font-size: 22px;
+		line-height: 22px;
+	}
+
+	.plan-panel-price-suffix {
+		font-size: 16.5px;
+		line-height: 22px;
+	}
+
+	.plan-panel-price {
+		margin-bottom: 12px;
+	}
+
+	.plan-panel-tabs {
+		font-size: 16.5px;
+		line-height: 22px;
+	}
+
+	.plan-panel-description,
+	.plan-note {
+		font-size: 14px;
+		line-height: 22px;
+		margin-bottom: 20px;
+	}
+
+	.plan-panel-description {
+		max-width: 385px;
+		margin-bottom: 8px;
+	}
+
+	.plan-note {
+		max-width: 350px;
+	}
+
+	.plan-panel-features {
+		font-size: 14px;
+		line-height: 22px;
+		margin-bottom: 32px;
+	}
+
+	.plan-panel-cta {
+		font-size: 16.5px;
+		line-height: 22px;
+	}
 }
 
 /* WORK SECTION */
@@ -2643,7 +3277,7 @@ img.daas-graphic.fade-in {
 	}
 }
 
-@media only screen and (max-width: 980px) {
+@media only screen and (max-width: 1080px) {
 	:root {
 		--gap-mobile-sections: 3rem;
 	}
@@ -2872,20 +3506,29 @@ img.daas-graphic.fade-in {
 		line-height: 22px;
 	}
 
+	.card-text:has(+ .card-text--full-width) p {
+		margin-bottom: 6px;
+	}
+
 	.quote-text blockquote {
 		font-size: 14px;
 		line-height: 22px;
 	}
 
 	.pricing-table tr {
-		display: block;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 0;
 	}
 
 	.pricing-table td {
 		display: block;
-		width: 100%;
-		padding-right: 0;
-		padding-bottom: 0px;
+		box-sizing: border-box;
+		padding-bottom: 0;
+	}
+
+	.pricing-table td:first-child {
+		padding-right: 25px;
 	}
 
 	.pricing-table tr:last-child td:last-child {
@@ -3130,6 +3773,19 @@ img.daas-graphic.fade-in {
 }
 
 @media only screen and (max-width: 600px) {
+	.pricing-table tr {
+		grid-template-columns: 1fr;
+	}
+
+	.pricing-table td {
+		padding-right: 0;
+		padding-bottom: 2px;
+	}
+
+	.pricing-table tr:last-child td:last-child {
+		padding-bottom: 0;
+	}
+
 	.end-wrapper {
 		flex-direction: column-reverse;
 		align-items: flex-start;
@@ -3435,7 +4091,7 @@ pre.ascii-disk.ascii-disk-hidden {
 }
 
 /* MOBILE: SVG PATHS SHOULD BE WHITE ON BLACK BACKGROUND (EXCEPT ACCENT BORDER) */
-@media only screen and (max-width: 980px) {
+@media only screen and (max-width: 1080px) {
 	.loading-logo svg path {
 		fill: var(--color-text) !important;
 	}
@@ -3494,7 +4150,7 @@ pre.ascii-disk.ascii-disk-hidden {
 	display: inline;
 }
 
-@media only screen and (max-width: 980px) {
+@media only screen and (max-width: 1080px) {
 	pre.ascii-disk {
 		display: none;
 	}

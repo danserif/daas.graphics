@@ -98,9 +98,8 @@
 					<p>LOAD_ASSETS<span class="opacity-50">();</span></p>
 					<p>DEPLOY_OUTPUT<span class="opacity-50">();</span></p>
 					<p class="opacity-25">/* -------------------------------- */</p>
-					<p><span class="opacity-50">%</span> [D-01] <span class="opacity-25">/</span> [D-02] <span
-							class="opacity-25">/</span> [D-03]
-						<span class="opacity-25">/</span> [D-04]
+					<p><span class="opacity-25">=</span> [D-01] <span class="opacity-25">/</span> [D-02] <span
+							class="opacity-25">/</span> [D-03] <span class="opacity-25">/</span> [D-04]
 					</p>
 					<p class="opacity-25">/* -------------------------------- */</p>
 					<p>BOOT_SEQUENCE: <span class="opacity-50">[COMPLETE]</span></p>
@@ -230,9 +229,10 @@
 					class="dark-mode-toggle">Dark</a> <span class="opacity-50">/</span> <a href="#"
 					class="light-mode-toggle">Light</a><span class="opacity-50">]</span>
 				<span class="desktop-only">
-					<span class="opacity-50">//</span> <span class="opacity-75">mailto:</span> <a href="mailto:dan@newman.is"
-						onclick="fathom.trackEvent('Email', 0);">dan <span class="opacity-50">[at]</span> newman <span
-							class="opacity-50">[dot]</span> is</a> <span class="accent">→</span>
+					<span class="opacity-50">//</span> <span class="opacity-75">mailto:</span> <a
+						href="mailto:dan@newman.is?subject=DaaS%20(Graphics)" onclick="fathom.trackEvent('Email', 0);">dan <span
+							class="opacity-50">[at]</span> newman <span class="opacity-50">[dot]</span> is</a> <span
+						class="accent">→</span>
 				</span>
 			</p>
 			<hr class="divider" />
@@ -240,13 +240,13 @@
 		<!-- EMAIL -->
 		<div class="header-column mobile-only">
 			<p class="header-label">
-				<span class="opacity-75">mailto:</span> <a href="mailto:dan@newman.is"
+				<span class="opacity-75">mailto:</span> <a href="mailto:dan@newman.is?subject=DaaS%20(Graphics)"
 					onclick="fathom.trackEvent('Email', 0);">dan <span class="opacity-50">[at]</span> newman <span
 						class="opacity-50">[dot]</span> is</a> <span class="opacity-50">→</span>
 			</p>
 		</div>
 	</header>
-	<!-- DAAS (GRAPHICS) -->
+	<!-- GRAPHICS -->
 	<main class="hero">
 		<div class="hero-inner">
 			<div class="hero-icons" aria-hidden="true">
@@ -442,9 +442,9 @@
 				<h2 class="card-title font-adhesion accent">A new era of design is here.</h2>
 				<h3 class="card-title">Get design and leadership support for your startup, team, or business — only when you
 					need it.</h3>
-				<p class="card-subtitle font-untitled">From coaching to creative direction, <a href="#about"
-						class="underline">DaaS</a> <span class="opacity-50">(Dan as a Service)</span> has flexible plans to
-					help you and your team.
+				<p class="card-subtitle font-untitled">From coaching to creative direction, <a href="#about" class="underline"
+						onclick="fathom.trackEvent('About', 0);">DaaS</a> <span class="opacity-50">(Dan as a Service)</span> has
+					flexible <a href="#" class="underline pricing-plan-link" data-plan="D-03">plans</a> to help you and your team.
 				</p>
 			</div>
 			<!-- MENU -->
@@ -455,12 +455,18 @@
 				<div class="card-content">
 					<nav>
 						<ul class="anchor-links">
-							<li><span class="opacity-25 font-adhesion">&#68;</span> <a href="#about">About</a></li>
-							<li><span class="opacity-25">&#8984;</span> <a href="#work">Work</a></li>
-							<li><span class="opacity-25">&#8721;</span> <a href="#lab">Lab</a></li>
-							<li><span class="opacity-25">&hearts;</span> <a href="#quotes">Quotes</a></li>
-							<li><span class="opacity-25">&#64;</span> <a href="#contact">Contact</a></li>
-							<li><span class="opacity-25">&#182;</span> <a href="#footer">Footer</a></li>
+							<li><span class="opacity-25 font-adhesion">&#68;</span> <a href="#about"
+									onclick="fathom.trackEvent('About', 0);">About</a></li>
+							<li><span class="opacity-25">&#8984;</span> <a href="#work"
+									onclick="fathom.trackEvent('Work', 0);">Work</a></li>
+							<li><span class="opacity-25">&#8721;</span> <a href="#lab" onclick="fathom.trackEvent('Lab', 0);">Lab</a>
+							</li>
+							<li><span class="opacity-25">&#36;</span> <a href="#" class="pricing-plan-link" data-plan="D-03"
+									onclick="fathom.trackEvent('Pricing', 0);">Pricing</a></li>
+							<li><span class="opacity-25">&hearts;</span> <a href="#testimonials"
+									onclick="fathom.trackEvent('Testimonials', 0);">Testimonials</a></li>
+							<li><span class="opacity-25">&#64;</span> <a href="#contact"
+									onclick="fathom.trackEvent('Contact', 0);">Contact</a></li>
 						</ul>
 					</nav>
 				</div>
@@ -472,7 +478,7 @@
 				<hr class="divider" />
 				<div class="card-content">
 					<p class="card-cta">
-						<span class="opacity-25">mailto:</span> <a href="mailto:dan@newman.is"
+						<span class="opacity-25">mailto:</span> <a href="mailto:dan@newman.is?subject=DaaS%20(Graphics)"
 							onclick="fathom.trackEvent('Email', 0);">dan
 							<span class="opacity-50">[at]</span> newman <span class="opacity-50">[dot]</span> is</a>
 						<span class="accent">→</span>
@@ -498,7 +504,6 @@
 							</div>
 						</div>
 					</div>
-
 				</div>
 			</div>
 		</div>
@@ -506,7 +511,7 @@
 	<!-- PATTERN-->
 	<section class="pattern">
 		<div class="pattern-graphic pattern-graphic--large" data-lines-default="24" data-lines-1640="8" data-lines-1040="6"
-			data-lines-980="8"></div>
+			data-lines-1080="8"></div>
 		<ul class="pattern-list">
 			<li><span class="opacity-25">Character:</span> <span class="accent">/</span> <span class="opacity-50">
 					Slash</span> <span class="opacity-25">U+0002F</span> <code class="opacity-25">(&amp;sol;)</code></li>
@@ -624,31 +629,32 @@
 				</p>
 			</div>
 			<div class="card-text">
-				<p>DaaS <span class="opacity-50">(Graphics)</span> offers plans that can be configured based on your size,
-					stage, and the services you need:</p>
+				<p>DaaS <span class="opacity-50">(Graphics)</span> offers <a href="#" class="underline pricing-plan-link"
+						data-plan="D-03">plans</a> that can be configured based on your size, stage, and the services you need:</p>
 			</div>
 			<div class="card-text card-text--full-width">
-				<table class="pricing-table">
+				<table class="pricing-table mono">
 					<tr>
-						<td><span class="opacity-50 mono">D-01 </span><span class="opacity-25 mono">/</span> &nbsp; Coaching &nbsp;
-							<span class="opacity-25 mono">($250 p/h)</span>
-						</td>
-						<td><span class="opacity-50 mono">D-02 </span><span class="opacity-25 mono">/</span> &nbsp; Advising &nbsp;
-							<span class="opacity-25 mono">($10k p/m)</span>
-						</td>
+						<td><span class="opacity-50">D-01</span> <span class="opacity-25">/</span> <a href="#"
+								class="pricing-plan-link accent" data-plan="D-01"
+								onclick="fathom.trackEvent('Coaching', 0);">Coaching</a> <span class="accent opacity-50">»</span></td>
+						<td><span class="opacity-50">D-02</span> <span class="opacity-25">/</span> <a href="#"
+								class="pricing-plan-link accent" data-plan="D-02"
+								onclick="fathom.trackEvent('Advising', 0);">Advising</a> <span class="accent opacity-50">»</span></td>
 					</tr>
 					<tr>
-						<td><span class="opacity-50 mono">D-03 </span><span class="opacity-25 mono">/</span> &nbsp; Designing &nbsp;
-							<span class="opacity-25 mono">($7k p/w)</span>
-						</td>
-						<td><span class="opacity-50 mono">D-04 </span><span class="opacity-25 mono">/</span> &nbsp; Vibing &nbsp;
-							<span class="opacity-25 mono">(POA)</span>
+						<td><span class="opacity-50">D-03</span> <span class="opacity-25">/</span> <a href="#"
+								class="pricing-plan-link accent" data-plan="D-03"
+								onclick="fathom.trackEvent('Designing', 0);">Designing</a> <span class="accent opacity-50">»</span></td>
+						<td><span class="opacity-50">D-04</span> <span class="opacity-25">/</span> <a href="#"
+								class="pricing-plan-link accent" data-plan="D-04" onclick="fathom.trackEvent('Vibing', 0);">Vibing</a>
+							<span class="accent opacity-50">»</span>
 						</td>
 					</tr>
 				</table>
 			</div>
 			<div class="card-text">
-				<p><a href="mailto:dan@newman.is?subject=DaaS%20(Graphics)%20%E2%80%93%20Pricing" class="underline"
+				<p><a href="mailto:dan@newman.is?subject=DaaS%20(Graphics)" class="underline"
 						onclick="fathom.trackEvent('Email', 0);">Email</a> to discuss what plan or configuration you need.</p>
 			</div>
 		</div>
@@ -659,13 +665,14 @@
 			<hr class="divider" />
 			<div class="card-content">
 				<h3 class="card-title">Service Status</h3>
-				<p class="card-subtitle"><span class="accent">Fully Booked </span><span class="opacity-50">[Waitlist]</span></p>
+				<p class="card-subtitle"><span class="accent">Limited Availability</span> <span
+						class="opacity-50">[Waitlist]</span></p>
 			</div>
 			<div class="card-text">
 				<p>
 					There are currently more people interested than there is time to help, sorry! If you’re not in a rush, join
 					the
-					<a href="mailto:dan@newman.is?subject=DaaS%20(Graphics)%20%E2%80%93%20Waitlist" class="underline"
+					<a href="mailto:dan@newman.is?subject=DaaS%20(Graphics)" class="underline"
 						onclick="fathom.trackEvent('Waitlist', 0);">waitlist</a>.
 				</p>
 				<p>
@@ -676,7 +683,7 @@
 			</div>
 		</div>
 	</section>
-	<!-- GRAPHICS -->
+	<!-- WORK -->
 	<section class="work-samples" id="work">
 		<p class="work-icon">&#8984;</p>
 		<h4 class="work-label">Graphics / Work</h4>
@@ -742,7 +749,7 @@
 			</div>
 		</div>
 	</section>
-	<!-- EXPERIMENTS -->
+	<!-- LAB -->
 	<section class="work-samples" id="lab">
 		<p class="work-icon">&#8721;</p>
 		<h4 class="work-label">Experiments / Lab</h4>
@@ -927,8 +934,8 @@
 			</div>
 		</div>
 	</section>
-	<!-- QUOTES -->
-	<section class="quotes" id="quotes">
+	<!-- TESTIMONIALS -->
+	<section class="quotes" id="testimonials">
 		<p class="quotes-icon">&hearts;</p>
 		<h4 class="quotes-label">Quotes / Testimonials</h4>
 		<hr class="divider" />
@@ -1010,7 +1017,7 @@
 	<!-- PATTERN -->
 	<section class="pattern">
 		<div class="pattern-graphic pattern-graphic--small" data-lines-default="16" data-lines-1640="4" data-lines-1040="4"
-			data-lines-980="4" aria-hidden="true"></div>
+			data-lines-1080="4" aria-hidden="true"></div>
 		<ul class="pattern-list">
 			<li><span class="opacity-25">Character:</span> <span class="accent">/</span> <span class="opacity-50">
 					Slash</span> <span class="opacity-25">U+0002F</span> <code class="opacity-25">(&amp;sol;)</code></li>
@@ -1145,7 +1152,7 @@
 							onclick="fathom.trackEvent('Twitter', 0);">Twitter <span class="opacity-25">(RIP)</span></a>
 					</p>
 					<p>
-						<span class="opacity-25">mailto:</span> <a href="mailto:dan@newman.is"
+						<span class="opacity-25">mailto:</span> <a href="mailto:dan@newman.is?subject=DaaS%20(Graphics)"
 							onclick="fathom.trackEvent('Email', 0);">dan <span class="opacity-50">[at]</span> newman <span
 								class="opacity-50">[dot]</span> is</a>
 						<span class="accent">→</span>
@@ -1490,7 +1497,7 @@
 		// ============================================
 		(function () {
 			// Constants
-			const isMobileViewport = window.matchMedia("(max-width: 980px)").matches;
+			const isMobileViewport = window.matchMedia("(max-width: 1080px)").matches;
 			const INITIAL_DELAY = 10;
 			const ANIMATION_START_DELAY = 800;
 			const BLOCK_DELAY = 200;
@@ -2232,7 +2239,7 @@
 			const icons = document.querySelectorAll(".daas-icon");
 
 			// Check if mobile to add delay for loading overlay
-			const isMobile = window.matchMedia("(max-width: 980px)").matches;
+			const isMobile = window.matchMedia("(max-width: 1080px)").matches;
 			const asciiDelay = isMobile ? 1800 : 0; // Delay on mobile to account for overlay swipe
 
 			requestAnimationFrame(function () {
@@ -2584,14 +2591,14 @@
 					default: 24,
 					1640: 8,
 					1040: 6,
-					980: 8,
+					1080: 8,
 				};
 
 				function getLinesCountFor(patternEl) {
 					const width = window.innerWidth;
 
 					// Per-element overrides via data attributes:
-					// data-lines-default / data-lines-1640 / data-lines-1040 / data-lines-980
+					// data-lines-default / data-lines-1640 / data-lines-1040 / data-lines-1080
 					// Use getAttribute for robustness (dataset mapping with numeric segments can be inconsistent).
 					function getVal(key) {
 						const attrName = key === "default" ? "data-lines-default" : `data-lines-${key}`;
@@ -2600,8 +2607,8 @@
 						return Number.isFinite(parsed) ? parsed : defaultLinesPerViewport[key];
 					}
 
-					if (width <= 980) return getVal("980");
 					if (width <= 1040) return getVal("1040");
+					if (width <= 1080) return getVal("1080");
 					if (width <= 1640) return getVal("1640");
 					return getVal("default");
 				}
@@ -2950,6 +2957,50 @@
 		// Initialize after loading screen
 		initAfterLoading();
 	</script>
+	<!-- PLANS -->
+	<div id="plan-overlay" class="plan-overlay" aria-hidden="true">
+		<div class="plan-panel" role="dialog" aria-labelledby="plan-panel-title">
+			<header class="plan-panel-header">
+				<div class="plan-panel-tabs" aria-label="Plan selector">
+					<button type="button" class="plan-panel-tab" data-plan="D-01">D-01</button>
+					<span class="plan-panel-tab-sep" aria-hidden="true">/</span>
+					<button type="button" class="plan-panel-tab" data-plan="D-02">D-02</button>
+					<span class="plan-panel-tab-sep" aria-hidden="true">/</span>
+					<button type="button" class="plan-panel-tab" data-plan="D-03">D-03</button>
+					<span class="plan-panel-tab-sep" aria-hidden="true">/</span>
+					<button type="button" class="plan-panel-tab" data-plan="D-04">D-04</button>
+				</div>
+				<button type="button" class="plan-panel-close" aria-label="Close">×</button>
+			</header>
+			<div class="plan-panel-gradient-fixed" aria-hidden="true"></div>
+			<div class="plan-panel-scroll">
+				<div class="plan-panel-hero">
+					<img class="plan-panel-image" src="" alt="" />
+					<div class="plan-panel-gradient plan-panel-gradient--top"></div>
+					<div class="plan-panel-gradient plan-panel-gradient--bottom"></div>
+					<p class="plan-panel-status"><span class="opacity-50">Status:</span> <span
+							class="plan-panel-status-value"></span></p>
+				</div>
+				<div class="plan-panel-content plan-panel-content--name-desc">
+					<h2 id="plan-panel-title" class="plan-panel-name"><span class="plan-panel-name-text"></span><span
+							class="plan-panel-name-subtitle opacity-50"></span></h2>
+					<hr class="divider" />
+					<p class="plan-panel-description"></p>
+				</div>
+				<div class="plan-panel-content plan-panel-content--accent">
+					<p class="plan-panel-price"></p>
+					<p class="plan-note opacity-50"></p>
+					<ul class="plan-panel-features"></ul>
+					<div class="plan-panel-cta-panel">
+						<p class="plan-panel-cta-wrap">
+							<a class="plan-panel-cta" href="#"></a>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="/js/pricing.js" defer></script>
 	<script src="/js/gallery.js" defer></script>
 </body>
 
