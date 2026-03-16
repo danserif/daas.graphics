@@ -86,6 +86,9 @@
 			overlay.style.backgroundColor = "";
 		}
 
+		var OVERLAY_FADE_MS = 280;
+		var PANEL_SLIDE_MS = 300;
+
 		function openOverlay(trigger) {
 			if (!overlay || !panel) return;
 			lastTrigger = trigger || null;
@@ -99,10 +102,10 @@
 				trigger.setAttribute("aria-expanded", "true");
 			}
 
-			// Allow CSS transition to apply (same pattern as pricing panel)
-			requestAnimationFrame(function () {
+			// Show overlay first, then slide panel in after overlay has appeared
+			setTimeout(function () {
 				overlay.classList.add("is-panel-open");
-			});
+			}, OVERLAY_FADE_MS);
 
 			// Focus close button for accessibility
 			closeBtn.focus();
@@ -112,14 +115,16 @@
 			if (!overlay) return;
 
 			overlay.classList.remove("is-panel-open");
-			overlay.classList.remove("is-open");
-			overlay.style.backgroundColor = "";
-			setThemeColorForMenu(false);
-
-			if (lastTrigger) {
-				lastTrigger.setAttribute("aria-expanded", "false");
-				lastTrigger.focus();
-			}
+			// After panel has slid away, fade out overlay and clean up
+			setTimeout(function () {
+				overlay.classList.remove("is-open");
+				overlay.style.backgroundColor = "";
+				setThemeColorForMenu(false);
+				if (lastTrigger) {
+					lastTrigger.setAttribute("aria-expanded", "false");
+					lastTrigger.focus();
+				}
+			}, PANEL_SLIDE_MS);
 		}
 
 		toggles.forEach(function (btn) {
