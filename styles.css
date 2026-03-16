@@ -1022,6 +1022,11 @@ h1.header-label {
 		background: var(--color-accent);
 		transition: none;
 	}
+
+	/* Applied by JS only when closing so overlay fades out and masks theme-color flash. */
+	.nav-overlay.is-closing {
+		transition: opacity 0.2s ease;
+	}
 }
 
 .nav-panel {
