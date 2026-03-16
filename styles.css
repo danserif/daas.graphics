@@ -1012,6 +1012,7 @@ h1.header-label {
 }
 
 @media only screen and (max-width: 1080px) {
+
 	/* On mobile, the panel covers the viewport, so we don't need a tinted overlay under it. */
 	.nav-overlay,
 	:root.light-mode .nav-overlay,
@@ -1165,14 +1166,21 @@ h1.header-label {
 	padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
 	display: flex;
 	flex-direction: column;
-	gap: 8px;
+	gap: 40px;
 }
 
-.nav-panel-theme,
+.nav-panel-branding,
 .nav-panel-contact {
 	font-family: "Departure Mono", monospace;
 	font-size: 11px;
 	line-height: 1.5;
+}
+
+/* Spacing between contact lines inside mobile nav panel footer */
+.nav-panel-contact p,
+.nav-panel-branding p {
+	margin-top: 0.75rem;
+	margin-bottom: 0.75rem;
 }
 
 .tldr .card {
