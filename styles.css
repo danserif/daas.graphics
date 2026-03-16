@@ -1012,7 +1012,12 @@ h1.header-label {
 }
 
 @media only screen and (max-width: 1080px) {
-	/* Mobile keeps same light/dark overlay tints; no accent flood */
+	/* On mobile, the panel covers the viewport, so we don't need a tinted overlay under it. */
+	.nav-overlay,
+	:root.light-mode .nav-overlay,
+	:root:not(.light-mode) .nav-overlay {
+		background: transparent;
+	}
 }
 
 .nav-panel {
