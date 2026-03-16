@@ -191,10 +191,17 @@
 	<header class="header" id="top">
 		<!-- TITLE -->
 		<div class="header-column">
-			<h1 class="header-label"><span class="accent font-adhesion">D</span> <span class="opacity-25">//</span> <span
-					class="opacity-100">DaaS</span> <span class="opacity-50">(Graphics)</span>
-				<span class="opacity-25">~</span> <span class="opacity-75">Dan as a Service</span>
-			</h1>
+			<div class="header-row">
+				<h1 class="header-label"><span class="accent font-adhesion">D</span> <span class="opacity-25">//</span> <span
+						class="opacity-100">DaaS</span> <span class="opacity-50">(Graphics)</span>
+					<span class="opacity-25">~</span> <span class="opacity-75">Dan as a Service</span>
+				</h1>
+				<!-- Mobile nav toggle: aligned with first header label -->
+				<button class="nav-toggle nav-toggle--mobile" type="button" aria-label="Open navigation menu"
+					aria-expanded="false" aria-controls="nav-panel">
+					<span class="nav-toggle-icon">&#61;</span>
+				</button>
+			</div>
 			<hr class="divider" />
 		</div>
 		<!-- SUBTITLE -->
@@ -230,8 +237,8 @@
 					class="light-mode-toggle">Light</a><span class="opacity-50">]</span>
 				<span class="desktop-only">
 					<span class="opacity-50">//</span> <span class="opacity-75">mailto:</span> <a
-						href="mailto:dan@newman.is?subject=DaaS%20(Graphics)" onclick="fathom.trackEvent('Email', 0);">dan <span
-							class="opacity-50">[at]</span> newman <span class="opacity-50">[dot]</span> is</a> <span
+						href="mailto:dan@newman.is?subject=DaaS%20(Graphics)" onclick="fathom.trackEvent('Email', 0);">dan
+						<span class="opacity-50">[at]</span> newman <span class="opacity-50">[dot]</span> is</a> <span
 						class="accent">→</span>
 				</span>
 			</p>
@@ -440,11 +447,11 @@
 			<hr class="divider" />
 			<div class="card-content">
 				<h2 class="card-title font-adhesion accent">A new era of design is here.</h2>
-				<h3 class="card-title">Get design and leadership support for your startup, team, or business — only when you
+				<h3 class="card-title">Get design and leadership support for your startup or, team, or business — only when you
 					need it.</h3>
 				<p class="card-subtitle font-untitled">From coaching to creative direction, <a href="#about" class="underline"
 						onclick="fathom.trackEvent('About', 0);">DaaS</a> <span class="opacity-50">(Dan as a Service)</span> has
-					flexible <a href="#" class="underline pricing-plan-link" data-plan="D-03">plans</a> to help you and your team.
+					flexible <a href="#" class="underline pricing-plan-link" data-plan="D-01">plans</a> to help you and your team.
 				</p>
 			</div>
 			<!-- MENU -->
@@ -452,8 +459,8 @@
 				<p class="card-icon">&#61;</p>
 				<h4 class="card-label">Menu / Anchors</h4>
 				<hr class="divider" />
-				<div class="card-content">
-					<nav>
+				<div class="card-content header-nav">
+					<nav aria-label="Sections">
 						<ul class="anchor-links">
 							<li><span class="opacity-25 font-adhesion">&#68;</span> <a href="#about"
 									onclick="fathom.trackEvent('About', 0);">About</a></li>
@@ -461,7 +468,7 @@
 									onclick="fathom.trackEvent('Work', 0);">Work</a></li>
 							<li><span class="opacity-25">&#8721;</span> <a href="#lab" onclick="fathom.trackEvent('Lab', 0);">Lab</a>
 							</li>
-							<li><span class="opacity-25">&#36;</span> <a href="#" class="pricing-plan-link" data-plan="D-03"
+							<li><span class="opacity-25">&#36;</span> <a href="#" class="pricing-plan-link" data-plan="D-01"
 									onclick="fathom.trackEvent('Pricing', 0);">Pricing</a></li>
 							<li><span class="opacity-25">&hearts;</span> <a href="#testimonials"
 									onclick="fathom.trackEvent('Testimonials', 0);">Testimonials</a></li>
@@ -630,7 +637,7 @@
 			</div>
 			<div class="card-text">
 				<p>DaaS <span class="opacity-50">(Graphics)</span> offers <a href="#" class="underline pricing-plan-link"
-						data-plan="D-03">plans</a> that can be configured based on your size, stage, and the services you need:</p>
+						data-plan="D-01">plans</a> that can be configured based on your size, stage, and the services you need:</p>
 			</div>
 			<div class="card-text card-text--full-width">
 				<table class="pricing-table mono">
@@ -2957,7 +2964,7 @@
 		// Initialize after loading screen
 		initAfterLoading();
 	</script>
-	<!-- PLANS -->
+	<!-- PRICING PLANS -->
 	<div id="plan-overlay" class="plan-overlay" aria-hidden="true">
 		<div class="plan-panel" role="dialog" aria-labelledby="plan-panel-title">
 			<header class="plan-panel-header">
@@ -3000,8 +3007,40 @@
 			</div>
 		</div>
 	</div>
+	<!-- OVERLAY MENU -->
+	<div class="nav-overlay" data-nav-overlay>
+		<div class="nav-panel" id="nav-panel" role="dialog" aria-modal="true" aria-label="Site navigation">
+			<header class="nav-panel-header">
+				<div class="nav-panel-label">
+					<p class="nav-panel-label-text opacity-50">Menu / Anchors</p>
+				</div>
+				<button type="button" class="nav-panel-close" aria-label="Close">×</button>
+			</header>
+			<div class="nav-panel-scroll">
+				<nav class="nav-panel-main" aria-label="Sections">
+					<ul class="nav-panel-links" data-nav-panel-links>
+						<!-- POPULATED FROM .ANCHOR-LINKS -->
+					</ul>
+				</nav>
+				<footer class="nav-panel-footer">
+					<div class="nav-panel-theme uppercase" data-nav-theme-placeholder>
+						<span class="opacity-50">Mode:</span> <span class="opacity-50">[</span><a href="#"
+							class="dark-mode-toggle">Dark</a>
+						<span class="opacity-50">/</span> <a href="#" class="light-mode-toggle">Light</a><span
+							class="opacity-50">]</span>
+					</div>
+					<div class="nav-panel-contact uppercase" data-nav-contact-placeholder>
+						<span class="opacity-50">mailto:</span> <a href="mailto:dan@newman.is?subject=DaaS%20(Graphics)"
+							onclick="fathom.trackEvent('Email', 0);">dan <span class="opacity-50">[at]</span> newman <span
+								class="opacity-50">[dot]</span> is</a> <span class="opacity-50">→</span>
+					</div>
+				</footer>
+			</div>
+		</div>
+	</div>
 	<script src="/js/pricing.js" defer></script>
 	<script src="/js/gallery.js" defer></script>
+	<script src="/js/menu.js" defer></script>
 </body>
 
 </html>

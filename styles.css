@@ -863,6 +863,18 @@ h1.header-label {
 	scroll-margin-top: 60px;
 }
 
+@media only screen and (max-width: 1080px) {
+	#start,
+	#about,
+	#work,
+	#lab,
+	#testimonials,
+	#contact,
+	#footer {
+		scroll-margin-top: 30px;
+	}
+}
+
 .tldr,
 .cards {
 	max-width: var(--max-width);
@@ -904,6 +916,32 @@ h1.header-label {
 	margin: 0 1.25em;
 }
 
+/* Global nav toggle (additional menu icon, does not replace inline menu) */
+.nav-toggle {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border: none;
+	background: transparent;
+	color: var(--color-accent);
+	font-family: "Departure Mono", monospace;
+	font-size: 22px;
+	line-height: 1;
+	cursor: pointer;
+}
+
+.nav-toggle-icon {
+	display: inline-block;
+}
+
+.nav-toggle:hover {
+	opacity: 0.75;
+}
+
+.nav-toggle:focus {
+	outline: none;
+}
+
 /* Stack menu vertically at 1080px breakpoint */
 @media (max-width: 1080px) {
 	.anchor-links {
@@ -920,6 +958,220 @@ h1.header-label {
 		content: none;
 		margin: 0;
 	}
+}
+
+/* Header rows that contain toggles */
+.header-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+}
+
+/* Mobile / desktop visibility for toggles */
+.nav-toggle--mobile {
+	display: none;
+}
+
+@media only screen and (max-width: 1080px) {
+	.nav-toggle--mobile {
+		display: inline-flex;
+		/* Use same visual size as links; avoid explicit width/height to keep header spacing consistent */
+		font-size: 22px;
+	}
+}
+
+/* Global nav overlay / panel */
+.nav-overlay {
+	position: fixed;
+	inset: 0;
+	z-index: 9998;
+	background: var(--opacity-25);
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+:root:not(.light-mode) .nav-overlay {
+	background: rgba(0, 0, 0, 0.5);
+}
+
+.nav-overlay.is-open {
+	opacity: 1;
+	visibility: visible;
+	pointer-events: auto;
+}
+
+.nav-panel {
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	width: 576px;
+	max-width: 100%;
+	background: #000;
+	color: #fff;
+	transform: translateX(100%);
+	transition: transform 0.3s ease;
+	z-index: 9999;
+	display: flex;
+	flex-direction: column;
+}
+
+/* Slide in when overlay and panel are open */
+.nav-overlay.is-open.is-panel-open .nav-panel {
+	transform: translateX(0);
+}
+
+/* Mobile: full-screen accent overlay */
+@media only screen and (max-width: 1080px) {
+	.nav-panel {
+		left: 0;
+		right: 0;
+		width: 100%;
+		max-width: 100%;
+		background: var(--color-accent);
+		color: var(--color-bg);
+		/* Still slide in from the right on mobile, to match pricing panel */
+		transform: translateX(100%);
+	}
+
+	.nav-overlay.is-open.is-panel-open .nav-panel {
+		transform: translateX(0);
+	}
+}
+
+.nav-panel-header {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 32px 0 24px 40px;
+	box-sizing: border-box;
+	z-index: 10;
+}
+
+.nav-panel-label-text {
+	font-family: "Departure Mono", monospace;
+	font-size: 11px;
+	line-height: normal;
+	text-transform: uppercase;
+	color: inherit;
+	opacity: 0.5;
+	margin: 0;
+}
+
+@media only screen and (max-width: 1080px) {
+	.nav-panel-header {
+		padding: max(16px, env(safe-area-inset-top, 16px)) 0 24px 1.5rem;
+	}
+}
+
+.nav-panel-close {
+	width: 44px;
+	height: 44px;
+	padding: 0;
+	margin-right: 24px;
+	border: none;
+	background: transparent;
+	font-family: "Departure Mono", monospace;
+	font-size: 22px;
+	line-height: 33px;
+	color: inherit;
+	cursor: pointer;
+	opacity: 0.5;
+}
+
+.nav-panel-close:hover {
+	opacity: 0.25;
+}
+
+@media only screen and (max-width: 1080px) {
+	.nav-panel-close {
+		margin-right: 8px;
+	}
+}
+
+.nav-panel-scroll {
+	flex: 1 1 0;
+	min-height: 0;
+	overflow-y: auto;
+	overflow-x: hidden;
+	display: flex;
+	flex-direction: column;
+	padding: 0 40px 40px 40px;
+	box-sizing: border-box;
+}
+
+@media only screen and (max-width: 1080px) {
+	.nav-panel-scroll {
+		padding: 0 1.5rem 2rem 1.5rem;
+	}
+}
+
+.nav-panel-main {
+	margin-top: 16px;
+	margin-bottom: 40px;
+}
+
+.nav-panel-links {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.nav-panel-links li {
+	margin: 0 0 0.85em 0;
+}
+
+.nav-panel-links a {
+	text-decoration: none;
+	color: inherit;
+	font-family: "Departure Mono", monospace;
+	font-size: 22px;
+	line-height: 33px;
+}
+
+.nav-panel-links a:hover {
+	opacity: 0.6;
+}
+
+/* Ensure leading icons beside links in nav panel match link font size */
+.nav-panel-links li>span {
+	font-size: 22px;
+	line-height: 33px;
+	padding-right: 5px;
+}
+
+@media only screen and (max-width: 1080px) {
+	.nav-panel-links a {
+		font-size: 22px;
+		line-height: 33px;
+	}
+}
+
+.nav-panel-footer {
+	margin-top: auto;
+	padding-top: 24px;
+	padding-bottom: max(24px, env(safe-area-inset-bottom, 24px));
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+@media only screen and (min-width: 1081px) {
+	.nav-panel-footer {
+		flex-direction: column;
+		gap: 24px;
+	}
+}
+
+.nav-panel-theme,
+.nav-panel-contact {
+	font-family: "Departure Mono", monospace;
+	font-size: 11px;
+	line-height: 1.5;
 }
 
 .tldr .card {
