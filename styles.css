@@ -1094,11 +1094,17 @@ h1.header-label {
 }
 
 .nav-panel-close:hover {
-	opacity: 0.25;
+	/* Keep consistent opacity on hover to avoid any brief brightness change when the panel opens. */
+	opacity: 0.5;
 }
 
 .nav-panel-close:focus {
 	outline: none;
+	opacity: 0.5;
+}
+
+.nav-panel-close:active {
+	opacity: 0.5;
 }
 
 @media only screen and (max-width: 1080px) {
