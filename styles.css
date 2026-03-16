@@ -1023,9 +1023,18 @@ h1.header-label {
 		transition: none;
 	}
 
-	/* Applied by JS only when closing so overlay fades out and masks theme-color flash. */
-	.nav-overlay.is-closing {
-		transition: opacity 0.2s ease;
+	/* Lock overlay and panel height so they don’t grow when iOS viewport changes on scroll (footer no longer moves). */
+	.nav-overlay,
+	.nav-panel {
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: auto;
+		height: 100vh;
+		height: 100svh;
+		max-height: 100vh;
+		max-height: 100svh;
+		min-height: -webkit-fill-available;
 	}
 }
 
@@ -1145,6 +1154,8 @@ h1.header-label {
 @media only screen and (max-width: 1080px) {
 	.nav-panel-scroll {
 		padding: 0 1.5rem 2rem 1.5rem;
+		-webkit-overflow-scrolling: touch;
+		overflow-y: auto;
 	}
 }
 
