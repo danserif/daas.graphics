@@ -552,6 +552,10 @@ function startAnimations() {
 			root.classList.remove("light-mode");
 			localStorage.setItem("colorMode", "dark");
 			updateAccentColorValue();
+			// If nav menu is open, resync its overlay background to new accent
+			if (typeof window.updateNavOverlayBackground === "function") {
+				window.updateNavOverlayBackground();
+			}
 			// Trigger loading screen in new color mode
 			if (typeof window.triggerLoadingScreen === "function") {
 				window.triggerLoadingScreen();
@@ -561,6 +565,10 @@ function startAnimations() {
 			root.classList.add("light-mode");
 			localStorage.setItem("colorMode", "light");
 			updateAccentColorValue();
+			// If nav menu is open, resync its overlay background to new accent
+			if (typeof window.updateNavOverlayBackground === "function") {
+				window.updateNavOverlayBackground();
+			}
 			// Trigger loading screen in new color mode
 			if (typeof window.triggerLoadingScreen === "function") {
 				window.triggerLoadingScreen();
