@@ -606,7 +606,7 @@ function startAnimations() {
 		}
 	}
 
-	function typeWriter(element, speed) {
+	function typeWriter(element, speed, onComplete) {
 		const originalHTML = element.getAttribute("data-original") || element.innerHTML;
 
 		let htmlIndex = 0;
@@ -678,6 +678,9 @@ function startAnimations() {
 			if (htmlIndex >= originalHTML.length) {
 				element.style.visibility = "visible";
 				element.classList.remove("typewriter-active");
+				if (typeof onComplete === "function") {
+					onComplete();
+				}
 				return;
 			}
 			// Only advance at most one character per frame; prevents timer batching "jump"
@@ -693,52 +696,118 @@ function startAnimations() {
 	}
 
 	// Constants for typewriter timing
-	const TYPEWRITER_SPEED = 22;
-	const TYPEWRITER_DELAY = 260;
-	// Delay before first label so main thread can settle after loadingComplete (prevents jump)
-	const TYPEWRITER_START_DELAY = 200;
+	const IS_MOBILE_VIEWPORT = window.matchMedia("(max-width: 1080px)").matches;
+	// Unified speed for both viewports (ms per logical "step").
+	const TYPEWRITER_SPEED = 20;
+	// When staggering/batching (mobile), this controls per-label delay.
+	const TYPEWRITER_DELAY = 220;
+	// Small settle delay before typing starts (helps avoid post-load jank).
+	const TYPEWRITER_START_DELAY = IS_MOBILE_VIEWPORT ? 120 : 80;
+	// On desktop, start all header labels at the same time.
+	// Hidden (display:none) labels should not add delay to visible ones.
+	const TYPEWRITER_CONCURRENCY = IS_MOBILE_VIEWPORT ? 1 : Number.POSITIVE_INFINITY;
+	const TYPEWRITER_INTRA_STAGGER = 0;
 
-	headerLabels.forEach(function (label, index) {
+	function isLabelVisible(label) {
+		const headerColumn = label.closest(".header-column");
+		return !!(headerColumn && window.getComputedStyle(headerColumn).display !== "none");
+	}
+
+	function getTypewriterHTMLForViewport(label) {
+		// The header nav label contains both mobile-only and desktop-only segments.
+		// If we type the full HTML, we spend real time animating hidden text.
+		// Instead, build a viewport-appropriate snapshot so visible text appears immediately.
+		const clone = label.cloneNode(true);
+		clone.classList.remove("typewriter-active");
+		if (IS_MOBILE_VIEWPORT) {
+			clone.querySelectorAll(".desktop-only").forEach(function (el) {
+				el.remove();
+			});
+		} else {
+			clone.querySelectorAll(".mobile-only").forEach(function (el) {
+				el.remove();
+			});
+		}
+		return clone.innerHTML;
+	}
+
+	function scheduleTypewriter(label, startDelay) {
 		const clockElement = label.querySelector("#header-clock");
-		const startDelay = TYPEWRITER_START_DELAY + index * TYPEWRITER_DELAY;
+		const isNavLabel = label.classList.contains("header-label--nav");
+
+		function onNavLabelComplete() {
+			if (!isNavLabel) return;
+			const headerColumn = label.closest(".header-column");
+			if (!headerColumn) return;
+			const trigger = headerColumn.querySelector(".header-nav-trigger");
+			if (trigger) {
+				trigger.classList.add("is-visible");
+			}
+		}
 
 		if (clockElement) {
 			// Clock is already populated by earlier script; no extra wait
 			const fullLabelHTML = label.innerHTML;
 			if (fullLabelHTML && clockElement.innerHTML) {
-				label.setAttribute("data-original", fullLabelHTML);
+				label.setAttribute("data-original", getTypewriterHTMLForViewport(label));
 				const headerColumn = label.closest(".header-column");
 				const isVisible = headerColumn && window.getComputedStyle(headerColumn).display !== "none";
 
-				if (isVisible) {
-					setTimeout(function () {
-						typeWriter(label, TYPEWRITER_SPEED);
-					}, startDelay);
-				} else {
-					// Observe for when it becomes visible
-					const observer = new IntersectionObserver(
-						function (entries) {
-							entries.forEach(function (entry) {
-								if (entry.isIntersecting && !label.classList.contains("typewriter-active")) {
-									const currentLabelHTML = label.innerHTML;
-									if (currentLabelHTML) {
-										label.setAttribute("data-original", currentLabelHTML);
-									}
-									typeWriter(label, TYPEWRITER_SPEED);
-									observer.disconnect();
-								}
-							});
-						},
-						{ threshold: 0.1 },
-					);
-					observer.observe(headerColumn);
-				}
+				setTimeout(function () {
+					typeWriter(label, TYPEWRITER_SPEED, onNavLabelComplete);
+				}, startDelay);
 			}
 		} else {
 			setTimeout(function () {
-				typeWriter(label, TYPEWRITER_SPEED);
+				label.setAttribute("data-original", getTypewriterHTMLForViewport(label));
+				typeWriter(label, TYPEWRITER_SPEED, onNavLabelComplete);
 			}, startDelay);
 		}
+	}
+
+	// 1) Animate visible labels first (desktop: concurrently in small batches).
+	const visibleLabels = Array.from(headerLabels)
+		.filter(isLabelVisible)
+		.sort(function (a, b) {
+			// Prioritize nav/mode label so Mode + Navigation appears immediately.
+			function priority(label) {
+				if (label.classList.contains("header-label--nav")) return 0;
+				// Next: anything containing the mode toggles (extra safety if class changes)
+				if (label.querySelector(".dark-mode-toggle, .light-mode-toggle")) return 1;
+				return 2;
+			}
+			return priority(a) - priority(b);
+		});
+
+	visibleLabels.forEach(function (label, visibleIndex) {
+		// Desktop: all start together. Mobile: keep sequential.
+		const startDelay = IS_MOBILE_VIEWPORT
+			? TYPEWRITER_START_DELAY + visibleIndex * TYPEWRITER_DELAY
+			: 0;
+		scheduleTypewriter(label, startDelay);
+	});
+
+	// 2) For labels currently hidden (mobile/desktop variants), animate them when they become visible.
+	// This avoids invisible labels slowing down the initial desktop header.
+	const hiddenLabels = Array.from(headerLabels).filter(function (label) {
+		return !isLabelVisible(label);
+	});
+	hiddenLabels.forEach(function (label) {
+		const headerColumn = label.closest(".header-column");
+		if (!headerColumn) return;
+		const observer = new IntersectionObserver(
+			function (entries) {
+				entries.forEach(function (entry) {
+					if (!entry.isIntersecting) return;
+					if (label.classList.contains("typewriter-active")) return;
+					label.setAttribute("data-original", getTypewriterHTMLForViewport(label));
+					scheduleTypewriter(label, 0);
+					observer.disconnect();
+				});
+			},
+			{ threshold: 0.1 },
+		);
+		observer.observe(headerColumn);
 	});
 
 	// ASCII: use preloaded DOM if loading screen ran, else prepare now; then start char animations after short defer

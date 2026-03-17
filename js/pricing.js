@@ -315,15 +315,17 @@
 
 	function openPricingPanel(planId, refs) {
 		var overlay = refs.overlay;
+		refs._openedFromNav = overlay.classList.contains("is-panel-open");
 		overlay.classList.add("is-open");
-		overlay.setAttribute("aria-hidden", "false");
-		document.body.style.overflow = "hidden";
+		overlay.classList.remove("is-panel-open");
+		refs.planPanel.setAttribute("aria-hidden", "false");
+		if (!refs._openedFromNav) {
+			document.body.style.overflow = "hidden";
+		}
 		renderPricingPanel(planId, refs);
-		// Force reflow so the scroll container gets correct height when overlay was previously visibility:hidden
 		if (refs.scrollEl) refs.scrollEl.offsetHeight;
-		// Defer panel open so the browser paints one frame with panel off-screen, making the slide-in transition visible on desktop
 		requestAnimationFrame(function () {
-			overlay.classList.add("is-panel-open");
+			overlay.classList.add("is-plan-open");
 		});
 		refs.closeBtn.focus();
 	}
@@ -332,7 +334,7 @@
 
 	function closePricingPanel(refs) {
 		var overlay = refs.overlay;
-		if (!overlay.classList.contains("is-panel-open")) return;
+		if (!overlay.classList.contains("is-plan-open")) return;
 		var heroEl = refs.hero;
 		if (heroEl) {
 			var canvas = heroEl.querySelector(".plan-panel-image-pixelation");
@@ -342,12 +344,18 @@
 			}
 			if (refs.img) refs.img.style.visibility = "";
 		}
-		overlay.classList.remove("is-panel-open");
-		overlay.classList.remove("is-open");
-		var panel = overlay.querySelector(".plan-panel");
+		overlay.classList.remove("is-plan-open");
+		if (!refs._openedFromNav) {
+			overlay.classList.remove("is-open");
+		} else {
+			overlay.classList.add("is-panel-open");
+		}
+		var panel = refs.planPanel;
 		function finishClose() {
-			overlay.setAttribute("aria-hidden", "true");
-			document.body.style.overflow = "";
+			panel.setAttribute("aria-hidden", "true");
+			if (!refs._openedFromNav) {
+				document.body.style.overflow = "";
+			}
 			if (document.activeElement && document.activeElement.blur) {
 				document.activeElement.blur();
 			}
@@ -365,10 +373,13 @@
 	}
 
 	function initPricingPanel() {
-		var overlay = document.getElementById("plan-overlay");
+		var overlay = document.getElementById("nav-overlay");
 		if (!overlay) return;
+		var planPanel = overlay.querySelector(".plan-panel");
+		if (!planPanel) return;
 		var refs = {
 			overlay: overlay,
+			planPanel: planPanel,
 			hero: overlay.querySelector(".plan-panel-hero"),
 			img: overlay.querySelector(".plan-panel-image"),
 			statusEl: overlay.querySelector(".plan-panel-status-value"),
@@ -397,7 +408,7 @@
 			if (e.target === overlay) closePricingPanel(refs);
 		});
 		document.addEventListener("keydown", function (e) {
-			if (e.key === "Escape" && overlay.classList.contains("is-open")) closePricingPanel(refs);
+			if (e.key === "Escape" && overlay.classList.contains("is-plan-open")) closePricingPanel(refs);
 		});
 		refs.tabs.forEach(function (tab) {
 			tab.addEventListener("click", function () {

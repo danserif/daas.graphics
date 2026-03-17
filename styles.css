@@ -333,7 +333,7 @@ code {
 	gap: var(--gap-flex);
 	max-width: var(--max-width);
 	margin: 0 auto;
-	padding: 60px 60px 0;
+	padding: 48px 60px 0;
 	width: 100%;
 	box-sizing: border-box;
 }
@@ -733,11 +733,6 @@ h1.header-label {
 	padding-right: 0;
 }
 
-/* Larger pattern (main pattern section) */
-.pattern-graphic--large {
-	/* Uses the base `.pattern-graphic` spacing by default */
-}
-
 .pattern-list {
 	display: flex;
 	flex-wrap: wrap;
@@ -929,6 +924,7 @@ h1.header-label {
 	color: var(--color-accent);
 	font-family: "Departure Mono", monospace;
 	font-size: 22px;
+	text-transform: uppercase;
 	line-height: 1;
 	cursor: pointer;
 }
@@ -943,6 +939,14 @@ h1.header-label {
 
 .nav-toggle:focus {
 	outline: none;
+}
+
+/* Desktop menu trigger: match surrounding label text (11px) */
+.nav-toggle--desktop {
+	color: var(--color-accent);
+	font-size: inherit;
+	line-height: inherit;
+	padding: 0;
 }
 
 /* Stack menu vertically at 1080px breakpoint */
@@ -971,6 +975,11 @@ h1.header-label {
 	gap: 0.75rem;
 }
 
+/* Nav header row: keep Menu trigger on the left beside the label */
+.header-row--nav {
+	justify-content: flex-start;
+}
+
 /* Mobile / desktop visibility for toggles */
 .nav-toggle--mobile {
 	display: none;
@@ -984,7 +993,15 @@ h1.header-label {
 	}
 }
 
-/* Global nav overlay / panel */
+/* ==========================================================================
+   OVERLAY PANELS
+   Shared container: .nav-overlay hosts both .nav-panel (menu) and .plan-panel (pricing).
+   States: .is-open (overlay visible), .is-panel-open (nav menu visible), .is-plan-open (pricing visible).
+   Breakpoints: 1080px (mobile), 1081px (desktop), 1081–1640px (narrow), 2660px (step-down).
+   ========================================================================== */
+
+/* --- NAV OVERLAY (shared backdrop for menu + pricing) --- */
+
 .nav-overlay {
 	position: fixed;
 	inset: 0;
@@ -1013,9 +1030,9 @@ h1.header-label {
 	background: rgba(0, 0, 0, 0.8);
 }
 
+/* Nav overlay: mobile */
 @media only screen and (max-width: 1080px) {
 
-	/* On mobile, use a solid accent-colour overlay beneath the nav panel and avoid fading it to reduce iOS theme flashes. */
 	.nav-overlay,
 	:root.light-mode .nav-overlay,
 	:root:not(.light-mode) .nav-overlay {
@@ -1036,16 +1053,34 @@ h1.header-label {
 		max-height: 100svh;
 		min-height: -webkit-fill-available;
 	}
+
+	/* Contain scroll inside the overlay so the page doesn’t move behind it (body scroll lock is in menu.js). */
+	.nav-overlay {
+		overflow: hidden;
+	}
 }
+
+/* Nav overlay: desktop */
+@media only screen and (min-width: 1081px) {
+
+	.nav-overlay,
+	:root.light-mode .nav-overlay {
+		background: var(--opacity-25);
+	}
+
+	:root:not(.light-mode) .nav-overlay {
+		background: rgba(0, 0, 0, 0.5);
+	}
+}
+
+/* --- NAV PANEL (menu content) --- */
 
 .nav-panel {
 	position: fixed;
 	top: 0;
-	left: 0;
+	left: auto;
 	right: 0;
 	bottom: 0;
-	width: 100%;
-	max-width: 100%;
 	background: var(--color-accent);
 	color: var(--color-bg);
 	transform: translateX(100%);
@@ -1055,9 +1090,63 @@ h1.header-label {
 	flex-direction: column;
 }
 
+/* Nav panel: mobile */
+@media only screen and (max-width: 1080px) {
+	.nav-panel {
+		width: 100%;
+		max-width: 100%;
+		left: 0;
+		right: 0;
+	}
+}
+
+/* Nav panel: desktop */
+@media only screen and (min-width: 1081px) {
+	.nav-panel {
+		width: 596px;
+		left: auto;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		max-width: 100%;
+		box-shadow: -4px 0 24px rgba(0, 0, 0, 0.2);
+	}
+
+	:root:not(.light-mode) .nav-panel {
+		box-shadow: -4px 0 24px rgba(0, 0, 0, 0.2), -8px 0 48px rgba(0, 0, 0, 0.4);
+	}
+}
+
+/* Nav panel: narrow desktop (matches plan panel width) */
+@media only screen and (min-width: 1081px) and (max-width: 1640px) {
+	.nav-panel {
+		width: 480px;
+	}
+}
+
 /* Slide in when overlay and panel are open */
 .nav-overlay.is-open.is-panel-open .nav-panel {
 	transform: translateX(0);
+}
+
+.nav-panel ::selection {
+	background-color: rgba(0, 0, 0, 0.2);
+	color: inherit;
+}
+
+.nav-panel ::-moz-selection {
+	background-color: rgba(0, 0, 0, 0.2);
+	color: inherit;
+}
+
+:root.light-mode .nav-panel ::selection {
+	background-color: rgba(0, 0, 0, 0.2);
+	color: inherit;
+}
+
+:root.light-mode .nav-panel ::-moz-selection {
+	background-color: rgba(0, 0, 0, 0.2);
+	color: inherit;
 }
 
 .nav-panel-header {
@@ -1067,6 +1156,8 @@ h1.header-label {
 	justify-content: space-between;
 	box-sizing: border-box;
 	z-index: 10;
+	/* Match pricing panel: label aligned with left divider (40px), close button aligned with right divider */
+	padding: 32px 0 20px 40px;
 }
 
 /* All hr dividers in the mobile menu: default to white at 25% opacity on accent background */
@@ -1094,6 +1185,7 @@ h1.header-label {
 	margin: 0;
 }
 
+/* Nav panel: mobile (header, divider) */
 @media only screen and (max-width: 1080px) {
 	.nav-panel-header {
 		padding: max(12px, env(safe-area-inset-top, 12px)) 0 6px 1.5rem;
@@ -1115,9 +1207,20 @@ h1.header-label {
 	font-family: "Departure Mono", monospace;
 	font-size: 22px;
 	line-height: 33px;
-	color: inherit;
+	color: var(--color-text);
 	cursor: pointer;
 	opacity: 0.5;
+}
+
+/* Explicit theme colours for close icon on accent background */
+:root:not(.light-mode) .nav-panel-close {
+	color: #000000;
+	/* dark mode: black */
+}
+
+:root.light-mode .nav-panel-close {
+	color: #ffffff;
+	/* light mode: white */
 }
 
 .nav-panel-close:hover {
@@ -1134,6 +1237,7 @@ h1.header-label {
 	opacity: 0.5;
 }
 
+/* Nav panel: mobile (close) */
 @media only screen and (max-width: 1080px) {
 	.nav-panel-close {
 		margin-right: 8px;
@@ -1147,21 +1251,39 @@ h1.header-label {
 	overflow-x: hidden;
 	display: flex;
 	flex-direction: column;
-	padding: 0 40px 40px 40px;
+	padding: 0 40px 24px 40px;
 	box-sizing: border-box;
 }
 
+.nav-panel-links li>span {
+	padding-right: 18px;
+}
+
+/* Nav panel: mobile (scroll) */
 @media only screen and (max-width: 1080px) {
 	.nav-panel-scroll {
 		padding: 0 1.5rem 2rem 1.5rem;
 		-webkit-overflow-scrolling: touch;
 		overflow-y: auto;
+		overflow-x: hidden;
+		overscroll-behavior: contain;
+	}
+
+	.nav-panel-footer {
+		padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
 	}
 }
 
 .nav-panel-main {
 	margin-top: 16px;
 	margin-bottom: 40px;
+}
+
+/* Nav panel: desktop (main) */
+@media only screen and (min-width: 1081px) {
+	.nav-panel-main {
+		margin-top: 32px;
+	}
 }
 
 .nav-panel-links {
@@ -1195,6 +1317,42 @@ h1.header-label {
 	opacity: 0.5;
 }
 
+
+/* Nav panel: desktop (links) */
+@media only screen and (min-width: 1081px) {
+	.nav-panel-links li {
+		margin: 0 0 1.2em 0;
+	}
+
+	.nav-panel-links a {
+		font-size: 33px;
+		line-height: 44px;
+	}
+
+	.nav-panel-links li>span {
+		font-size: 33px;
+		line-height: 44px;
+		padding-right: 14px;
+	}
+}
+
+/* Nav panel: desktop links step-down at 1640px */
+@media only screen and (min-width: 1081px) and (max-width: 1640px) {
+	.nav-panel-links li {
+		margin: 0 0 0.5em 0;
+	}
+
+	.nav-panel-links a {
+		font-size: 22px;
+		line-height: 33px;
+	}
+
+	.nav-panel-links li>span {
+		font-size: 22px;
+		line-height: 33px;
+	}
+}
+
 /* Light mode: make nav panel icons and links white on accent background */
 :root.light-mode .nav-panel-links a {
 	color: var(--color-bg);
@@ -1216,10 +1374,9 @@ h1.header-label {
 .nav-panel-footer {
 	margin-top: auto;
 	padding-top: 16px;
-	padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
 	display: flex;
 	flex-direction: column;
-	gap: 40px;
+	gap: 14px;
 }
 
 .nav-panel-branding,
@@ -1229,11 +1386,121 @@ h1.header-label {
 	line-height: 1.5;
 }
 
-/* Spacing between contact lines inside mobile nav panel footer */
 .nav-panel-contact p,
 .nav-panel-branding p {
 	margin-top: 0.75rem;
 	margin-bottom: 0.75rem;
+}
+
+/* Desktop-only logo in nav footer */
+.nav-panel-branding-logo {
+	margin-bottom: 48px;
+}
+
+/* In the nav footer, treat the loading-style logo as an inline block instead of pinned bottom-left */
+.nav-panel-branding-logo.loading-logo {
+	position: static;
+	bottom: auto;
+	left: auto;
+	width: 84px;
+	height: 84px;
+}
+
+/* Nav panel: desktop step-down at 2660px (matches plan panel scaling)
+   Apply only above the two-column range so 1081–1640px uses the narrower styles. */
+@media only screen and (min-width: 1641px) and (max-width: 2660px) {
+	.nav-panel-header {
+		padding: 28px 0 8px 36px;
+	}
+
+	.nav-panel>.divider {
+		margin: 0 36px;
+	}
+
+	.nav-panel-label-text {
+		font-size: 10px;
+	}
+
+	.nav-panel-scroll {
+		padding: 0 36px 36px 36px;
+	}
+
+	.nav-panel-main {
+		margin-top: 20px;
+		margin-bottom: 32px;
+	}
+
+	.nav-panel-links a {
+		font-size: 27.5px;
+		line-height: 33px;
+	}
+
+	.nav-panel-links li>span {
+		font-size: 27.5px;
+		line-height: 33px;
+	}
+
+	.nav-panel-footer {
+		padding-top: 12px;
+		gap: 34px;
+	}
+
+	.nav-panel-branding,
+	.nav-panel-contact {
+		font-size: 10px;
+	}
+
+	.nav-panel-contact p,
+	.nav-panel-branding p {
+		margin-top: 0.6rem;
+		margin-bottom: 0.6rem;
+	}
+
+	.nav-panel-close {
+		font-size: 22px;
+		line-height: 33px;
+		margin-right: 24px;
+	}
+
+	.nav-panel-branding-logo {
+		margin-bottom: 32px;
+	}
+}
+
+/* Nav panel: mobile footer spacing */
+@media only screen and (max-width: 1080px) {
+	.nav-panel-footer {
+		padding-top: 12px;
+		gap: 38px;
+	}
+}
+
+/* Nav panel: narrow desktop footer/header spacing (two-column range) */
+@media only screen and (min-width: 1081px) and (max-width: 1640px) {
+	.nav-panel-main {
+		margin-top: 24px;
+	}
+
+	.nav-panel-footer {
+		gap: 40px;
+	}
+}
+
+/* Nav panel: desktop header spacing step-down to match main header at 1860px */
+@media only screen and (min-width: 1081px) and (max-width: 1860px) {
+	.nav-panel-header {
+		padding: 24px 0 8px 36px;
+	}
+}
+
+@media only screen and (max-width: 1860px) {
+	.nav-panel-header {
+		padding: 16px 0 4px 36px;
+	}
+
+	.nav-panel-scroll {
+		padding: 0 36px 24px 36px;
+	}
 }
 
 .tldr .card {
@@ -1390,67 +1657,14 @@ h2.card-title {
 	padding-right: 35px;
 }
 
-/* PLAN PANEL */
-.plan-overlay {
-	position: fixed;
-	inset: 0;
-	z-index: 9999;
-	background: var(--opacity-25);
-	opacity: 0;
-	visibility: hidden;
-	/* Match plan-panel slide duration (0.3s) to keep overlay/panel in sync */
-	transition: opacity 0.3s ease, visibility 0.3s ease;
-	pointer-events: none;
-	overflow: visible;
-	/* avoid clipping panel when content is taller than viewport */
-}
-
-@media only screen and (max-width: 1080px) {
-
-	/* On mobile, use solid black overlay for pricing panel */
-	.plan-overlay {
-		background: #000000;
-		/* No fade on mobile: avoid opacity animation flash */
-		transition: none;
-	}
-}
-
-.plan-overlay ::selection {
-	background-color: rgba(0, 0, 0, 0.2);
-	color: inherit;
-}
-
-.plan-overlay ::-moz-selection {
-	background-color: rgba(0, 0, 0, 0.2);
-	color: inherit;
-}
-
-:root.light-mode .plan-overlay ::selection {
-	background-color: rgba(0, 0, 0, 0.2);
-	color: inherit;
-}
-
-:root.light-mode .plan-overlay ::-moz-selection {
-	background-color: rgba(0, 0, 0, 0.2);
-	color: inherit;
-}
-
-:root:not(.light-mode) .plan-overlay {
-	background: rgba(0, 0, 0, 0.5);
-}
-
-.plan-overlay.is-open {
-	opacity: 1;
-	visibility: visible;
-	pointer-events: auto;
-}
+/* --- PLAN PANEL (pricing content, inside nav-overlay) --- */
 
 .plan-panel {
 	position: fixed;
 	top: 0;
 	right: 0;
 	bottom: 0;
-	width: 576px;
+	width: 596px;
 	max-width: 100%;
 	/* height from top/bottom so panel always fills viewport when content is short */
 	background: #000;
@@ -1464,9 +1678,34 @@ h2.card-title {
 	/* only .plan-panel-scroll should clip/scroll */
 }
 
-/* Panel slides in only when .is-panel-open is set (after one frame), so the transition is visible on desktop too */
-.plan-overlay.is-open.is-panel-open .plan-panel {
+/* Shared state: when plan is open, show plan panel and hide nav panel */
+.nav-overlay.is-plan-open .plan-panel {
 	transform: translateX(0);
+}
+
+.nav-overlay.is-plan-open .nav-panel {
+	pointer-events: none;
+	visibility: hidden;
+}
+
+.plan-panel ::selection {
+	background-color: rgba(0, 0, 0, 0.2);
+	color: inherit;
+}
+
+.plan-panel ::-moz-selection {
+	background-color: rgba(0, 0, 0, 0.2);
+	color: inherit;
+}
+
+:root.light-mode .plan-panel ::selection {
+	background-color: rgba(0, 0, 0, 0.2);
+	color: inherit;
+}
+
+:root.light-mode .plan-panel ::-moz-selection {
+	background-color: rgba(0, 0, 0, 0.2);
+	color: inherit;
 }
 
 :root:not(.light-mode) .plan-panel {
@@ -1494,9 +1733,17 @@ h2.card-title {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	/* Match desktop nav panel: 44px top to align labels and close button vertically */
 	padding: 32px 0 20px 40px;
 	box-sizing: border-box;
 	pointer-events: none;
+}
+
+/* Plan header: desktop step-down at 1860px (align with main header spacing) */
+@media only screen and (min-width: 1081px) and (max-width: 1860px) {
+	.plan-panel-header {
+		padding: 16px 0 20px 40px;
+	}
 }
 
 .plan-panel-header>* {
@@ -1841,8 +2088,8 @@ a.plan-panel-cta:hover {
 	opacity: 0.85;
 }
 
-/* Step down with main page: at 2660px */
-@media only screen and (max-width: 2660px) {
+/* Plan panel: desktop step-down at 2660px */
+@media only screen and (min-width: 1081px) and (max-width: 2660px) {
 	.plan-panel-name {
 		font-size: 27.5px;
 		line-height: 33px;
@@ -1867,6 +2114,13 @@ a.plan-panel-cta:hover {
 	.plan-panel-tabs {
 		font-size: 18px;
 		line-height: 27px;
+	}
+
+	/* Match desktop menu close size at this breakpoint */
+	.plan-panel-close {
+		font-size: 22px;
+		line-height: 33px;
+		margin-right: 24px;
 	}
 
 	.plan-panel-description,
@@ -1923,15 +2177,16 @@ a.plan-panel-cta:hover {
 	}
 }
 
-/* Two-column layout: narrower pricing panel */
+/* Plan panel: narrow desktop */
 @media only screen and (min-width: 1081px) and (max-width: 1640px) {
 	.plan-panel {
 		width: 480px;
 	}
 }
 
+/* Plan panel: mobile */
 @media only screen and (max-width: 1080px) {
-	.plan-overlay.is-open .plan-panel {
+	.nav-overlay.is-plan-open .plan-panel {
 		width: 100%;
 		max-width: 100%;
 	}
@@ -2934,6 +3189,15 @@ img.daas-graphic.fade-in {
 .header-column.mobile-only,
 .mobile-only {
 	display: none;
+}
+
+.header-nav-trigger {
+	opacity: 0;
+	transition: opacity 0.4s ease;
+}
+
+.header-nav-trigger.is-visible {
+	opacity: 1;
 }
 
 /* RESPONSIVE DESIGN */
