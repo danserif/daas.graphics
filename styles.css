@@ -364,6 +364,10 @@ code {
 	visibility: visible;
 }
 
+.header-label .desktop-only {
+	padding-left: 11px;
+}
+
 h1.header-label,
 h2.header-label {
 	font-size: 11px;
