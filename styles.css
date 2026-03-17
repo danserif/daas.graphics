@@ -1417,7 +1417,7 @@ h1.header-label {
 }
 
 /* Hide nav footer logo when viewport height is small */
-@media only screen and (max-height: 740px) {
+@media only screen and (max-height: 780px) {
 	.nav-panel-branding-logo {
 		display: none;
 	}
