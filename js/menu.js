@@ -194,8 +194,10 @@
 				trigger.setAttribute("aria-expanded", "true");
 			}
 
-			// On mobile, DO NOT lock body scroll (allows iOS browser UI to collapse).
+			// On mobile, lock body scroll so the page doesn’t scroll under the menu when scrolling the panel (iOS).
 			if (isMobileViewport()) {
+				lockBodyScroll();
+
 				// iOS can draw a right-edge “fade” scroll indicator above web content.
 				// Prevent touchmove on the overlay itself, but still allow scrolling inside the panel scroller.
 				if (!overlayTouchMoveHandler) {
