@@ -1061,6 +1061,14 @@ h1.header-label {
 	margin: 0;
 }
 
+.nav-panel-footer {
+	margin-top: auto;
+	padding-top: 16px;
+	display: flex;
+	flex-direction: column;
+	gap: 40px;
+}
+
 /* Nav overlay: mobile */
 @media only screen and (max-width: 1080px) {
 
@@ -1401,14 +1409,6 @@ h1.header-label {
 
 :root:not(.light-mode) .nav-panel-links li>span {
 	color: var(--color-bg);
-}
-
-.nav-panel-footer {
-	margin-top: auto;
-	padding-top: 16px;
-	display: flex;
-	flex-direction: column;
-	gap: 14px;
 }
 
 .nav-panel-branding,
