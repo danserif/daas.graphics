@@ -8,12 +8,13 @@
 		var themeMeta = document.querySelector('meta[name="theme-color"]');
 		var originalThemeColor = themeMeta ? themeMeta.getAttribute("content") : null;
 		var panel = overlay ? overlay.querySelector(".nav-panel") : null;
+		var panelScroll = overlay ? overlay.querySelector(".nav-panel-scroll") : null;
 		var closeBtn = overlay ? overlay.querySelector(".nav-panel-close") : null;
 		var linksContainer = overlay ? overlay.querySelector("[data-nav-panel-links]") : null;
 		var toggles = document.querySelectorAll(".nav-toggle");
 		var headerNav = document.querySelector(".header-nav");
 
-		if (!overlay || !panel || !closeBtn || !linksContainer || !headerNav || !toggles.length) {
+		if (!overlay || !panel || !panelScroll || !closeBtn || !linksContainer || !headerNav || !toggles.length) {
 			return;
 		}
 
@@ -160,6 +161,8 @@
 
 		var bodyScrollLocked = false;
 		var MOBILE_MAX_WIDTH = 1080;
+		var overlayTouchMoveHandler = null;
+		var panelScrollTouchMoveHandler = null;
 
 		function isMobileViewport() {
 			return typeof window !== "undefined" && window.innerWidth <= MOBILE_MAX_WIDTH;
@@ -194,6 +197,22 @@
 			// On mobile, lock body scroll so the page doesn’t scroll under the menu when scrolling the panel (iOS).
 			if (isMobileViewport()) {
 				lockBodyScroll();
+
+				// iOS can draw a right-edge “fade” scroll indicator above web content.
+				// Prevent touchmove on the overlay itself, but still allow scrolling inside the panel scroller.
+				if (!overlayTouchMoveHandler) {
+					overlayTouchMoveHandler = function (e) {
+						e.preventDefault();
+					};
+					overlay.addEventListener("touchmove", overlayTouchMoveHandler, { passive: false });
+				}
+				if (!panelScrollTouchMoveHandler) {
+					panelScrollTouchMoveHandler = function (e) {
+						// Allow native scrolling in the panel scroll area, but don't let it bubble to the overlay.
+						e.stopPropagation();
+					};
+					panelScroll.addEventListener("touchmove", panelScrollTouchMoveHandler, { passive: true });
+				}
 			}
 
 			// Show overlay first, then slide panel in after overlay has appeared
@@ -231,6 +250,14 @@
 				overlay.classList.remove("is-open");
 				overlay.style.backgroundColor = "";
 				setThemeColorForMenu(false);
+				if (overlayTouchMoveHandler) {
+					overlay.removeEventListener("touchmove", overlayTouchMoveHandler);
+					overlayTouchMoveHandler = null;
+				}
+				if (panelScrollTouchMoveHandler) {
+					panelScroll.removeEventListener("touchmove", panelScrollTouchMoveHandler);
+					panelScrollTouchMoveHandler = null;
+				}
 				if (bodyScrollLocked) {
 					unlockBodyScroll();
 				}
@@ -246,6 +273,14 @@
 				overlay.classList.remove("is-open");
 				overlay.style.backgroundColor = "";
 				setThemeColorForMenu(false);
+				if (overlayTouchMoveHandler) {
+					overlay.removeEventListener("touchmove", overlayTouchMoveHandler);
+					overlayTouchMoveHandler = null;
+				}
+				if (panelScrollTouchMoveHandler) {
+					panelScroll.removeEventListener("touchmove", panelScrollTouchMoveHandler);
+					panelScrollTouchMoveHandler = null;
+				}
 				if (bodyScrollLocked) {
 					unlockBodyScroll();
 				}
