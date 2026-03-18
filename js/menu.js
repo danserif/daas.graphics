@@ -202,7 +202,12 @@
 				// Prevent touchmove on the overlay itself, but still allow scrolling inside the panel scroller.
 				if (!overlayTouchMoveHandler) {
 					overlayTouchMoveHandler = function (e) {
-						e.preventDefault();
+						// Only prevent touchmove on the overlay backdrop itself.
+						// If the user is touching inside the panel (menu or plan),
+						// allow that native scrolling to work.
+						if (e.target === overlay) {
+							e.preventDefault();
+						}
 					};
 					overlay.addEventListener("touchmove", overlayTouchMoveHandler, { passive: false });
 				}
