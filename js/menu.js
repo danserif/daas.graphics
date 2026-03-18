@@ -159,7 +159,6 @@
 		var OVERLAY_CLOSE_DELAY_MS = 380;
 
 		var bodyScrollLocked = false;
-		var savedScrollY = 0;
 		var MOBILE_MAX_WIDTH = 1080;
 
 		function isMobileViewport() {
@@ -168,26 +167,14 @@
 
 		function lockBodyScroll() {
 			if (!document.body || bodyScrollLocked) return;
-			savedScrollY = window.scrollY || window.pageYOffset || 0;
-			document.body.style.position = "fixed";
-			document.body.style.top = -savedScrollY + "px";
-			document.body.style.left = "0";
-			document.body.style.right = "0";
-			document.body.style.width = "100%";
 			document.body.style.overflow = "hidden";
 			bodyScrollLocked = true;
 		}
 
 		function unlockBodyScroll() {
 			if (!document.body || !bodyScrollLocked) return;
-			document.body.style.position = "";
-			document.body.style.top = "";
-			document.body.style.left = "";
-			document.body.style.right = "";
-			document.body.style.width = "";
 			document.body.style.overflow = "";
 			bodyScrollLocked = false;
-			window.scrollTo(0, savedScrollY);
 		}
 
 		function openOverlay(trigger) {
@@ -226,6 +213,16 @@
 			};
 		}
 
+		function restoreTriggerFocus() {
+			if (!lastTrigger || typeof lastTrigger.focus !== "function") return;
+			// Try to restore focus without causing a scroll jump (Chrome/Safari support).
+			try {
+				lastTrigger.focus({ preventScroll: true });
+			} catch (e) {
+				// If the browser doesn’t support the option, skip focusing to avoid snapping.
+			}
+		}
+
 		function closeOverlay(immediate, onClosed) {
 			if (!overlay) return;
 
@@ -239,7 +236,7 @@
 				}
 				if (lastTrigger) {
 					lastTrigger.setAttribute("aria-expanded", "false");
-					lastTrigger.focus();
+					restoreTriggerFocus();
 				}
 				if (typeof onClosed === "function") onClosed();
 				return;
@@ -254,7 +251,7 @@
 				}
 				if (lastTrigger) {
 					lastTrigger.setAttribute("aria-expanded", "false");
-					lastTrigger.focus();
+					restoreTriggerFocus();
 				}
 				if (typeof onClosed === "function") onClosed();
 			}, OVERLAY_CLOSE_DELAY_MS);
@@ -278,7 +275,16 @@
 			// Click outside panel closes overlay
 			// If the pricing plan panel is open, allow interaction inside it without closing the nav.
 			var planPanel = overlay.querySelector(".plan-panel");
+			var planIsOpen = overlay.classList.contains("is-plan-open");
 			var clickedInsidePlan = planPanel && planPanel.contains(event.target);
+			var clickedOverlayBackdrop = event.target === overlay;
+
+			// When the pricing panel is open and the user clicks the backdrop,
+			// let the pricing panel logic handle closing without also closing the nav overlay.
+			if (planIsOpen && clickedOverlayBackdrop) {
+				return;
+			}
+
 			if (!panel.contains(event.target) && !clickedInsidePlan) {
 				closeOverlay();
 			}

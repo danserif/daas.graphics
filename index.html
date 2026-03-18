@@ -202,8 +202,9 @@
 		<!-- TITLE + MOBILE MENU-->
 		<div class="header-column">
 			<div class="header-row">
-				<h1 class="header-label"><span class="accent font-adhesion">D</span> <span class="opacity-25">//</span> <span
-						class="opacity-100">DaaS</span> <span class="opacity-50">(Graphics)</span>
+				<h1 class="header-label"><span class="accent font-adhesion">D</span> <span
+						class="opacity-25 label-spacer">//</span> <span class="opacity-100">DaaS</span> <span
+						class="opacity-50">(Graphics)</span>
 					<span class="opacity-25">~</span> <span class="opacity-75">Dan as a Service</span>
 				</h1>
 				<!-- MOBILE MENU -->
@@ -217,26 +218,33 @@
 		<!-- SUBTITLE -->
 		<div class="header-column">
 			<h2 class="header-label">Coaching <span class="opacity-50">+</span> Advising <span class="opacity-50">+</span>
-				Designing <span class="desktop-only"> <span class="opacity-50">D-01</span>
+				Designing <span class="desktop-only label-spacer"> <span class="opacity-50">D-01</span>
 					<span class="opacity-25">/</span> <span class="opacity-50">D-02</span> <span class="opacity-25">/</span> <span
 						class="opacity-50">D-03</span></span></h2>
 			<hr class="divider" />
 		</div>
 		<!-- LOCATION -->
 		<div class="header-column">
-			<p class="header-label">Made in <span class="opacity-75">(Aotearoa)</span> New Zealand <span class="desktop-only">
+			<p class="header-label">Made in <span class="opacity-75">(Aotearoa)</span> New Zealand <span
+					class="desktop-only label-spacer">
 					<span class="opacity-50">WLG</span>
 					<span class="opacity-25">/</span> <span class="opacity-50">NZL</span></span>
 			</p>
 			<hr class="divider" />
 		</div>
 		<!-- CLOCK -->
-		<div class="header-column bonus-column hide">
-			<p class="header-label"><span id="header-clock"></span></p>
+		<div class="header-column bonus-column">
+			<p class="header-label"><span id="header-clock"></span>
+				<span id="header-clock-gmt" class="gmt-mobile"></span>
+				<span class="desktop-only">
+					<span class="opacity-50 label-spacer">//</span>
+					<span id="header-clock-local"></span>
+				</span>
+			</p>
 			<hr class="divider" />
 		</div>
 		<div class="header-column hide">
-			<p class="header-label">Shipping Worldwide <span class="opacity-50">[$]</span> <span
+			<p class="header-label">Shipping Worldwide <span class="opacity-50 label-spacer">[$]</span> <span
 					class="opacity-75">International Rates Apply</span></p>
 			<hr class="divider" />
 		</div>
@@ -254,14 +262,14 @@
 						class="dark-mode-toggle">Dark</a> <span class="opacity-50">/</span> <a href="#"
 						class="light-mode-toggle">Light</a><span class="opacity-50">]</span>
 					<span class="desktop-only">
-						<span class="opacity-50">//</span>
+						<span class="opacity-50 label-spacer">//</span>
 						<span class="opacity-75">Navigation:</span>
 					</span>
 				</p>
 				<!-- DESKTOP MENU-->
 				<span class="desktop-only header-nav-trigger">
 					<button type="button" class="nav-toggle nav-toggle--desktop" aria-label="Open menu" aria-expanded="false"
-						aria-controls="nav-panel">Menu</button> <span class="opacity-100">»</span>
+						aria-controls="nav-panel">Menu</button> <span class="accent">--></span>
 				</span>
 			</div>
 			<hr class="divider" />
@@ -1196,7 +1204,7 @@
 				<div class="footer-content">
 					<p><span>41.****° S, 174.****° E </span><span class="opacity-25">WLG</span> <span
 							class="opacity-50">(NZ)</span></p>
-					<p><span id="clock"></span></p>
+					<p><span id="footer-clock"></span></p>
 				</div>
 			</div>
 			<!-- COLOPHON -->
@@ -1530,8 +1538,8 @@
 				</div>
 				<button type="button" class="nav-panel-close" aria-label="Close">×</button>
 			</header>
-			<hr class="divider" />
 			<div class="nav-panel-scroll">
+				<hr class="divider" />
 				<nav class="nav-panel-main" aria-label="Sections">
 					<ul class="nav-panel-links" data-nav-panel-links>
 						<!-- .anchor-links -->

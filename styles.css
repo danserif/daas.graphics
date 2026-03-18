@@ -364,8 +364,16 @@ code {
 	visibility: visible;
 }
 
-.header-label .desktop-only {
+.header-label .label-spacer {
 	padding-left: 11px;
+	padding-right: 11px;
+}
+
+@media only screen and (max-width: 1079px) {
+	.header-label .label-spacer {
+		padding-left: 0;
+		padding-right: 0;
+	}
 }
 
 h1.header-label,
@@ -950,8 +958,8 @@ h1.header-label {
 	/* Make the button baseline-align like surrounding inline text */
 	display: inline;
 	position: relative;
-	top: -1.5px;
-	color: var(--color-accent);
+	top: -1px;
+	color: var(--text-color);
 	font-size: inherit;
 	line-height: inherit;
 	padding: 0;
@@ -960,7 +968,7 @@ h1.header-label {
 /* Nudge the desktop menu arrow (the span after the button) up slightly */
 .header-nav-trigger .nav-toggle--desktop+span {
 	position: relative;
-	top: -1.5px;
+	top: -1px;
 }
 
 /* Stack menu vertically at 1080px breakpoint */
@@ -1002,8 +1010,13 @@ h1.header-label {
 @media only screen and (max-width: 1080px) {
 	.nav-toggle--mobile {
 		display: inline-flex;
-		/* Use same visual size as links; avoid explicit width/height to keep header spacing consistent */
+		/* Bigger tap target for mobile usability */
 		font-size: 22px;
+		padding: 0 12px 0 12px;
+		min-width: 44px;
+		min-height: 44px;
+		/* Keep the icon centered while button grows */
+		margin-right: -12px;
 	}
 }
 
@@ -1042,6 +1055,10 @@ h1.header-label {
 
 :root:not(.light-mode) .nav-overlay {
 	background: rgba(0, 0, 0, 0.8);
+}
+
+.nav-panel .divider {
+	margin: 0;
 }
 
 /* Nav overlay: mobile */
@@ -1177,6 +1194,7 @@ h1.header-label {
 /* All hr dividers in the mobile menu: default to white at 25% opacity on accent background */
 .nav-panel .divider {
 	border-top-color: rgba(255, 255, 255, 0.25);
+	margin: 0;
 }
 
 /* Dark mode: mobile menu dividers use black at 25% opacity on accent background */
@@ -1202,7 +1220,7 @@ h1.header-label {
 /* Nav panel: mobile (header, divider) */
 @media only screen and (max-width: 1080px) {
 	.nav-panel-header {
-		padding: max(12px, env(safe-area-inset-top, 12px)) 0 6px 1.5rem;
+		padding: max(16px, env(safe-area-inset-top, 12px)) 16px 6px 1.5rem;
 	}
 
 	.nav-panel>.divider {
@@ -1254,7 +1272,7 @@ h1.header-label {
 /* Nav panel: mobile (close) */
 @media only screen and (max-width: 1080px) {
 	.nav-panel-close {
-		margin-right: 8px;
+		margin-right: -6px;
 	}
 }
 
@@ -1265,7 +1283,7 @@ h1.header-label {
 	overflow-x: hidden;
 	display: flex;
 	flex-direction: column;
-	padding: 0 40px 24px 40px;
+	padding: 0 40px 40px 40px;
 	box-sizing: border-box;
 }
 
@@ -1411,6 +1429,12 @@ h1.header-label {
 	margin-bottom: 48px;
 }
 
+@media only screen and (max-width: 1080px) {
+	.nav-panel-branding-logo {
+		margin-bottom: 32px;
+	}
+}
+
 /* In the nav footer, treat the loading-style logo as an inline block instead of pinned bottom-left */
 .nav-panel-branding-logo.loading-logo {
 	position: static;
@@ -1431,7 +1455,7 @@ h1.header-label {
    Apply only above the two-column range so 1081–1640px uses the narrower styles. */
 @media only screen and (min-width: 1641px) and (max-width: 2660px) {
 	.nav-panel-header {
-		padding: 28px 0 8px 36px;
+		padding: 28px 0 6px 36px;
 	}
 
 	.nav-panel>.divider {
@@ -1447,7 +1471,7 @@ h1.header-label {
 	}
 
 	.nav-panel-main {
-		margin-top: 20px;
+		margin-top: 24px;
 		margin-bottom: 32px;
 	}
 
@@ -1510,17 +1534,13 @@ h1.header-label {
 /* Nav panel: desktop header spacing step-down to match main header at 1860px */
 @media only screen and (min-width: 1081px) and (max-width: 1860px) {
 	.nav-panel-header {
-		padding: 24px 0 8px 36px;
+		padding: 16px 0 6px 36px;
 	}
 }
 
-@media only screen and (max-width: 1860px) {
-	.nav-panel-header {
-		padding: 16px 0 4px 36px;
-	}
-
+@media only screen and (min-width: 1081px) and (max-width: 1860px) {
 	.nav-panel-scroll {
-		padding: 0 36px 24px 36px;
+		padding: 0 36px 36px 36px;
 	}
 }
 
@@ -3212,6 +3232,11 @@ img.daas-graphic.fade-in {
 	display: none;
 }
 
+/* GMT offset label: hide on desktop by default; shown in mobile media query */
+.gmt-mobile {
+	display: none;
+}
+
 .header-nav-trigger {
 	opacity: 0;
 	transition: opacity 0.4s ease;
@@ -3901,7 +3926,7 @@ img.daas-graphic.fade-in {
 	/* HEADER */
 	.header {
 		flex-direction: column;
-		padding: 1.5rem;
+		padding: 1rem 1.5rem 1rem 1.5rem;
 	}
 
 	.header-label {
@@ -3910,6 +3935,11 @@ img.daas-graphic.fade-in {
 
 	.header-column hr.divider {
 		padding-bottom: 0;
+	}
+
+	/* First header column should not add extra vertical gap (icon-driven row height). */
+	.header-column:first-child hr.divider {
+		margin: 0;
 	}
 
 	/* PATTERN */
@@ -3932,6 +3962,12 @@ img.daas-graphic.fade-in {
 		width: 100%;
 		flex: 1 1 100%;
 		max-width: 100%;
+	}
+
+	/* First header column: remove the internal gap that creates extra space
+	   under the icon row on mobile. */
+	.header-column:first-child {
+		gap: 4px;
 	}
 
 	.header-column:nth-child(3) {
@@ -3970,9 +4006,18 @@ img.daas-graphic.fade-in {
 		display: inline;
 	}
 
+	.gmt-mobile {
+		display: inline;
+	}
+
 	.desktop-only {
 		display: none;
 	}
+
+	/* Desktop menu footer logo should hide by viewport height (not width). */
+	/* Keep the element hidden for short mobile heights.
+	   For this specific logo we re-enable it at large enough height in a
+	   separate (min-height) media query below. */
 
 	/* HERO */
 	.hero {
@@ -4388,6 +4433,14 @@ img.daas-graphic.fade-in {
 	}
 }
 
+/* Re-enable desktop menu footer logo at small widths, but only when height
+   is large enough that the (max-height) hide rule shouldn't apply. */
+@media only screen and (max-width: 1080px) and (min-height: 781px) {
+	.nav-panel-branding-logo.desktop-only {
+		display: block;
+	}
+}
+
 @media only screen and (max-width: 600px) {
 	.pricing-table tr {
 		grid-template-columns: 1fr;
@@ -4513,8 +4566,10 @@ img.daas-graphic.fade-in {
 	filter: invert(1);
 }
 
-/* FOCUS STYLES FOR ACCESSIBILITY */
-*:focus {
+/* FOCUS STYLES FOR ACCESSIBILITY
+   Use :focus-visible so outlines appear for keyboard users,
+   but not on mouse/touch focus by default. */
+*:focus-visible {
 	outline: 2px solid var(--opacity-50);
 	outline-offset: 2px;
 }
@@ -4721,7 +4776,30 @@ pre.ascii-disk.ascii-disk-hidden {
 	.loading-logo svg [data-role="pixel"] {
 		fill: var(--color-bg) !important;
 	}
+
+	/* Mobile menu should visually match the desktop menu logo.
+	   Override the generic mobile loading-logo palette only for this footer logo. */
+	.nav-panel-branding-logo.desktop-only.loading-logo svg path {
+		fill: var(--color-bg) !important;
+	}
+
+	.nav-panel-branding-logo.desktop-only.loading-logo svg path[data-role="border"] {
+		fill: var(--color-bg) !important;
+	}
+
+	.nav-panel-branding-logo.desktop-only.loading-logo svg [data-role="pixel"] {
+		/* Pixels should be accent-colored on mobile menu (match desktop menu). */
+		fill: var(--color-accent) !important;
+	}
+
+	/* Mobile menu logo size */
+	.nav-panel-branding-logo.desktop-only.loading-logo {
+		width: 64px;
+		height: 64px;
+	}
 }
+
+/* (no extra height-scoped overrides needed; see mobile block above) */
 
 .loading-logo.fade-out {
 	opacity: 0;
