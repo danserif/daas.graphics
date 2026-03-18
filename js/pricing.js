@@ -93,7 +93,7 @@
 			priceAmount: "$TBC",
 			priceSuffix: "(USD) P/M",
 			planNote:
-				"If you’re vibing with Dan as a Service and need to extend your plan it could include the following: ",
+				"If you’re vibing with Dan as a Service and need to customize your plan it could include the following: ",
 			features: [
 				"Help with AI to design and build your product.",
 				"Long-term partnerships and support.",
