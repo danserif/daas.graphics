@@ -1566,7 +1566,7 @@ h1.header-label {
 }
 
 .tldr .card-content {
-	max-width: 1560px;
+	max-width: 1260px;
 }
 
 .tldr+.cards {
@@ -3272,7 +3272,7 @@ img.daas-graphic.fade-in {
 	}
 
 	.tldr .card-content {
-		max-width: 1560px;
+		max-width: 1260px;
 	}
 
 	.tldr .anchor-links {
@@ -3382,6 +3382,10 @@ img.daas-graphic.fade-in {
 
 	.tldr .card-content {
 		max-width: 1180px;
+	}
+
+	.tldr h3.card-title {
+		max-width: 980px;
 	}
 
 	.card-subtitle {
@@ -4128,6 +4132,10 @@ img.daas-graphic.fade-in {
 	.tldr .card-subtitle {
 		font-size: 14px;
 		margin-top: var(--gap-section);
+	}
+
+	.tldr h3.card-title {
+		max-width: 680px;
 	}
 
 	/* CARDS */
