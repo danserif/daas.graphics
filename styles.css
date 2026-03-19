@@ -1440,12 +1440,12 @@ h1.header-label {
 	position: static;
 	bottom: auto;
 	left: auto;
-	width: 84px;
-	height: 84px;
+	width: 80px;
+	height: 80px;
 }
 
 /* Hide nav footer logo when viewport height is small */
-@media only screen and (max-height: 780px) {
+@media only screen and (max-height: 740px) {
 	.nav-panel-branding-logo {
 		display: none;
 	}
@@ -1784,6 +1784,10 @@ h2.card-title {
 	padding: 32px 0 20px 40px;
 	box-sizing: border-box;
 	pointer-events: none;
+}
+
+.nav-panel-branding-logo {
+	margin-bottom: 32px;
 }
 
 /* Plan header: desktop step-down at 1860px (align with main header spacing) */
@@ -4457,7 +4461,7 @@ img.daas-graphic.fade-in {
 
 /* Re-enable desktop menu footer logo at small widths, but only when height
    is large enough that the (max-height) hide rule shouldn't apply. */
-@media only screen and (max-width: 1080px) and (min-height: 781px) {
+@media only screen and (max-width: 1080px) and (min-height: 720px) {
 	.nav-panel-branding-logo.desktop-only {
 		display: block;
 	}
@@ -4741,8 +4745,8 @@ pre.ascii-disk.ascii-disk-hidden {
 
 	/* Loading panel logo size for medium viewports */
 	#loading-overlay .loading-logo {
-		width: 72px;
-		height: 72px;
+		width: 80px;
+		height: 80px;
 	}
 }
 
