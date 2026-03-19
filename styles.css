@@ -3928,6 +3928,14 @@ img.daas-graphic.fade-in {
 	}
 }
 
+/* HERO ASCII: narrower desktop step-down at 1640px */
+@media only screen and (min-width: 1081px) and (max-width: 1640px) {
+	.ascii-text {
+		font-size: 22px;
+		line-height: 22px;
+	}
+}
+
 @media only screen and (max-width: 1080px) {
 	:root {
 		--gap-mobile-sections: 3rem;
@@ -4102,8 +4110,8 @@ img.daas-graphic.fade-in {
 	}
 
 	.ascii-text {
-		font-size: 22px;
-		line-height: 22px;
+		font-size: 16.5px;
+		line-height: 16.5px;
 	}
 
 	/* START */
