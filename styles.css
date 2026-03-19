@@ -1709,7 +1709,8 @@ h2.card-title {
 	max-width: 100%;
 	/* height from top/bottom so panel always fills viewport when content is short */
 	background: #000;
-	box-shadow: -4px 0 24px rgba(0, 0, 0, 0.2);
+	/* Prevent off-screen shadow bleed while the panel is translated out. */
+	box-shadow: none;
 	transform: translateX(100%);
 	transition: transform 0.3s ease;
 	z-index: 10000;
@@ -1722,6 +1723,7 @@ h2.card-title {
 /* Shared state: when plan is open, show plan panel and hide nav panel */
 .nav-overlay.is-plan-open .plan-panel {
 	transform: translateX(0);
+	box-shadow: -4px 0 24px rgba(0, 0, 0, 0.2);
 }
 
 .nav-overlay.is-plan-open .nav-panel {
@@ -1750,6 +1752,10 @@ h2.card-title {
 }
 
 :root:not(.light-mode) .plan-panel {
+	box-shadow: none;
+}
+
+:root:not(.light-mode) .nav-overlay.is-plan-open .plan-panel {
 	box-shadow: -4px 0 24px rgba(0, 0, 0, 0.2), -8px 0 48px rgba(0, 0, 0, 0.4);
 }
 
@@ -4657,6 +4663,13 @@ img.daas-graphic.fade-in {
 
 .loading-overlay.hidden {
 	display: none;
+}
+
+/* Hide the loading icon on very short viewports. */
+@media only screen and (max-height: 699px) {
+	#loading-overlay .loading-logo {
+		display: none !important;
+	}
 }
 
 .loading-logo {
