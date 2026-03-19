@@ -4730,6 +4730,12 @@ pre.ascii-disk.ascii-disk-hidden {
 		min-height: calc(100vh - 72px);
 		min-height: calc(100dvh - 72px);
 	}
+
+	/* Loading panel logo size for medium viewports */
+	#loading-overlay .loading-logo {
+		width: 72px;
+		height: 72px;
+	}
 }
 
 @media only screen and (max-width: 1640px) {
