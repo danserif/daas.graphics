@@ -1455,7 +1455,7 @@ h1.header-label {
    Apply only above the two-column range so 1081–1640px uses the narrower styles. */
 @media only screen and (min-width: 1641px) and (max-width: 2660px) {
 	.nav-panel-header {
-		padding: 28px 0 6px 36px;
+		padding: 32px 0 4px 36px;
 	}
 
 	.nav-panel>.divider {
@@ -1534,7 +1534,7 @@ h1.header-label {
 /* Nav panel: desktop header spacing step-down to match main header at 1860px */
 @media only screen and (min-width: 1081px) and (max-width: 1860px) {
 	.nav-panel-header {
-		padding: 16px 0 6px 36px;
+		padding: 16px 0 4px 36px;
 	}
 }
 
