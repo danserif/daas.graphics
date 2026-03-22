@@ -1111,6 +1111,13 @@ h1.header-label {
 /* Nav overlay: mobile */
 @media only screen and (max-width: 1080px) {
 
+	/* Safari 26 samples opacity:0 fixed elements for toolbar tinting. Using display:none
+	   excludes the overlay from the render tree so Safari doesn’t pick up accent when menu
+	   is closed. Toggling to display:block on .is-open triggers Safari to re-evaluate. */
+	.nav-overlay {
+		display: none;
+	}
+
 	.nav-overlay,
 	:root.light-mode .nav-overlay,
 	:root:not(.light-mode) .nav-overlay {
@@ -1126,6 +1133,10 @@ h1.header-label {
 		left: 0;
 		right: 0;
 		bottom: 0;
+	}
+
+	.nav-overlay.is-open {
+		display: block;
 	}
 
 	/* Contain scroll inside the overlay so the page doesn’t move behind it (body scroll lock is in menu.js). */
@@ -4009,13 +4020,24 @@ img.daas-graphic.fade-in {
 		max-width: none;
 		margin: 0;
 		z-index: 500;
-		background-color: var(--color-bg);
+		background-color: transparent;
 		gap: 4px;
 		padding-top: calc(env(safe-area-inset-top, 0px) + 0.75rem);
 		padding-left: 1.5rem;
 		padding-right: 1.5rem;
 		box-sizing: border-box;
 		align-self: stretch;
+	}
+
+	/* Safari 26 derives toolbar tint from fixed elements' background-color but ignores
+	   pseudo-elements. A transparent fixed parent + pseudo background lets body's
+	   background-color drive the toolbar tint (Safari live-samples body). */
+	.header-sticky-band::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background-color: var(--color-bg);
+		z-index: -1;
 	}
 
 	/* Sticky-band hr: not gated by .header-lines-ready so it paints on first mobile frame (WebKit + flex hr). */

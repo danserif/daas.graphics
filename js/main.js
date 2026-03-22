@@ -166,7 +166,6 @@
 					if (meta) {
 						var isLight = document.documentElement.classList.contains("light-mode");
 						meta.setAttribute("content", isLight ? "#ffffff" : "#000000");
-						try { history.replaceState(null, "", location.href); } catch (e) {}
 					}
 					window.dispatchEvent(new CustomEvent("loadingComplete"));
 				}, SWIPE_DURATION_MS);
@@ -667,15 +666,12 @@ function startAnimations() {
 		}, 200);
 	}
 
-	function syncThemeColorToMode(toAccent) {
+	// Legacy: keep theme-color meta in sync for Safari < 26 and other browsers.
+	function syncThemeColorMeta() {
 		var meta = document.querySelector('meta[name="theme-color"]');
 		if (!meta) return;
 		var isLight = root.classList.contains("light-mode");
-		var color = toAccent
-			? (isLight ? "#0044FF" : "#aaff00")
-			: (isLight ? "#ffffff" : "#000000");
-		meta.setAttribute("content", color);
-		try { history.replaceState(null, "", location.href); } catch (e) {}
+		meta.setAttribute("content", isLight ? "#ffffff" : "#000000");
 	}
 
 	// Light/Dark Mode Toggle - Event delegation
@@ -685,13 +681,13 @@ function startAnimations() {
 			root.classList.remove("light-mode");
 			localStorage.setItem("colorMode", "dark");
 			updateAccentColorValue();
-			// Sync theme-color: mobile loading screen uses --color-bg, desktop uses --color-accent.
-			syncThemeColorToMode(window.innerWidth > 1080);
-			// If nav menu is open, resync its overlay background to new accent
+			syncThemeColorMeta();
 			if (typeof window.updateNavOverlayBackground === "function") {
 				window.updateNavOverlayBackground();
 			}
-			// Trigger loading screen in new color mode
+			if (typeof window.pokeOverlayTinting === "function") {
+				window.pokeOverlayTinting();
+			}
 			if (typeof window.triggerLoadingScreen === "function") {
 				window.triggerLoadingScreen();
 			}
@@ -700,12 +696,13 @@ function startAnimations() {
 			root.classList.add("light-mode");
 			localStorage.setItem("colorMode", "light");
 			updateAccentColorValue();
-			syncThemeColorToMode(window.innerWidth > 1080);
-			// If nav menu is open, resync its overlay background to new accent
+			syncThemeColorMeta();
 			if (typeof window.updateNavOverlayBackground === "function") {
 				window.updateNavOverlayBackground();
 			}
-			// Trigger loading screen in new color mode
+			if (typeof window.pokeOverlayTinting === "function") {
+				window.pokeOverlayTinting();
+			}
 			if (typeof window.triggerLoadingScreen === "function") {
 				window.triggerLoadingScreen();
 			}
