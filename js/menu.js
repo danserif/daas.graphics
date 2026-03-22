@@ -146,11 +146,15 @@
 			if (themeMeta) {
 				themeMeta.setAttribute("content", isOpen ? getMenuThemeColor() : getPageBgColor());
 			}
-			// Safari 26: toolbar tint comes from fixed elements' background-color but
-			// CSS variable changes don't trigger re-sampling — only inline style changes do.
-			// Always set an explicit resolved color so Safari picks up the change.
-			if (stickyBand && isMobileViewport()) {
-				stickyBand.style.backgroundColor = isOpen ? getMenuThemeColor() : getPageBgColor();
+			// Safari 26: toolbar tint comes from the highest-z fixed element's
+			// background-color. CSS variable changes don't trigger re-sampling —
+			// only explicit inline style changes do. The nav-panel (z-index 9999)
+			// is the topmost fixed element, so we must set its inline bg directly.
+			if (isMobileViewport()) {
+				var color = isOpen ? getMenuThemeColor() : getPageBgColor();
+				if (panel) panel.style.backgroundColor = color;
+				if (overlay) overlay.style.backgroundColor = color;
+				if (stickyBand) stickyBand.style.backgroundColor = color;
 			}
 		}
 
@@ -190,7 +194,6 @@
 		function finishOpenOverlay(trigger) {
 			setThemeColorForMenu(true);
 			overlay.classList.add("is-open");
-			syncOverlayBackground();
 			if (trigger) {
 				trigger.setAttribute("aria-expanded", "true");
 			}
@@ -344,11 +347,8 @@
 
 		window.updateNavOverlayBackground = function () {
 			if (!overlay) return;
-			if (overlay.classList.contains("is-open")) {
-				syncOverlayBackground();
-				if (isMobileViewport()) {
-					setThemeColorForMenu(true);
-				}
+			if (overlay.classList.contains("is-open") && isMobileViewport()) {
+				setThemeColorForMenu(true);
 			}
 		};
 
