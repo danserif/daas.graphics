@@ -914,6 +914,47 @@ function startAnimations() {
 		}, 250);
 	});
 
+	// Mobile: title + menu bar uses position:fixed after scroll so it stays over the hero (CSS sticky ends when <header> leaves the viewport).
+	(function initMobileHeaderBandScrollFix() {
+		const mq = window.matchMedia("(max-width: 1080px)");
+		const root = document.documentElement;
+		const FIXED_CLASS = "header-band-mobile-fixed";
+
+		function syncBandHeight() {
+			const bandEl = document.querySelector(".header-sticky-band");
+			if (!bandEl) return;
+			root.style.setProperty("--header-sticky-band-height", bandEl.offsetHeight + "px");
+		}
+
+		function onScrollOrMq() {
+			if (!mq.matches) {
+				root.classList.remove(FIXED_CLASS);
+				return;
+			}
+			if (window.scrollY > 1) {
+				root.classList.add(FIXED_CLASS);
+				requestAnimationFrame(syncBandHeight);
+			} else {
+				root.classList.remove(FIXED_CLASS);
+			}
+		}
+
+		const band = document.querySelector(".header-sticky-band");
+		if (!band) return;
+
+		window.addEventListener("scroll", onScrollOrMq, { passive: true });
+		mq.addEventListener("change", onScrollOrMq);
+		if (typeof ResizeObserver !== "undefined") {
+			const ro = new ResizeObserver(syncBandHeight);
+			ro.observe(band);
+		}
+		if (document.fonts && document.fonts.ready) {
+			document.fonts.ready.then(syncBandHeight);
+		}
+		syncBandHeight();
+		onScrollOrMq();
+	})();
+
 	// Staggered fade-in animation for ASCII hero + hero icons; viewport-triggered fade-in for footer DaaS graphics + icons
 	const asciiTexts = document.querySelectorAll(".ascii-text");
 	const heroIcons = document.querySelectorAll(".hero-icons .daas-icon");

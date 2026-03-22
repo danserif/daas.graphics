@@ -327,6 +327,26 @@ code {
 
 /* ---------------------------- */
 
+/* Title row + hr. Mobile: scroll-pinned bar (max-width: 1080px + JS, .header-band-mobile-fixed).
+   Desktop sticky pin is temporarily disabled for ship — re-enable by restoring sticky here and the
+   min-width:1081px .header-nav-trigger block (search DESKTOP_HEADER_PIN). */
+.header-sticky-band {
+	display: flex;
+	flex-direction: column;
+	gap: var(--gap-section);
+	position: relative;
+	top: auto;
+	align-self: flex-start;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+/* Omit from flex layout until mobile bar is fixed (avoids double gap-flex vs subtitle row) */
+.header-sticky-band-placeholder {
+	display: none;
+	pointer-events: none;
+}
+
 /* HEADER SECTION */
 .header {
 	display: flex;
@@ -863,25 +883,31 @@ h1.header-label {
 	scroll-margin-top: 60px;
 }
 
-#about,
 #work,
 #lab,
 #testimonials,
-#contact,
 #footer {
 	scroll-margin-top: 60px;
+}
+
+#about,
+#contact {
+	scroll-margin-top: 100px;
 }
 
 @media only screen and (max-width: 1080px) {
 
 	#start,
-	#about,
 	#work,
 	#lab,
 	#testimonials,
-	#contact,
 	#footer {
 		scroll-margin-top: 30px;
+	}
+
+	#about,
+	#contact {
+		scroll-margin-top: 56px;
 	}
 }
 
@@ -1019,6 +1045,19 @@ h1.header-label {
 		margin-right: -12px;
 	}
 }
+
+/* DESKTOP_HEADER_PIN — Sticky Menu next to mode row (disabled; pair with .header-sticky-band sticky above)
+@media only screen and (min-width: 1081px) {
+	.header-nav-trigger {
+		position: sticky;
+		top: env(safe-area-inset-top, 0px);
+		z-index: 500;
+		align-self: flex-start;
+		flex-shrink: 0;
+		background-color: var(--color-bg);
+	}
+}
+*/
 
 /* ==========================================================================
    OVERLAY PANELS
@@ -3948,7 +3987,49 @@ img.daas-graphic.fade-in {
 	/* HEADER */
 	.header {
 		flex-direction: column;
-		padding: 1rem 1.5rem 1rem 1.5rem;
+		padding: 0.75rem 1.5rem 1rem 1.5rem;
+	}
+
+	/* Let the title band stick while the rest of the header scrolls under it:
+	   without this, the first column is only as tall as the band and sticky has no range. */
+	.header-column:first-child {
+		display: contents;
+	}
+
+	.header-sticky-band {
+		position: relative;
+		top: auto;
+		gap: 4px;
+	}
+
+	html.header-band-mobile-fixed .header-sticky-band-placeholder {
+		display: block;
+		height: var(--header-sticky-band-height, 0px);
+		overflow: hidden;
+		flex-shrink: 0;
+	}
+
+	/* Pinned bar: stays on screen through hero and below (sticky alone ends with <header>) */
+	html.header-band-mobile-fixed .header-sticky-band {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		width: 100%;
+		max-width: none;
+		margin: 0;
+		z-index: 500;
+		background-color: var(--color-bg);
+		/* Match in-flow rhythm: .header padding-top 0.75rem above content (spacing below bar = single .header gap only) */
+		padding-top: calc(env(safe-area-inset-top, 0px) + 0.75rem);
+		padding-left: 1.5rem;
+		padding-right: 1.5rem;
+		box-sizing: border-box;
+		align-self: stretch;
+	}
+
+	html.header-band-mobile-fixed {
+		scroll-padding-top: var(--header-sticky-band-height, 0px);
 	}
 
 	.header-label {
