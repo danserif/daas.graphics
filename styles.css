@@ -327,7 +327,7 @@ code {
 
 /* ---------------------------- */
 
-/* Title row + hr. Mobile: scroll-pinned bar (max-width: 1080px + JS, .header-band-mobile-fixed).
+/* Title row + hr. Mobile: always position:fixed (max-width: 1080px); --header-sticky-band-height set in main.js.
    Desktop sticky pin is temporarily disabled for ship — re-enable by restoring sticky here and the
    min-width:1081px .header-nav-trigger block (search DESKTOP_HEADER_PIN). */
 .header-sticky-band {
@@ -1118,17 +1118,16 @@ h1.header-label {
 		transition: none;
 	}
 
-	/* Lock overlay and panel height so they don’t grow when iOS viewport changes on scroll (footer no longer moves). */
+	/* Fill visible viewport: 100svh is the *small* viewport, so when Safari’s chrome hides after scroll
+	   the panel stays short and a gap appears at the bottom. Use inset fill + JS height sync on open. */
 	.nav-overlay,
 	.nav-panel {
 		top: 0;
 		left: 0;
 		right: 0;
-		bottom: auto;
-		height: 100vh;
-		height: 100svh;
-		max-height: 100vh;
-		max-height: 100svh;
+		bottom: 0;
+		height: auto;
+		max-height: none;
 		min-height: -webkit-fill-available;
 	}
 
@@ -3984,33 +3983,27 @@ img.daas-graphic.fade-in {
 		--gap-mobile-sections: 3rem;
 	}
 
-	/* HEADER */
+	/* HEADER — top inset is only on .header-sticky-band (fixed), not here, to avoid double spacing */
 	.header {
 		flex-direction: column;
-		padding: 0.75rem 1.5rem 1rem 1.5rem;
+		padding: 0 1.5rem 1rem 1.5rem;
 	}
 
-	/* Let the title band stick while the rest of the header scrolls under it:
-	   without this, the first column is only as tall as the band and sticky has no range. */
+	/* Hoist band + placeholder as flex children of .header */
 	.header-column:first-child {
 		display: contents;
 	}
 
-	.header-sticky-band {
-		position: relative;
-		top: auto;
-		gap: 4px;
-	}
-
-	html.header-band-mobile-fixed .header-sticky-band-placeholder {
+	.header-sticky-band-placeholder {
 		display: block;
 		height: var(--header-sticky-band-height, 0px);
 		overflow: hidden;
 		flex-shrink: 0;
+		pointer-events: none;
 	}
 
-	/* Pinned bar: stays on screen through hero and below (sticky alone ends with <header>) */
-	html.header-band-mobile-fixed .header-sticky-band {
+	/* Fixed from first paint (no scroll “lock-in”) */
+	.header-sticky-band {
 		position: fixed;
 		top: 0;
 		left: 0;
@@ -4020,7 +4013,7 @@ img.daas-graphic.fade-in {
 		margin: 0;
 		z-index: 500;
 		background-color: var(--color-bg);
-		/* Match in-flow rhythm: .header padding-top 0.75rem above content (spacing below bar = single .header gap only) */
+		gap: 4px;
 		padding-top: calc(env(safe-area-inset-top, 0px) + 0.75rem);
 		padding-left: 1.5rem;
 		padding-right: 1.5rem;
@@ -4028,7 +4021,7 @@ img.daas-graphic.fade-in {
 		align-self: stretch;
 	}
 
-	html.header-band-mobile-fixed {
+	html {
 		scroll-padding-top: var(--header-sticky-band-height, 0px);
 	}
 

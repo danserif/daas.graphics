@@ -163,9 +163,35 @@
 		var MOBILE_MAX_WIDTH = 1080;
 		var overlayTouchMoveHandler = null;
 		var panelScrollTouchMoveHandler = null;
+		var visualViewportNavHandler = null;
 
 		function isMobileViewport() {
 			return typeof window !== "undefined" && window.innerWidth <= MOBILE_MAX_WIDTH;
+		}
+
+		function getMobileOverlayHeightPx() {
+			var vv = window.visualViewport;
+			if (vv && typeof vv.height === "number" && vv.height > 0) {
+				return Math.round(vv.height);
+			}
+			return window.innerHeight;
+		}
+
+		function syncMobileOverlayHeights() {
+			if (!isMobileViewport() || !overlay) return;
+			var h = getMobileOverlayHeightPx() + "px";
+			overlay.style.height = h;
+			if (panel) panel.style.height = h;
+			var planEl = overlay.querySelector(".plan-panel");
+			if (planEl) planEl.style.height = h;
+		}
+
+		function clearMobileOverlayHeights() {
+			if (!overlay) return;
+			overlay.style.height = "";
+			if (panel) panel.style.height = "";
+			var planEl = overlay.querySelector(".plan-panel");
+			if (planEl) planEl.style.height = "";
 		}
 
 		function lockBodyScroll() {
@@ -197,6 +223,19 @@
 			// On mobile, lock body scroll so the page doesn’t scroll under the menu when scrolling the panel (iOS).
 			if (isMobileViewport()) {
 				lockBodyScroll();
+				syncMobileOverlayHeights();
+				requestAnimationFrame(function () {
+					syncMobileOverlayHeights();
+				});
+				if (window.visualViewport && !visualViewportNavHandler) {
+					visualViewportNavHandler = function () {
+						if (overlay.classList.contains("is-open")) {
+							syncMobileOverlayHeights();
+						}
+					};
+					window.visualViewport.addEventListener("resize", visualViewportNavHandler);
+					window.visualViewport.addEventListener("scroll", visualViewportNavHandler);
+				}
 
 				// iOS can draw a right-edge “fade” scroll indicator above web content.
 				// Prevent touchmove on the overlay itself, but still allow scrolling inside the panel scroller.
@@ -266,6 +305,7 @@
 				if (bodyScrollLocked) {
 					unlockBodyScroll();
 				}
+				clearMobileOverlayHeights();
 				if (lastTrigger) {
 					lastTrigger.setAttribute("aria-expanded", "false");
 					restoreTriggerFocus();
@@ -289,6 +329,7 @@
 				if (bodyScrollLocked) {
 					unlockBodyScroll();
 				}
+				clearMobileOverlayHeights();
 				if (lastTrigger) {
 					lastTrigger.setAttribute("aria-expanded", "false");
 					restoreTriggerFocus();

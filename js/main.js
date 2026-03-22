@@ -486,6 +486,17 @@ function markHeaderLinesReady() {
 	}
 }
 
+function syncMobileHeaderStickyBandHeight() {
+	const mq = window.matchMedia("(max-width: 1080px)");
+	const bandEl = document.querySelector(".header-sticky-band");
+	const root = document.documentElement;
+	if (!bandEl || !mq.matches) {
+		root.style.removeProperty("--header-sticky-band-height");
+		return;
+	}
+	root.style.setProperty("--header-sticky-band-height", bandEl.offsetHeight + "px");
+}
+
 function prepareAsciiDOM() {
 	const asciiTextElements = document.querySelectorAll(".ascii-text");
 	asciiTextElements.forEach(function (element) {
@@ -600,6 +611,7 @@ window.__preloadDuringLoading = function () {
 			markHeaderLinesReady();
 		}
 	}
+	syncMobileHeaderStickyBandHeight();
 	document.fonts.ready.then(function () {});
 };
 
@@ -914,45 +926,25 @@ function startAnimations() {
 		}, 250);
 	});
 
-	// Mobile: title + menu bar uses position:fixed after scroll so it stays over the hero (CSS sticky ends when <header> leaves the viewport).
-	(function initMobileHeaderBandScrollFix() {
+	// Mobile: fixed title bar from first paint; keep placeholder height in sync (ResizeObserver + viewport changes).
+	(function initMobileHeaderStickyBand() {
 		const mq = window.matchMedia("(max-width: 1080px)");
-		const root = document.documentElement;
-		const FIXED_CLASS = "header-band-mobile-fixed";
-
-		function syncBandHeight() {
-			const bandEl = document.querySelector(".header-sticky-band");
-			if (!bandEl) return;
-			root.style.setProperty("--header-sticky-band-height", bandEl.offsetHeight + "px");
-		}
-
-		function onScrollOrMq() {
-			if (!mq.matches) {
-				root.classList.remove(FIXED_CLASS);
-				return;
-			}
-			if (window.scrollY > 1) {
-				root.classList.add(FIXED_CLASS);
-				requestAnimationFrame(syncBandHeight);
-			} else {
-				root.classList.remove(FIXED_CLASS);
-			}
-		}
-
 		const band = document.querySelector(".header-sticky-band");
 		if (!band) return;
 
-		window.addEventListener("scroll", onScrollOrMq, { passive: true });
-		mq.addEventListener("change", onScrollOrMq);
+		function sync() {
+			syncMobileHeaderStickyBandHeight();
+		}
+
+		mq.addEventListener("change", sync);
 		if (typeof ResizeObserver !== "undefined") {
-			const ro = new ResizeObserver(syncBandHeight);
+			const ro = new ResizeObserver(sync);
 			ro.observe(band);
 		}
 		if (document.fonts && document.fonts.ready) {
-			document.fonts.ready.then(syncBandHeight);
+			document.fonts.ready.then(sync);
 		}
-		syncBandHeight();
-		onScrollOrMq();
+		sync();
 	})();
 
 	// Staggered fade-in animation for ASCII hero + hero icons; viewport-triggered fade-in for footer DaaS graphics + icons
