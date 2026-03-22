@@ -146,10 +146,11 @@
 			if (themeMeta) {
 				themeMeta.setAttribute("content", isOpen ? getMenuThemeColor() : getPageBgColor());
 			}
-			// Safari 26: toolbar tint is derived from fixed elements' background-color
-			// (live-sampled). Override the sticky band's bg to accent while menu is open.
+			// Safari 26: toolbar tint comes from fixed elements' background-color but
+			// CSS variable changes don't trigger re-sampling — only inline style changes do.
+			// Always set an explicit resolved color so Safari picks up the change.
 			if (stickyBand && isMobileViewport()) {
-				stickyBand.style.backgroundColor = isOpen ? getMenuThemeColor() : "";
+				stickyBand.style.backgroundColor = isOpen ? getMenuThemeColor() : getPageBgColor();
 			}
 		}
 
