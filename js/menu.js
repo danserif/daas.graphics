@@ -6,7 +6,6 @@
 		var overlay = document.querySelector("[data-nav-overlay]");
 		var root = document.documentElement;
 		var themeMeta = document.querySelector('meta[name="theme-color"]');
-		var originalThemeColor = themeMeta ? themeMeta.getAttribute("content") : null;
 		var panel = overlay ? overlay.querySelector(".nav-panel") : null;
 		var panelScroll = overlay ? overlay.querySelector(".nav-panel-scroll") : null;
 		var closeBtn = overlay ? overlay.querySelector(".nav-panel-close") : null;
@@ -132,26 +131,38 @@
 			}
 		}
 
-		function getMenuThemeColor() {
-			// Match the nav overlay / panel (CSS --color-accent) so Safari UI stays in sync after theme toggles
-			if (!root) return originalThemeColor || "#000000";
+		function getPageChromeColor() {
+			// Match page background (Safari chrome should follow light/dark, not stay stuck on #000 from HTML).
+			if (!root) return "#000000";
 			try {
-				var accent = getComputedStyle(root).getPropertyValue("--color-accent").trim();
-				if (accent) return accent;
+				var bg = getComputedStyle(root).getPropertyValue("--color-bg").trim();
+				if (bg) return bg;
 			} catch (e) {
 				/* ignore */
 			}
-			var isLightMode = root.classList.contains("light-mode");
-			return isLightMode ? "#0044FF" : "#aaff00";
+			return root.classList.contains("light-mode") ? "#ffffff" : "#000000";
+		}
+
+		function getMenuThemeColor() {
+			// Use the same hex values as :root / .light-mode --color-accent. iOS Safari often ignores or mishandles
+			// theme-color when fed some computed custom-property strings (e.g. rgb()/resolved forms), so avoid
+			// getComputedStyle here — this path matched the behaviour that worked reliably before.
+			if (!root) return "#000000";
+			return root.classList.contains("light-mode") ? "#0044FF" : "#aaff00";
 		}
 
 		function setThemeColorForMenu(isOpen) {
 			if (!themeMeta) return;
 			if (isOpen) {
 				themeMeta.setAttribute("content", getMenuThemeColor());
-			} else if (originalThemeColor) {
-				themeMeta.setAttribute("content", originalThemeColor);
+			} else {
+				themeMeta.setAttribute("content", getPageChromeColor());
 			}
+		}
+
+		function syncBrowserThemeColorMeta() {
+			if (!themeMeta || !overlay) return;
+			setThemeColorForMenu(overlay.classList.contains("is-open"));
 		}
 
 		function syncOverlayBackground() {
@@ -221,6 +232,14 @@
 			// Update theme colour before the overlay becomes visible to avoid any iOS flash.
 			setThemeColorForMenu(true);
 			overlay.classList.add("is-open");
+			// iOS Safari sometimes misses the first meta update; re-apply after layout/paint with menu open.
+			requestAnimationFrame(function () {
+				requestAnimationFrame(function () {
+					if (overlay.classList.contains("is-open")) {
+						setThemeColorForMenu(true);
+					}
+				});
+			});
 			syncOverlayBackground();
 			if (trigger) {
 				trigger.setAttribute("aria-expanded", "true");
@@ -268,6 +287,9 @@
 			// Show overlay first, then slide panel in after overlay has appeared
 			setTimeout(function () {
 				overlay.classList.add("is-panel-open");
+				if (overlay.classList.contains("is-open")) {
+					setThemeColorForMenu(true);
+				}
 			}, OVERLAY_FADE_MS);
 
 			// Focus close button for accessibility
@@ -396,6 +418,9 @@
 				setThemeColorForMenu(true);
 			}
 		};
+
+		window.syncBrowserThemeColorMeta = syncBrowserThemeColorMeta;
+		syncBrowserThemeColorMeta();
 	}
 
 	if (document.readyState === "loading") {

@@ -274,7 +274,13 @@
 				loadingOverlay.classList.add("hidden");
 			}
 			body.classList.remove("loading");
-			window.dispatchEvent(new CustomEvent("loadingComplete"));
+			if (typeof window.__preloadDuringLoading === "function") {
+				window.__preloadDuringLoading();
+			}
+			// Defer until full main.js has run so initAfterLoading() can attach the listener.
+			setTimeout(function () {
+				window.dispatchEvent(new CustomEvent("loadingComplete"));
+			}, 0);
 			return;
 		}
 
@@ -666,6 +672,10 @@ function startAnimations() {
 			if (typeof window.updateNavOverlayBackground === "function") {
 				window.updateNavOverlayBackground();
 			}
+			// Keep Safari iOS theme-color in sync with light/dark (menu closed → page bg; open → accent in hook above)
+			if (typeof window.syncBrowserThemeColorMeta === "function") {
+				window.syncBrowserThemeColorMeta();
+			}
 			// Trigger loading screen in new color mode
 			if (typeof window.triggerLoadingScreen === "function") {
 				window.triggerLoadingScreen();
@@ -678,6 +688,9 @@ function startAnimations() {
 			// If nav menu is open, resync its overlay background to new accent
 			if (typeof window.updateNavOverlayBackground === "function") {
 				window.updateNavOverlayBackground();
+			}
+			if (typeof window.syncBrowserThemeColorMeta === "function") {
+				window.syncBrowserThemeColorMeta();
 			}
 			// Trigger loading screen in new color mode
 			if (typeof window.triggerLoadingScreen === "function") {
@@ -712,6 +725,12 @@ function startAnimations() {
 			});
 			// In cases where the loading overlay didn't run (or preload was skipped),
 			// mark header lines as ready once we know their final height.
+			markHeaderLinesReady();
+		}
+	} else {
+		// Preload already applied min-heights; ensure class is present if anything prevented markHeaderLinesReady.
+		const headerEl = document.querySelector(".header");
+		if (headerEl && !headerEl.classList.contains("header-lines-ready")) {
 			markHeaderLinesReady();
 		}
 	}

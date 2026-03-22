@@ -4021,9 +4021,11 @@ img.daas-graphic.fade-in {
 		align-self: stretch;
 	}
 
-	/* Extra specificity: fixed band hr must show with other .header-lines-ready dividers (Safari repaint). */
-	.header.header-lines-ready .header-sticky-band .divider {
+	/* Sticky-band hr: not gated by .header-lines-ready so it paints on first mobile frame (WebKit + flex hr). */
+	.header .header-sticky-band .header-sticky-divider {
 		visibility: visible;
+		flex-shrink: 0;
+		align-self: stretch;
 	}
 
 	html {
