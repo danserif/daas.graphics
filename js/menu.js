@@ -228,10 +228,12 @@
 			cloneLinks();
 
 			if (stickyBand && isMobileViewport()) {
-				// Safari 26: remove the sticky band first so there are zero qualifying fixed
-				// elements for one paint frame. In the next frame the accent overlay appears
-				// and Safari samples it fresh for toolbar tinting.
+				// Safari 26: body background is the only source Safari live-samples for
+				// toolbar tinting. Set it to accent AND remove the sticky band (which
+				// Safari sampled at initial render) in the same frame so Safari falls
+				// back to body immediately. The overlay appears one frame later.
 				stickyBand.style.display = "none";
+				document.body.style.backgroundColor = getMenuThemeColor();
 				requestAnimationFrame(function () {
 					finishOpenOverlay(trigger);
 				});
