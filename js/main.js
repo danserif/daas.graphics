@@ -162,12 +162,13 @@
 				setTimeout(function () {
 					loadingOverlay.classList.add("hidden");
 					body.classList.remove("loading");
-					// Reset theme-color to page background now that the accent loading screen is gone.
-					var meta = document.querySelector('meta[name="theme-color"]');
-					if (meta) {
-						var isLight = document.documentElement.classList.contains("light-mode");
-						meta.setAttribute("content", isLight ? "#ffffff" : "#000000");
-					}
+					var isLight = document.documentElement.classList.contains("light-mode");
+					var existing = document.querySelector('meta[name="theme-color"]');
+					if (existing) existing.parentNode.removeChild(existing);
+					var newMeta = document.createElement("meta");
+					newMeta.name = "theme-color";
+					newMeta.content = isLight ? "#ffffff" : "#000000";
+					document.head.appendChild(newMeta);
 					window.dispatchEvent(new CustomEvent("loadingComplete"));
 				}, SWIPE_DURATION_MS);
 			}, CONTENT_FADE_MS);
@@ -667,16 +668,21 @@ function startAnimations() {
 		}, 200);
 	}
 
-	// Sync the theme-color meta to match the current mode's accent (loading screen) or background.
+	function forceThemeColor(color) {
+		var existing = document.querySelector('meta[name="theme-color"]');
+		if (existing) existing.parentNode.removeChild(existing);
+		var m = document.createElement("meta");
+		m.name = "theme-color";
+		m.content = color;
+		document.head.appendChild(m);
+	}
+
 	function syncThemeColorToMode(toAccent) {
-		var meta = document.querySelector('meta[name="theme-color"]');
-		if (!meta) return;
 		var isLight = root.classList.contains("light-mode");
-		if (toAccent) {
-			meta.setAttribute("content", isLight ? "#0044FF" : "#aaff00");
-		} else {
-			meta.setAttribute("content", isLight ? "#ffffff" : "#000000");
-		}
+		var color = toAccent
+			? (isLight ? "#0044FF" : "#aaff00")
+			: (isLight ? "#ffffff" : "#000000");
+		forceThemeColor(color);
 	}
 
 	// Light/Dark Mode Toggle - Event delegation

@@ -6,7 +6,6 @@
 		var overlay = document.querySelector("[data-nav-overlay]");
 		var root = document.documentElement;
 		var themeMeta = document.querySelector('meta[name="theme-color"]');
-		var originalThemeColor = themeMeta ? themeMeta.getAttribute("content") : null;
 		var panel = overlay ? overlay.querySelector(".nav-panel") : null;
 		var panelScroll = overlay ? overlay.querySelector(".nav-panel-scroll") : null;
 		var closeBtn = overlay ? overlay.querySelector(".nav-panel-close") : null;
@@ -133,10 +132,8 @@
 		}
 
 		function getMenuThemeColor() {
-			// Match the accent background used for the mobile nav panel
-			if (!root) return originalThemeColor || "#000000";
-			var isLightMode = root.classList.contains("light-mode");
-			return isLightMode ? "#0044FF" : "#aaff00";
+			if (!root) return "#000000";
+			return root.classList.contains("light-mode") ? "#0044FF" : "#aaff00";
 		}
 
 		function getPageBgColor() {
@@ -144,12 +141,23 @@
 			return root.classList.contains("light-mode") ? "#ffffff" : "#000000";
 		}
 
+		// Safari on iOS often ignores setAttribute on an existing theme-color meta.
+		// Removing and re-inserting the element forces Safari to re-evaluate it.
+		function forceThemeColor(color) {
+			var existing = document.querySelector('meta[name="theme-color"]');
+			if (existing) existing.parentNode.removeChild(existing);
+			var m = document.createElement("meta");
+			m.name = "theme-color";
+			m.content = color;
+			document.head.appendChild(m);
+			themeMeta = m;
+		}
+
 		function setThemeColorForMenu(isOpen) {
-			if (!themeMeta) return;
-			if (isOpen) {
-				themeMeta.setAttribute("content", getMenuThemeColor());
-			} else {
-				themeMeta.setAttribute("content", getPageBgColor());
+			var color = isOpen ? getMenuThemeColor() : getPageBgColor();
+			forceThemeColor(color);
+			if (isMobileViewport()) {
+				document.documentElement.style.backgroundColor = color;
 			}
 		}
 
@@ -192,10 +200,8 @@
 
 			cloneLinks();
 
-			// Hide the fixed mobile header band so its --color-bg background can't sit above the
-			// accent overlay in the status-bar zone and prevent iOS from picking up theme-color.
 			if (stickyBand && isMobileViewport()) {
-				stickyBand.style.visibility = "hidden";
+				stickyBand.style.display = "none";
 			}
 
 			// Update theme colour before the overlay becomes visible to avoid any iOS flash.
@@ -260,7 +266,8 @@
 		}
 
 		function restoreStickyBand() {
-			if (stickyBand) stickyBand.style.visibility = "";
+			if (stickyBand) stickyBand.style.display = "";
+			document.documentElement.style.backgroundColor = "";
 		}
 
 		function closeOverlay(immediate, onClosed) {
@@ -359,11 +366,13 @@
 
 		linksContainer.addEventListener("click", handleNavLinkClick);
 
-		// Expose hook so theme toggle can resync overlay color while menu is open
 		window.updateNavOverlayBackground = function () {
 			if (!overlay) return;
 			if (overlay.classList.contains("is-open")) {
 				syncOverlayBackground();
+				if (isMobileViewport()) {
+					setThemeColorForMenu(true);
+				}
 			}
 		};
 	}
