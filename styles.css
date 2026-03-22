@@ -1118,18 +1118,14 @@ h1.header-label {
 		transition: none;
 	}
 
-	/* Lock overlay and panel height so they don't grow when iOS viewport changes on scroll (footer no longer moves). */
+	/* Stretch to fill viewport via inset so the accent covers the full screen even when iOS Safari's
+	   toolbar collapses. Both elements are position:fixed, so top:0 + bottom:0 tracks the layout viewport. */
 	.nav-overlay,
 	.nav-panel {
 		top: 0;
 		left: 0;
 		right: 0;
-		bottom: auto;
-		height: 100vh;
-		height: 100svh;
-		max-height: 100vh;
-		max-height: 100svh;
-		min-height: -webkit-fill-available;
+		bottom: 0;
 	}
 
 	/* Contain scroll inside the overlay so the page doesn’t move behind it (body scroll lock is in menu.js). */

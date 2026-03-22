@@ -163,6 +163,7 @@
 		var MOBILE_MAX_WIDTH = 1080;
 		var overlayTouchMoveHandler = null;
 		var panelScrollTouchMoveHandler = null;
+		var stickyBand = document.querySelector(".header-sticky-band");
 
 		function isMobileViewport() {
 			return typeof window !== "undefined" && window.innerWidth <= MOBILE_MAX_WIDTH;
@@ -185,6 +186,12 @@
 			lastTrigger = trigger || null;
 
 			cloneLinks();
+
+			// Hide the fixed mobile header band so its --color-bg background can't sit above the
+			// accent overlay in the status-bar zone and prevent iOS from picking up theme-color.
+			if (stickyBand && isMobileViewport()) {
+				stickyBand.style.visibility = "hidden";
+			}
 
 			// Update theme colour before the overlay becomes visible to avoid any iOS flash.
 			setThemeColorForMenu(true);
@@ -247,6 +254,10 @@
 			}
 		}
 
+		function restoreStickyBand() {
+			if (stickyBand) stickyBand.style.visibility = "";
+		}
+
 		function closeOverlay(immediate, onClosed) {
 			if (!overlay) return;
 
@@ -255,6 +266,7 @@
 				overlay.classList.remove("is-open");
 				overlay.style.backgroundColor = "";
 				setThemeColorForMenu(false);
+				restoreStickyBand();
 				if (overlayTouchMoveHandler) {
 					overlay.removeEventListener("touchmove", overlayTouchMoveHandler);
 					overlayTouchMoveHandler = null;
@@ -278,6 +290,7 @@
 				overlay.classList.remove("is-open");
 				overlay.style.backgroundColor = "";
 				setThemeColorForMenu(false);
+				restoreStickyBand();
 				if (overlayTouchMoveHandler) {
 					overlay.removeEventListener("touchmove", overlayTouchMoveHandler);
 					overlayTouchMoveHandler = null;
