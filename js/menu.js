@@ -187,18 +187,7 @@
 			bodyScrollLocked = false;
 		}
 
-		function openOverlay(trigger) {
-			if (!overlay || !panel) return;
-			lastTrigger = trigger || null;
-
-			cloneLinks();
-
-			// Safari 26: hide the fixed sticky band so it's no longer in the render tree.
-			// This lets Safari sample the accent overlay instead for toolbar tinting.
-			if (stickyBand && isMobileViewport()) {
-				stickyBand.style.display = "none";
-			}
-
+		function finishOpenOverlay(trigger) {
 			setThemeColorForMenu(true);
 			overlay.classList.add("is-open");
 			syncOverlayBackground();
@@ -206,17 +195,11 @@
 				trigger.setAttribute("aria-expanded", "true");
 			}
 
-			// On mobile, lock body scroll so the page doesn’t scroll under the menu when scrolling the panel (iOS).
 			if (isMobileViewport()) {
 				lockBodyScroll();
 
-				// iOS can draw a right-edge “fade” scroll indicator above web content.
-				// Prevent touchmove on the overlay itself, but still allow scrolling inside the panel scroller.
 				if (!overlayTouchMoveHandler) {
 					overlayTouchMoveHandler = function (e) {
-						// Only prevent touchmove on the overlay backdrop itself.
-						// If the user is touching inside the panel (menu or plan),
-						// allow that native scrolling to work.
 						if (e.target === overlay) {
 							e.preventDefault();
 						}
@@ -225,20 +208,36 @@
 				}
 				if (!panelScrollTouchMoveHandler) {
 					panelScrollTouchMoveHandler = function (e) {
-						// Allow native scrolling in the panel scroll area, but don't let it bubble to the overlay.
 						e.stopPropagation();
 					};
 					panelScroll.addEventListener("touchmove", panelScrollTouchMoveHandler, { passive: true });
 				}
 			}
 
-			// Show overlay first, then slide panel in after overlay has appeared
 			setTimeout(function () {
 				overlay.classList.add("is-panel-open");
 			}, OVERLAY_FADE_MS);
 
-			// Focus close button for accessibility
 			closeBtn.focus();
+		}
+
+		function openOverlay(trigger) {
+			if (!overlay || !panel) return;
+			lastTrigger = trigger || null;
+
+			cloneLinks();
+
+			if (stickyBand && isMobileViewport()) {
+				// Safari 26: remove the sticky band first so there are zero qualifying fixed
+				// elements for one paint frame. In the next frame the accent overlay appears
+				// and Safari samples it fresh for toolbar tinting.
+				stickyBand.style.display = "none";
+				requestAnimationFrame(function () {
+					finishOpenOverlay(trigger);
+				});
+			} else {
+				finishOpenOverlay(trigger);
+			}
 		}
 
 		// Expose a global helper so Safari can always open the menu via inline handlers if needed.
@@ -267,7 +266,9 @@
 				overlay.classList.remove("is-open");
 				overlay.style.backgroundColor = "";
 				setThemeColorForMenu(false);
-				if (stickyBand) stickyBand.style.display = "";
+				if (stickyBand && isMobileViewport()) {
+					requestAnimationFrame(function () { stickyBand.style.display = ""; });
+				}
 				if (overlayTouchMoveHandler) {
 					overlay.removeEventListener("touchmove", overlayTouchMoveHandler);
 					overlayTouchMoveHandler = null;
@@ -291,7 +292,9 @@
 				overlay.classList.remove("is-open");
 				overlay.style.backgroundColor = "";
 				setThemeColorForMenu(false);
-				if (stickyBand) stickyBand.style.display = "";
+				if (stickyBand && isMobileViewport()) {
+					requestAnimationFrame(function () { stickyBand.style.display = ""; });
+				}
 				if (overlayTouchMoveHandler) {
 					overlay.removeEventListener("touchmove", overlayTouchMoveHandler);
 					overlayTouchMoveHandler = null;
