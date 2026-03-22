@@ -141,24 +141,13 @@
 			return root.classList.contains("light-mode") ? "#ffffff" : "#000000";
 		}
 
-		// Safari on iOS often ignores setAttribute on an existing theme-color meta.
-		// Removing and re-inserting the element forces Safari to re-evaluate it.
-		function forceThemeColor(color) {
-			var existing = document.querySelector('meta[name="theme-color"]');
-			if (existing) existing.parentNode.removeChild(existing);
-			var m = document.createElement("meta");
-			m.name = "theme-color";
-			m.content = color;
-			document.head.appendChild(m);
-			themeMeta = m;
-		}
-
 		function setThemeColorForMenu(isOpen) {
+			if (!themeMeta) themeMeta = document.querySelector('meta[name="theme-color"]');
+			if (!themeMeta) return;
 			var color = isOpen ? getMenuThemeColor() : getPageBgColor();
-			forceThemeColor(color);
-			if (isMobileViewport()) {
-				document.documentElement.style.backgroundColor = color;
-			}
+			themeMeta.setAttribute("content", color);
+			// Safari re-reads theme-color on navigation; a no-op replaceState forces that.
+			try { history.replaceState(null, "", location.href); } catch (e) {}
 		}
 
 		function syncOverlayBackground() {
@@ -267,7 +256,6 @@
 
 		function restoreStickyBand() {
 			if (stickyBand) stickyBand.style.display = "";
-			document.documentElement.style.backgroundColor = "";
 		}
 
 		function closeOverlay(immediate, onClosed) {

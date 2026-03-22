@@ -162,13 +162,12 @@
 				setTimeout(function () {
 					loadingOverlay.classList.add("hidden");
 					body.classList.remove("loading");
-					var isLight = document.documentElement.classList.contains("light-mode");
-					var existing = document.querySelector('meta[name="theme-color"]');
-					if (existing) existing.parentNode.removeChild(existing);
-					var newMeta = document.createElement("meta");
-					newMeta.name = "theme-color";
-					newMeta.content = isLight ? "#ffffff" : "#000000";
-					document.head.appendChild(newMeta);
+					var meta = document.querySelector('meta[name="theme-color"]');
+					if (meta) {
+						var isLight = document.documentElement.classList.contains("light-mode");
+						meta.setAttribute("content", isLight ? "#ffffff" : "#000000");
+						try { history.replaceState(null, "", location.href); } catch (e) {}
+					}
 					window.dispatchEvent(new CustomEvent("loadingComplete"));
 				}, SWIPE_DURATION_MS);
 			}, CONTENT_FADE_MS);
@@ -668,21 +667,15 @@ function startAnimations() {
 		}, 200);
 	}
 
-	function forceThemeColor(color) {
-		var existing = document.querySelector('meta[name="theme-color"]');
-		if (existing) existing.parentNode.removeChild(existing);
-		var m = document.createElement("meta");
-		m.name = "theme-color";
-		m.content = color;
-		document.head.appendChild(m);
-	}
-
 	function syncThemeColorToMode(toAccent) {
+		var meta = document.querySelector('meta[name="theme-color"]');
+		if (!meta) return;
 		var isLight = root.classList.contains("light-mode");
 		var color = toAccent
 			? (isLight ? "#0044FF" : "#aaff00")
 			: (isLight ? "#ffffff" : "#000000");
-		forceThemeColor(color);
+		meta.setAttribute("content", color);
+		try { history.replaceState(null, "", location.href); } catch (e) {}
 	}
 
 	// Light/Dark Mode Toggle - Event delegation
