@@ -4021,6 +4021,11 @@ img.daas-graphic.fade-in {
 		align-self: stretch;
 	}
 
+	/* Extra specificity: fixed band hr must show with other .header-lines-ready dividers (Safari repaint). */
+	.header.header-lines-ready .header-sticky-band .divider {
+		visibility: visible;
+	}
+
 	html {
 		scroll-padding-top: var(--header-sticky-band-height, 0px);
 	}

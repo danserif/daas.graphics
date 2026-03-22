@@ -479,10 +479,27 @@ let headerSharedMinHeight = 0;
 let animationIntervals = [];
 let animationTimeouts = [];
 
+function getHeaderLabelLayoutParent(label) {
+	const band = label.closest(".header-sticky-band");
+	if (band) return band;
+	const col = label.closest(".header-column");
+	if (!col || window.getComputedStyle(col).display === "none") {
+		return null;
+	}
+	return col;
+}
+
 function markHeaderLinesReady() {
 	const header = document.querySelector(".header");
 	if (header) {
 		header.classList.add("header-lines-ready");
+	}
+	// Nudge fixed mobile band height + repaint so the sticky hr shows with other header dividers (Safari).
+	syncMobileHeaderStickyBandHeight();
+	if (typeof requestAnimationFrame === "function") {
+		requestAnimationFrame(function () {
+			syncMobileHeaderStickyBandHeight();
+		});
 	}
 }
 
@@ -592,8 +609,8 @@ window.__preloadDuringLoading = function () {
 	if (cachedHeaderLabels && cachedHeaderLabels.length && !headerSharedMinHeight) {
 		let localSharedMinHeight = 0;
 		cachedHeaderLabels.forEach(function (label) {
-			const headerColumn = label.closest(".header-column");
-			if (!headerColumn || window.getComputedStyle(headerColumn).display === "none") return;
+			const layoutParent = getHeaderLabelLayoutParent(label);
+			if (!layoutParent) return;
 			const previousVisibility = label.style.visibility;
 			label.style.visibility = "visible";
 			const h = label.offsetHeight;
@@ -603,8 +620,8 @@ window.__preloadDuringLoading = function () {
 		if (localSharedMinHeight > 0) {
 			headerSharedMinHeight = localSharedMinHeight;
 			cachedHeaderLabels.forEach(function (label) {
-				const headerColumn = label.closest(".header-column");
-				if (!headerColumn || window.getComputedStyle(headerColumn).display === "none") return;
+				const layoutParent = getHeaderLabelLayoutParent(label);
+				if (!layoutParent) return;
 				label.style.minHeight = headerSharedMinHeight + "px";
 			});
 			// Header row heights (and dividers) are now stable; allow them to fade in.
@@ -678,8 +695,8 @@ function startAnimations() {
 	let sharedMinHeight = headerSharedMinHeight || 0;
 	if (!sharedMinHeight) {
 		headerLabels.forEach(function (label) {
-			const headerColumn = label.closest(".header-column");
-			if (!headerColumn || window.getComputedStyle(headerColumn).display === "none") return;
+			const layoutParent = getHeaderLabelLayoutParent(label);
+			if (!layoutParent) return;
 			const previousVisibility = label.style.visibility;
 			label.style.visibility = "visible";
 			const h = label.offsetHeight;
@@ -689,8 +706,8 @@ function startAnimations() {
 		if (sharedMinHeight > 0) {
 			headerSharedMinHeight = sharedMinHeight;
 			headerLabels.forEach(function (label) {
-				const headerColumn = label.closest(".header-column");
-				if (!headerColumn || window.getComputedStyle(headerColumn).display === "none") return;
+				const layoutParent = getHeaderLabelLayoutParent(label);
+				if (!layoutParent) return;
 				label.style.minHeight = sharedMinHeight + "px";
 			});
 			// In cases where the loading overlay didn't run (or preload was skipped),
@@ -802,6 +819,9 @@ function startAnimations() {
 	const TYPEWRITER_INTRA_STAGGER = 0;
 
 	function isLabelVisible(label) {
+		if (label.closest(".header-sticky-band")) {
+			return true;
+		}
 		const headerColumn = label.closest(".header-column");
 		return !!(headerColumn && window.getComputedStyle(headerColumn).display !== "none");
 	}
@@ -886,8 +906,8 @@ function startAnimations() {
 		return !isLabelVisible(label);
 	});
 	hiddenLabels.forEach(function (label) {
-		const headerColumn = label.closest(".header-column");
-		if (!headerColumn) return;
+		const observeRoot = label.closest(".header-sticky-band") || label.closest(".header-column");
+		if (!observeRoot) return;
 		const observer = new IntersectionObserver(
 			function (entries) {
 				entries.forEach(function (entry) {
@@ -900,7 +920,7 @@ function startAnimations() {
 			},
 			{ threshold: 0.1 },
 		);
-		observer.observe(headerColumn);
+		observer.observe(observeRoot);
 	});
 
 	// ASCII: use preloaded DOM if loading screen ran, else prepare now; then start char animations after short defer
