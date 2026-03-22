@@ -6,6 +6,14 @@
 		var overlay = document.querySelector("[data-nav-overlay]");
 		var root = document.documentElement;
 		var themeMeta = document.querySelector('meta[name="theme-color"]');
+		var isAppleTouch = false;
+		try {
+			isAppleTouch =
+				/iP(hone|ad|od)/.test(navigator.userAgent || "") ||
+				(navigator.platform === "MacIntel" && (navigator.maxTouchPoints || 0) > 1);
+		} catch (e) {
+			isAppleTouch = false;
+		}
 		var panel = overlay ? overlay.querySelector(".nav-panel") : null;
 		var panelScroll = overlay ? overlay.querySelector(".nav-panel-scroll") : null;
 		var closeBtn = overlay ? overlay.querySelector(".nav-panel-close") : null;
@@ -151,12 +159,38 @@
 			return root.classList.contains("light-mode") ? "#0044FF" : "#aaff00";
 		}
 
+		function pokeThemeColorMeta(color) {
+			var m = themeMeta || document.querySelector('meta[name="theme-color"]');
+			if (!m || !m.parentNode) return;
+			m.setAttribute("content", color);
+			// iOS WebKit often ignores setAttribute on an existing meta; replacing the node forces a refresh.
+			if (isAppleTouch) {
+				var next = document.createElement("meta");
+				next.setAttribute("name", "theme-color");
+				next.setAttribute("content", color);
+				m.parentNode.insertBefore(next, m);
+				m.parentNode.removeChild(m);
+				themeMeta = next;
+			}
+		}
+
 		function setThemeColorForMenu(isOpen) {
-			if (!themeMeta) return;
+			if (!themeMeta && !document.querySelector('meta[name="theme-color"]')) return;
 			if (isOpen) {
-				themeMeta.setAttribute("content", getMenuThemeColor());
+				pokeThemeColorMeta(getMenuThemeColor());
 			} else {
-				themeMeta.setAttribute("content", getPageChromeColor());
+				pokeThemeColorMeta(getPageChromeColor());
+			}
+		}
+
+		function setIosDocumentBackdropForNav(isMenuOpenAccent) {
+			if (!isMobileViewport() || !document.body) return;
+			if (isMenuOpenAccent) {
+				document.body.style.backgroundColor = getMenuThemeColor();
+				if (root) root.style.backgroundColor = getMenuThemeColor();
+			} else {
+				document.body.style.backgroundColor = "";
+				if (root) root.style.backgroundColor = "";
 			}
 		}
 
@@ -180,40 +214,9 @@
 		var MOBILE_MAX_WIDTH = 1080;
 		var overlayTouchMoveHandler = null;
 		var panelScrollTouchMoveHandler = null;
-		var visualViewportNavHandler = null;
 
 		function isMobileViewport() {
 			return typeof window !== "undefined" && window.innerWidth <= MOBILE_MAX_WIDTH;
-		}
-
-		function getMobileOverlayHeightPx() {
-			// Commit 2b35295 used visualViewport.height only to fix a post-scroll gap; on iOS that value is
-			// often *smaller* than innerHeight/clientHeight, so a fixed overlay ended short — body showed through,
-			// the “accent under the panel” vanished, and Safari’s chrome stopped matching the menu.
-			var ih = typeof window.innerHeight === "number" ? window.innerHeight : 0;
-			var docEl = document.documentElement;
-			var ch = docEl && typeof docEl.clientHeight === "number" ? docEl.clientHeight : 0;
-			var vv = window.visualViewport;
-			var vvh = vv && typeof vv.height === "number" && vv.height > 0 ? Math.round(vv.height) : 0;
-			var h = Math.max(ih, ch, vvh);
-			return h > 0 ? h : ih || ch || vvh;
-		}
-
-		function syncMobileOverlayHeights() {
-			if (!isMobileViewport() || !overlay) return;
-			var h = getMobileOverlayHeightPx() + "px";
-			overlay.style.height = h;
-			if (panel) panel.style.height = h;
-			var planEl = overlay.querySelector(".plan-panel");
-			if (planEl) planEl.style.height = h;
-		}
-
-		function clearMobileOverlayHeights() {
-			if (!overlay) return;
-			overlay.style.height = "";
-			if (panel) panel.style.height = "";
-			var planEl = overlay.querySelector(".plan-panel");
-			if (planEl) planEl.style.height = "";
 		}
 
 		function lockBodyScroll() {
@@ -236,12 +239,14 @@
 
 			// Update theme colour before the overlay becomes visible to avoid any iOS flash.
 			setThemeColorForMenu(true);
+			setIosDocumentBackdropForNav(true);
 			overlay.classList.add("is-open");
 			// iOS Safari sometimes misses the first meta update; re-apply after layout/paint with menu open.
 			requestAnimationFrame(function () {
 				requestAnimationFrame(function () {
 					if (overlay.classList.contains("is-open")) {
 						setThemeColorForMenu(true);
+						setIosDocumentBackdropForNav(true);
 					}
 				});
 			});
@@ -253,19 +258,6 @@
 			// On mobile, lock body scroll so the page doesn’t scroll under the menu when scrolling the panel (iOS).
 			if (isMobileViewport()) {
 				lockBodyScroll();
-				syncMobileOverlayHeights();
-				requestAnimationFrame(function () {
-					syncMobileOverlayHeights();
-				});
-				if (window.visualViewport && !visualViewportNavHandler) {
-					visualViewportNavHandler = function () {
-						if (overlay.classList.contains("is-open")) {
-							syncMobileOverlayHeights();
-						}
-					};
-					window.visualViewport.addEventListener("resize", visualViewportNavHandler);
-					window.visualViewport.addEventListener("scroll", visualViewportNavHandler);
-				}
 
 				// iOS can draw a right-edge “fade” scroll indicator above web content.
 				// Prevent touchmove on the overlay itself, but still allow scrolling inside the panel scroller.
@@ -294,6 +286,7 @@
 				overlay.classList.add("is-panel-open");
 				if (overlay.classList.contains("is-open")) {
 					setThemeColorForMenu(true);
+					setIosDocumentBackdropForNav(true);
 				}
 			}, OVERLAY_FADE_MS);
 
@@ -327,6 +320,7 @@
 				overlay.classList.remove("is-open");
 				overlay.style.backgroundColor = "";
 				setThemeColorForMenu(false);
+				setIosDocumentBackdropForNav(false);
 				if (overlayTouchMoveHandler) {
 					overlay.removeEventListener("touchmove", overlayTouchMoveHandler);
 					overlayTouchMoveHandler = null;
@@ -338,7 +332,6 @@
 				if (bodyScrollLocked) {
 					unlockBodyScroll();
 				}
-				clearMobileOverlayHeights();
 				if (lastTrigger) {
 					lastTrigger.setAttribute("aria-expanded", "false");
 					restoreTriggerFocus();
@@ -351,6 +344,7 @@
 				overlay.classList.remove("is-open");
 				overlay.style.backgroundColor = "";
 				setThemeColorForMenu(false);
+				setIosDocumentBackdropForNav(false);
 				if (overlayTouchMoveHandler) {
 					overlay.removeEventListener("touchmove", overlayTouchMoveHandler);
 					overlayTouchMoveHandler = null;
@@ -362,7 +356,6 @@
 				if (bodyScrollLocked) {
 					unlockBodyScroll();
 				}
-				clearMobileOverlayHeights();
 				if (lastTrigger) {
 					lastTrigger.setAttribute("aria-expanded", "false");
 					restoreTriggerFocus();
@@ -421,6 +414,7 @@
 			if (overlay.classList.contains("is-open")) {
 				syncOverlayBackground();
 				setThemeColorForMenu(true);
+				setIosDocumentBackdropForNav(true);
 			}
 		};
 

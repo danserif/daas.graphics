@@ -1118,8 +1118,8 @@ h1.header-label {
 		transition: none;
 	}
 
-	/* Fill visible viewport: 100svh is the *small* viewport, so when Safari’s chrome hides after scroll
-	   the panel stays short and a gap appears at the bottom. Use inset fill + JS height sync on open. */
+	/* Fill viewport without JS height (inline height broke iOS accent + theme-colour). Large viewport height
+	   avoids a gap when Safari’s chrome hides; -webkit-fill-available covers iOS toolbars. */
 	.nav-overlay,
 	.nav-panel {
 		top: 0;
@@ -1129,6 +1129,8 @@ h1.header-label {
 		height: auto;
 		max-height: none;
 		min-height: -webkit-fill-available;
+		min-height: 100dvh;
+		min-height: 100lvh;
 	}
 
 	/* Contain scroll inside the overlay so the page doesn’t move behind it (body scroll lock is in menu.js). */
