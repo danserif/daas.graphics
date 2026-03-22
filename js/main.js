@@ -162,6 +162,12 @@
 				setTimeout(function () {
 					loadingOverlay.classList.add("hidden");
 					body.classList.remove("loading");
+					// Reset theme-color to page background now that the accent loading screen is gone.
+					var meta = document.querySelector('meta[name="theme-color"]');
+					if (meta) {
+						var isLight = document.documentElement.classList.contains("light-mode");
+						meta.setAttribute("content", isLight ? "#ffffff" : "#000000");
+					}
 					window.dispatchEvent(new CustomEvent("loadingComplete"));
 				}, SWIPE_DURATION_MS);
 			}, CONTENT_FADE_MS);
@@ -661,6 +667,18 @@ function startAnimations() {
 		}, 200);
 	}
 
+	// Sync the theme-color meta to match the current mode's accent (loading screen) or background.
+	function syncThemeColorToMode(toAccent) {
+		var meta = document.querySelector('meta[name="theme-color"]');
+		if (!meta) return;
+		var isLight = root.classList.contains("light-mode");
+		if (toAccent) {
+			meta.setAttribute("content", isLight ? "#0044FF" : "#aaff00");
+		} else {
+			meta.setAttribute("content", isLight ? "#ffffff" : "#000000");
+		}
+	}
+
 	// Light/Dark Mode Toggle - Event delegation
 	document.addEventListener("click", function (e) {
 		if (e.target.classList.contains("dark-mode-toggle")) {
@@ -668,6 +686,8 @@ function startAnimations() {
 			root.classList.remove("light-mode");
 			localStorage.setItem("colorMode", "dark");
 			updateAccentColorValue();
+			// Sync theme-color: mobile loading screen uses --color-bg, desktop uses --color-accent.
+			syncThemeColorToMode(window.innerWidth > 1080);
 			// If nav menu is open, resync its overlay background to new accent
 			if (typeof window.updateNavOverlayBackground === "function") {
 				window.updateNavOverlayBackground();
@@ -681,6 +701,7 @@ function startAnimations() {
 			root.classList.add("light-mode");
 			localStorage.setItem("colorMode", "light");
 			updateAccentColorValue();
+			syncThemeColorToMode(window.innerWidth > 1080);
 			// If nav menu is open, resync its overlay background to new accent
 			if (typeof window.updateNavOverlayBackground === "function") {
 				window.updateNavOverlayBackground();

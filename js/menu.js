@@ -139,12 +139,17 @@
 			return isLightMode ? "#0044FF" : "#aaff00";
 		}
 
+		function getPageBgColor() {
+			if (!root) return "#000000";
+			return root.classList.contains("light-mode") ? "#ffffff" : "#000000";
+		}
+
 		function setThemeColorForMenu(isOpen) {
 			if (!themeMeta) return;
 			if (isOpen) {
 				themeMeta.setAttribute("content", getMenuThemeColor());
-			} else if (originalThemeColor) {
-				themeMeta.setAttribute("content", originalThemeColor);
+			} else {
+				themeMeta.setAttribute("content", getPageBgColor());
 			}
 		}
 
