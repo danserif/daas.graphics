@@ -187,11 +187,16 @@
 		}
 
 		function getMobileOverlayHeightPx() {
+			// Commit 2b35295 used visualViewport.height only to fix a post-scroll gap; on iOS that value is
+			// often *smaller* than innerHeight/clientHeight, so a fixed overlay ended short — body showed through,
+			// the “accent under the panel” vanished, and Safari’s chrome stopped matching the menu.
+			var ih = typeof window.innerHeight === "number" ? window.innerHeight : 0;
+			var docEl = document.documentElement;
+			var ch = docEl && typeof docEl.clientHeight === "number" ? docEl.clientHeight : 0;
 			var vv = window.visualViewport;
-			if (vv && typeof vv.height === "number" && vv.height > 0) {
-				return Math.round(vv.height);
-			}
-			return window.innerHeight;
+			var vvh = vv && typeof vv.height === "number" && vv.height > 0 ? Math.round(vv.height) : 0;
+			var h = Math.max(ih, ch, vvh);
+			return h > 0 ? h : ih || ch || vvh;
 		}
 
 		function syncMobileOverlayHeights() {
