@@ -1118,19 +1118,18 @@ h1.header-label {
 		transition: none;
 	}
 
-	/* Fill viewport without JS height (inline height broke iOS accent + theme-colour). Large viewport height
-	   avoids a gap when Safari’s chrome hides; -webkit-fill-available covers iOS toolbars. */
+	/* Lock overlay and panel height so they don't grow when iOS viewport changes on scroll (footer no longer moves). */
 	.nav-overlay,
 	.nav-panel {
 		top: 0;
 		left: 0;
 		right: 0;
-		bottom: 0;
-		height: auto;
-		max-height: none;
+		bottom: auto;
+		height: 100vh;
+		height: 100svh;
+		max-height: 100vh;
+		max-height: 100svh;
 		min-height: -webkit-fill-available;
-		min-height: 100dvh;
-		min-height: 100lvh;
 	}
 
 	/* Contain scroll inside the overlay so the page doesn’t move behind it (body scroll lock is in menu.js). */

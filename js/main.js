@@ -672,14 +672,8 @@ function startAnimations() {
 			if (typeof window.updateNavOverlayBackground === "function") {
 				window.updateNavOverlayBackground();
 			}
-			// Keep Safari iOS theme-color in sync with light/dark (menu closed → page bg; open → accent in hook above)
-			if (typeof window.syncBrowserThemeColorMeta === "function") {
-				window.syncBrowserThemeColorMeta();
-			}
-			// Loading overlay (z-index above nav) wipes the visible menu and Safari re-samples chrome from it —
-			// skip when navigation is open so overlay + theme-colour stay in sync until close.
-			var navOverlayOpen = document.querySelector("[data-nav-overlay].is-open");
-			if (!navOverlayOpen && typeof window.triggerLoadingScreen === "function") {
+			// Trigger loading screen in new color mode
+			if (typeof window.triggerLoadingScreen === "function") {
 				window.triggerLoadingScreen();
 			}
 		} else if (e.target.classList.contains("light-mode-toggle")) {
@@ -691,11 +685,8 @@ function startAnimations() {
 			if (typeof window.updateNavOverlayBackground === "function") {
 				window.updateNavOverlayBackground();
 			}
-			if (typeof window.syncBrowserThemeColorMeta === "function") {
-				window.syncBrowserThemeColorMeta();
-			}
-			var navOverlayOpenLight = document.querySelector("[data-nav-overlay].is-open");
-			if (!navOverlayOpenLight && typeof window.triggerLoadingScreen === "function") {
+			// Trigger loading screen in new color mode
+			if (typeof window.triggerLoadingScreen === "function") {
 				window.triggerLoadingScreen();
 			}
 		}
