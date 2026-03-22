@@ -169,6 +169,7 @@
 		var MOBILE_MAX_WIDTH = 1080;
 		var overlayTouchMoveHandler = null;
 		var panelScrollTouchMoveHandler = null;
+		var stickyBand = document.querySelector(".header-sticky-band");
 
 		function isMobileViewport() {
 			return typeof window !== "undefined" && window.innerWidth <= MOBILE_MAX_WIDTH;
@@ -191,6 +192,12 @@
 			lastTrigger = trigger || null;
 
 			cloneLinks();
+
+			// Safari 26: hide the fixed sticky band so it's no longer in the render tree.
+			// This lets Safari sample the accent overlay instead for toolbar tinting.
+			if (stickyBand && isMobileViewport()) {
+				stickyBand.style.display = "none";
+			}
 
 			setThemeColorForMenu(true);
 			overlay.classList.add("is-open");
@@ -260,6 +267,7 @@
 				overlay.classList.remove("is-open");
 				overlay.style.backgroundColor = "";
 				setThemeColorForMenu(false);
+				if (stickyBand) stickyBand.style.display = "";
 				if (overlayTouchMoveHandler) {
 					overlay.removeEventListener("touchmove", overlayTouchMoveHandler);
 					overlayTouchMoveHandler = null;
@@ -283,6 +291,7 @@
 				overlay.classList.remove("is-open");
 				overlay.style.backgroundColor = "";
 				setThemeColorForMenu(false);
+				if (stickyBand) stickyBand.style.display = "";
 				if (overlayTouchMoveHandler) {
 					overlay.removeEventListener("touchmove", overlayTouchMoveHandler);
 					overlayTouchMoveHandler = null;

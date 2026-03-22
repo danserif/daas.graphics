@@ -4020,24 +4020,13 @@ img.daas-graphic.fade-in {
 		max-width: none;
 		margin: 0;
 		z-index: 500;
-		background-color: transparent;
+		background-color: var(--color-bg);
 		gap: 4px;
 		padding-top: calc(env(safe-area-inset-top, 0px) + 0.75rem);
 		padding-left: 1.5rem;
 		padding-right: 1.5rem;
 		box-sizing: border-box;
 		align-self: stretch;
-	}
-
-	/* Safari 26 derives toolbar tint from fixed elements' background-color but ignores
-	   pseudo-elements. A transparent fixed parent + pseudo background lets body's
-	   background-color drive the toolbar tint (Safari live-samples body). */
-	.header-sticky-band::before {
-		content: '';
-		position: absolute;
-		inset: 0;
-		background-color: var(--color-bg);
-		z-index: -1;
 	}
 
 	/* Sticky-band hr: not gated by .header-lines-ready so it paints on first mobile frame (WebKit + flex hr). */

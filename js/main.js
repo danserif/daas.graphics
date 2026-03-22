@@ -167,6 +167,15 @@
 						var isLight = document.documentElement.classList.contains("light-mode");
 						meta.setAttribute("content", isLight ? "#ffffff" : "#000000");
 					}
+					// Safari 26: force re-sample of the sticky band's (now updated) background
+					// by briefly removing it from the render tree after the loading overlay hides.
+					var band = document.querySelector(".header-sticky-band");
+					if (band && window.innerWidth <= 1080) {
+						band.style.display = "none";
+						requestAnimationFrame(function () {
+							band.style.display = "";
+						});
+					}
 					window.dispatchEvent(new CustomEvent("loadingComplete"));
 				}, SWIPE_DURATION_MS);
 			}, CONTENT_FADE_MS);
