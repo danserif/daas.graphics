@@ -142,15 +142,14 @@
 		}
 
 		function setThemeColorForMenu(isOpen) {
-			// Legacy: setAttribute for Safari < 26 / other browsers.
 			if (!themeMeta) themeMeta = document.querySelector('meta[name="theme-color"]');
 			if (themeMeta) {
 				themeMeta.setAttribute("content", isOpen ? getMenuThemeColor() : getPageBgColor());
 			}
-			// Safari 26+: toolbar tint comes from body background (live-sampled) when the
-			// fixed sticky band is transparent. Set body bg to accent while menu is open.
-			if (isMobileViewport()) {
-				document.body.style.backgroundColor = isOpen ? getMenuThemeColor() : "";
+			// Safari 26: toolbar tint is derived from fixed elements' background-color
+			// (live-sampled). Override the sticky band's bg to accent while menu is open.
+			if (stickyBand && isMobileViewport()) {
+				stickyBand.style.backgroundColor = isOpen ? getMenuThemeColor() : "";
 			}
 		}
 
@@ -227,19 +226,7 @@
 
 			cloneLinks();
 
-			if (stickyBand && isMobileViewport()) {
-				// Safari 26: body background is the only source Safari live-samples for
-				// toolbar tinting. Set it to accent AND remove the sticky band (which
-				// Safari sampled at initial render) in the same frame so Safari falls
-				// back to body immediately. The overlay appears one frame later.
-				stickyBand.style.display = "none";
-				document.body.style.backgroundColor = getMenuThemeColor();
-				requestAnimationFrame(function () {
-					finishOpenOverlay(trigger);
-				});
-			} else {
-				finishOpenOverlay(trigger);
-			}
+			finishOpenOverlay(trigger);
 		}
 
 		// Expose a global helper so Safari can always open the menu via inline handlers if needed.
@@ -268,9 +255,6 @@
 				overlay.classList.remove("is-open");
 				overlay.style.backgroundColor = "";
 				setThemeColorForMenu(false);
-				if (stickyBand && isMobileViewport()) {
-					requestAnimationFrame(function () { stickyBand.style.display = ""; });
-				}
 				if (overlayTouchMoveHandler) {
 					overlay.removeEventListener("touchmove", overlayTouchMoveHandler);
 					overlayTouchMoveHandler = null;
@@ -294,9 +278,6 @@
 				overlay.classList.remove("is-open");
 				overlay.style.backgroundColor = "";
 				setThemeColorForMenu(false);
-				if (stickyBand && isMobileViewport()) {
-					requestAnimationFrame(function () { stickyBand.style.display = ""; });
-				}
 				if (overlayTouchMoveHandler) {
 					overlay.removeEventListener("touchmove", overlayTouchMoveHandler);
 					overlayTouchMoveHandler = null;
@@ -370,15 +351,6 @@
 			}
 		};
 
-		// Expose for mode toggle: force Safari 26 to re-sample the overlay when
-		// CSS variables change (e.g. --color-accent after light/dark toggle).
-		window.pokeOverlayTinting = function () {
-			if (!overlay || !isMobileViewport()) return;
-			if (!overlay.classList.contains("is-open")) return;
-			overlay.style.display = "none";
-			void overlay.offsetHeight;
-			overlay.style.display = "";
-		};
 	}
 
 	if (document.readyState === "loading") {
