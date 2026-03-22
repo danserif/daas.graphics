@@ -676,8 +676,10 @@ function startAnimations() {
 			if (typeof window.syncBrowserThemeColorMeta === "function") {
 				window.syncBrowserThemeColorMeta();
 			}
-			// Trigger loading screen in new color mode
-			if (typeof window.triggerLoadingScreen === "function") {
+			// Loading overlay (z-index above nav) wipes the visible menu and Safari re-samples chrome from it —
+			// skip when navigation is open so overlay + theme-colour stay in sync until close.
+			var navOverlayOpen = document.querySelector("[data-nav-overlay].is-open");
+			if (!navOverlayOpen && typeof window.triggerLoadingScreen === "function") {
 				window.triggerLoadingScreen();
 			}
 		} else if (e.target.classList.contains("light-mode-toggle")) {
@@ -692,8 +694,8 @@ function startAnimations() {
 			if (typeof window.syncBrowserThemeColorMeta === "function") {
 				window.syncBrowserThemeColorMeta();
 			}
-			// Trigger loading screen in new color mode
-			if (typeof window.triggerLoadingScreen === "function") {
+			var navOverlayOpenLight = document.querySelector("[data-nav-overlay].is-open");
+			if (!navOverlayOpenLight && typeof window.triggerLoadingScreen === "function") {
 				window.triggerLoadingScreen();
 			}
 		}

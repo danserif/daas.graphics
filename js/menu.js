@@ -160,8 +160,9 @@
 		}
 
 		function pokeThemeColorMeta(color) {
-			var m = themeMeta || document.querySelector('meta[name="theme-color"]');
-			if (!m || !m.parentNode) return;
+			var m = document.querySelector('meta[name="theme-color"]');
+			if (!m) return;
+			if (!m.parentNode) return;
 			m.setAttribute("content", color);
 			// iOS WebKit often ignores setAttribute on an existing meta; replacing the node forces a refresh.
 			if (isAppleTouch) {
@@ -171,11 +172,13 @@
 				m.parentNode.insertBefore(next, m);
 				m.parentNode.removeChild(m);
 				themeMeta = next;
+			} else {
+				themeMeta = m;
 			}
 		}
 
 		function setThemeColorForMenu(isOpen) {
-			if (!themeMeta && !document.querySelector('meta[name="theme-color"]')) return;
+			if (!document.querySelector('meta[name="theme-color"]')) return;
 			if (isOpen) {
 				pokeThemeColorMeta(getMenuThemeColor());
 			} else {
@@ -195,14 +198,31 @@
 		}
 
 		function syncBrowserThemeColorMeta() {
-			if (!themeMeta || !overlay) return;
+			if (!overlay) return;
+			themeMeta = document.querySelector('meta[name="theme-color"]') || themeMeta;
+			if (!themeMeta) return;
 			setThemeColorForMenu(overlay.classList.contains("is-open"));
 		}
 
-		function syncOverlayBackground() {
-			if (!overlay) return;
-			// Let CSS control overlay colour (light/dark); clear any inline overrides.
-			overlay.style.backgroundColor = "";
+		// Mobile: solid accent from CSS can fail to repaint when :root.light-mode toggles under a fixed layer;
+		// mirror the accent inline so theme toggle + open always match. Desktop: keep translucent CSS backdrop.
+		function applyOpenNavThemeAndChrome() {
+			if (!overlay || !panel) return;
+			var accent = getMenuThemeColor();
+			setThemeColorForMenu(true);
+			setIosDocumentBackdropForNav(true);
+			if (isMobileViewport()) {
+				overlay.style.backgroundColor = accent;
+				panel.style.backgroundColor = accent;
+			} else {
+				overlay.style.backgroundColor = "";
+				panel.style.backgroundColor = "";
+			}
+		}
+
+		function clearNavInlineChrome() {
+			if (overlay) overlay.style.backgroundColor = "";
+			if (panel) panel.style.backgroundColor = "";
 		}
 
 		var OVERLAY_FADE_MS = 280;
@@ -237,20 +257,16 @@
 
 			cloneLinks();
 
-			// Update theme colour before the overlay becomes visible to avoid any iOS flash.
-			setThemeColorForMenu(true);
-			setIosDocumentBackdropForNav(true);
 			overlay.classList.add("is-open");
-			// iOS Safari sometimes misses the first meta update; re-apply after layout/paint with menu open.
+			applyOpenNavThemeAndChrome();
+			// Re-apply after paint so meta + inline mobile colours stick (Safari / compositor).
 			requestAnimationFrame(function () {
 				requestAnimationFrame(function () {
 					if (overlay.classList.contains("is-open")) {
-						setThemeColorForMenu(true);
-						setIosDocumentBackdropForNav(true);
+						applyOpenNavThemeAndChrome();
 					}
 				});
 			});
-			syncOverlayBackground();
 			if (trigger) {
 				trigger.setAttribute("aria-expanded", "true");
 			}
@@ -285,8 +301,7 @@
 			setTimeout(function () {
 				overlay.classList.add("is-panel-open");
 				if (overlay.classList.contains("is-open")) {
-					setThemeColorForMenu(true);
-					setIosDocumentBackdropForNav(true);
+					applyOpenNavThemeAndChrome();
 				}
 			}, OVERLAY_FADE_MS);
 
@@ -318,7 +333,7 @@
 			overlay.classList.remove("is-panel-open");
 			if (immediate) {
 				overlay.classList.remove("is-open");
-				overlay.style.backgroundColor = "";
+				clearNavInlineChrome();
 				setThemeColorForMenu(false);
 				setIosDocumentBackdropForNav(false);
 				if (overlayTouchMoveHandler) {
@@ -342,7 +357,7 @@
 			// Remove overlay and restore theme only after panel has fully slid off (no fade, just delay).
 			setTimeout(function () {
 				overlay.classList.remove("is-open");
-				overlay.style.backgroundColor = "";
+				clearNavInlineChrome();
 				setThemeColorForMenu(false);
 				setIosDocumentBackdropForNav(false);
 				if (overlayTouchMoveHandler) {
@@ -410,12 +425,8 @@
 
 		// Expose hook so theme toggle can resync overlay + Safari theme-color while menu is open
 		window.updateNavOverlayBackground = function () {
-			if (!overlay) return;
-			if (overlay.classList.contains("is-open")) {
-				syncOverlayBackground();
-				setThemeColorForMenu(true);
-				setIosDocumentBackdropForNav(true);
-			}
+			if (!overlay || !overlay.classList.contains("is-open")) return;
+			applyOpenNavThemeAndChrome();
 		};
 
 		window.syncBrowserThemeColorMeta = syncBrowserThemeColorMeta;
