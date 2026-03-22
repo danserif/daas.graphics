@@ -133,8 +133,14 @@
 		}
 
 		function getMenuThemeColor() {
-			// Match the accent background used for the mobile nav panel
+			// Match the nav overlay / panel (CSS --color-accent) so Safari UI stays in sync after theme toggles
 			if (!root) return originalThemeColor || "#000000";
+			try {
+				var accent = getComputedStyle(root).getPropertyValue("--color-accent").trim();
+				if (accent) return accent;
+			} catch (e) {
+				/* ignore */
+			}
 			var isLightMode = root.classList.contains("light-mode");
 			return isLightMode ? "#0044FF" : "#aaff00";
 		}
@@ -382,11 +388,12 @@
 
 		linksContainer.addEventListener("click", handleNavLinkClick);
 
-		// Expose hook so theme toggle can resync overlay color while menu is open
+		// Expose hook so theme toggle can resync overlay + Safari theme-color while menu is open
 		window.updateNavOverlayBackground = function () {
 			if (!overlay) return;
 			if (overlay.classList.contains("is-open")) {
 				syncOverlayBackground();
+				setThemeColorForMenu(true);
 			}
 		};
 	}
