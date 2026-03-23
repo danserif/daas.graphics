@@ -1177,11 +1177,19 @@ h1.header-label {
 
 /* Nav panel: mobile */
 @media only screen and (max-width: 1080px) {
+	/* Safari 26 samples fixed elements at render-tree entry for toolbar tinting.
+	   Hiding the panel with display:none when closed prevents Safari from locking
+	   onto a stale background. Re-entering via .is-open triggers a fresh sample. */
 	.nav-panel {
+		display: none;
 		width: 100%;
 		max-width: 100%;
 		left: 0;
 		right: 0;
+	}
+
+	.nav-overlay.is-open .nav-panel {
+		display: flex;
 	}
 }
 

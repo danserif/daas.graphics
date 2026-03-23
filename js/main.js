@@ -674,18 +674,19 @@ function startAnimations() {
 		meta.setAttribute("content", isLight ? "#ffffff" : "#000000");
 	}
 
-	// Safari 26: CSS variable changes on fixed elements don't trigger toolbar
-	// re-sampling. After a mode toggle we must push an explicit inline
-	// backgroundColor onto the fixed sticky band and loading overlay so Safari
-	// picks up the new color immediately.
+	// Safari 26: push explicit inline backgrounds on body, the loading
+	// overlay, and the sticky band so Safari picks up the new tint
+	// immediately. Use `background` shorthand on elements whose CSS also
+	// uses the shorthand, and `backgroundColor` on body/band.
 	function pushSafariTint() {
 		if (window.innerWidth > 1080) return;
 		var isLight = root.classList.contains("light-mode");
 		var bg = isLight ? "#ffffff" : "#000000";
+		document.body.style.backgroundColor = bg;
 		var band = document.querySelector(".header-sticky-band");
 		var loader = document.getElementById("loading-overlay");
 		if (band) band.style.backgroundColor = bg;
-		if (loader) loader.style.backgroundColor = bg;
+		if (loader) loader.style.background = bg;
 	}
 
 	// Light/Dark Mode Toggle - Event delegation

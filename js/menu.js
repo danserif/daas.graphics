@@ -146,16 +146,16 @@
 			if (themeMeta) {
 				themeMeta.setAttribute("content", isOpen ? getMenuThemeColor() : getPageBgColor());
 			}
-			// Safari 26: toolbar tint comes from the highest-z fixed element's
-			// background-color. CSS variable changes don't trigger re-sampling —
-			// only explicit inline style changes do. The nav-panel (z-index 9999)
-			// is the topmost fixed element, so we must set its inline bg directly.
-			if (isMobileViewport()) {
-				var color = isOpen ? getMenuThemeColor() : getPageBgColor();
-				if (panel) panel.style.backgroundColor = color;
-				if (overlay) overlay.style.backgroundColor = color;
-				if (stickyBand) stickyBand.style.backgroundColor = color;
+			if (!isMobileViewport()) return;
+			// Safari 26 samples fixed elements when they enter/leave the render tree
+			// (display toggles). Both overlay and panel now use display:none when
+			// closed, so opening the menu triggers a fresh sample of their CSS
+			// background (var(--color-accent)). Hide the sticky band while open so
+			// it doesn't compete for tinting.
+			if (stickyBand) {
+				stickyBand.style.display = isOpen ? "none" : "";
 			}
+			document.body.style.backgroundColor = isOpen ? getMenuThemeColor() : getPageBgColor();
 		}
 
 		function syncOverlayBackground() {
@@ -257,7 +257,6 @@
 			overlay.classList.remove("is-panel-open");
 			if (immediate) {
 				overlay.classList.remove("is-open");
-				overlay.style.backgroundColor = "";
 				setThemeColorForMenu(false);
 				if (overlayTouchMoveHandler) {
 					overlay.removeEventListener("touchmove", overlayTouchMoveHandler);
@@ -280,7 +279,6 @@
 			// Remove overlay and restore theme only after panel has fully slid off (no fade, just delay).
 			setTimeout(function () {
 				overlay.classList.remove("is-open");
-				overlay.style.backgroundColor = "";
 				setThemeColorForMenu(false);
 				if (overlayTouchMoveHandler) {
 					overlay.removeEventListener("touchmove", overlayTouchMoveHandler);
