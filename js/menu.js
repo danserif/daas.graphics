@@ -141,21 +141,29 @@
 			return root.classList.contains("light-mode") ? "#ffffff" : "#000000";
 		}
 
+		// Safari 26 tinting sentinel: a fixed element with NO CSS-defined
+		// background, controlled entirely via inline style — matching the
+		// pattern proven to work on the safari-color-tinting demo. Safari's
+		// tinting engine appears to ignore inline overrides on elements that
+		// have a CSS-defined background (shorthand or longhand).
+		var tintSentinel = null;
+		function ensureTintSentinel() {
+			if (tintSentinel) return tintSentinel;
+			tintSentinel = document.createElement("div");
+			tintSentinel.style.cssText = "position:fixed;top:0;left:0;width:100%;height:4px;z-index:100000;pointer-events:none;";
+			tintSentinel.style.backgroundColor = getPageBgColor();
+			document.body.appendChild(tintSentinel);
+			return tintSentinel;
+		}
+
 		function setThemeColorForMenu(isOpen) {
 			if (!themeMeta) themeMeta = document.querySelector('meta[name="theme-color"]');
 			if (themeMeta) {
 				themeMeta.setAttribute("content", isOpen ? getMenuThemeColor() : getPageBgColor());
 			}
 			if (!isMobileViewport()) return;
-			// Safari 26 samples fixed elements when they enter/leave the render tree
-			// (display toggles). Both overlay and panel now use display:none when
-			// closed, so opening the menu triggers a fresh sample of their CSS
-			// background (var(--color-accent)). Hide the sticky band while open so
-			// it doesn't compete for tinting.
-			if (stickyBand) {
-				stickyBand.style.display = isOpen ? "none" : "";
-			}
-			document.body.style.backgroundColor = isOpen ? getMenuThemeColor() : getPageBgColor();
+			ensureTintSentinel();
+			tintSentinel.style.backgroundColor = isOpen ? getMenuThemeColor() : getPageBgColor();
 		}
 
 		function syncOverlayBackground() {
@@ -348,6 +356,13 @@
 			if (overlay.classList.contains("is-open") && isMobileViewport()) {
 				setThemeColorForMenu(true);
 			}
+		};
+
+		// Expose sentinel for mode-toggle tinting from main.js
+		window.setSafariTint = function (color) {
+			if (window.innerWidth > 1080) return;
+			ensureTintSentinel();
+			tintSentinel.style.backgroundColor = color;
 		};
 
 	}

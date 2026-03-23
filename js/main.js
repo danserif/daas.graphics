@@ -674,19 +674,15 @@ function startAnimations() {
 		meta.setAttribute("content", isLight ? "#ffffff" : "#000000");
 	}
 
-	// Safari 26: push explicit inline backgrounds on body, the loading
-	// overlay, and the sticky band so Safari picks up the new tint
-	// immediately. Use `background` shorthand on elements whose CSS also
-	// uses the shorthand, and `backgroundColor` on body/band.
+	// Safari 26: update the tinting sentinel (a fixed element with no
+	// CSS-defined background, controlled purely via inline style).
 	function pushSafariTint() {
 		if (window.innerWidth > 1080) return;
 		var isLight = root.classList.contains("light-mode");
 		var bg = isLight ? "#ffffff" : "#000000";
-		document.body.style.backgroundColor = bg;
-		var band = document.querySelector(".header-sticky-band");
-		var loader = document.getElementById("loading-overlay");
-		if (band) band.style.backgroundColor = bg;
-		if (loader) loader.style.background = bg;
+		if (typeof window.setSafariTint === "function") {
+			window.setSafariTint(bg);
+		}
 	}
 
 	// Light/Dark Mode Toggle - Event delegation
