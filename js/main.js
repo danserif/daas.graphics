@@ -1750,3 +1750,21 @@ function startAnimations() {
 
 // Initialize after loading screen
 initAfterLoading();
+
+// Desktop fixed header bar — show when original header row scrolls out of view
+(function initDesktopFixedBar() {
+	var bar = document.querySelector(".header-fixed-bar");
+	var target = document.querySelector(".header-row--nav");
+	if (!bar || !target) return;
+	var observer = new IntersectionObserver(
+		function (entries) {
+			entries.forEach(function (entry) {
+				var scrolled = !entry.isIntersecting;
+				bar.classList.toggle("is-visible", scrolled);
+				document.body.classList.toggle("header-scrolled", scrolled);
+			});
+		},
+		{ threshold: 0 },
+	);
+	observer.observe(target);
+})();

@@ -880,19 +880,19 @@ h1.header-label {
 }
 
 #start {
-	scroll-margin-top: 60px;
+	scroll-margin-top: 120px;
 }
 
 #work,
 #lab,
 #testimonials,
 #footer {
-	scroll-margin-top: 60px;
+	scroll-margin-top: 120px;
 }
 
 #about,
 #contact {
-	scroll-margin-top: 100px;
+	scroll-margin-top: 160px;
 }
 
 @media only screen and (max-width: 1080px) {
@@ -1058,6 +1058,87 @@ h1.header-label {
 	}
 }
 */
+
+/* DESKTOP FIXED BAR — appears on scroll when header leaves viewport */
+.header-fixed-bar {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 500;
+	background-color: var(--color-bg);
+	transform: translateY(-100%);
+	opacity: 0;
+	pointer-events: none;
+	transition: transform 0.25s ease, opacity 0.25s ease;
+	box-sizing: border-box;
+	max-width: var(--max-width);
+	margin: 0 auto;
+	padding: 1.75rem 60px 0;
+}
+
+.header-fixed-bar.is-visible {
+	transform: translateY(0);
+	opacity: 1;
+	pointer-events: auto;
+}
+
+.header-fixed-bar-inner {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding-bottom: 0.5rem;
+}
+
+.header-fixed-bar-inner .header-label {
+	margin: 0;
+	min-height: 0;
+	visibility: visible;
+}
+
+.header-fixed-bar-right {
+	display: flex;
+	align-items: center;
+	gap: 0.35em;
+}
+
+.header-fixed-bar-right .header-label {
+	margin: 0;
+}
+
+.header-fixed-bar .nav-toggle--desktop {
+	position: static;
+}
+
+.header .header-fixed-bar>.divider {
+	margin: 1.25rem 0 0;
+}
+
+@media only screen and (max-width: 2660px) {
+	.header-fixed-bar {
+		padding: 1.75rem 3rem 0;
+	}
+}
+
+@media only screen and (max-width: 1860px) {
+	.header-fixed-bar {
+		padding: 1.5rem 2rem 0;
+	}
+
+	.header-fixed-bar-inner {
+		padding-bottom: 0.25rem;
+	}
+}
+
+@media only screen and (max-width: 1640px) {
+	.header-fixed-bar {
+		padding: 1.5rem 2rem 0;
+	}
+
+	.header-fixed-bar-inner {
+		padding-bottom: 0.25rem;
+	}
+}
 
 /* ==========================================================================
    OVERLAY PANELS
@@ -1240,6 +1321,27 @@ h1.header-label {
 	z-index: 10;
 	/* Match pricing panel: label aligned with left divider (40px), close button aligned with right divider */
 	padding: 32px 0 20px 40px;
+}
+
+@media only screen and (min-width: 1861px) {
+	body.header-scrolled .nav-panel-header {
+		padding-top: 14px;
+		padding-bottom: 14px;
+	}
+}
+
+@media only screen and (min-width: 1641px) and (max-width: 1860px) {
+	body.header-scrolled .nav-panel-header {
+		padding-top: 12px;
+		padding-bottom: 12px;
+	}
+}
+
+@media only screen and (min-width: 1081px) and (max-width: 1640px) {
+	body.header-scrolled .nav-panel-header {
+		padding-top: 10px;
+		padding-bottom: 10px;
+	}
 }
 
 /* All hr dividers in the mobile menu: default to white at 25% opacity on accent background */
@@ -1506,7 +1608,7 @@ h1.header-label {
 	}
 
 	.nav-panel-label-text {
-		font-size: 10px;
+		font-size: 11px;
 	}
 
 	.nav-panel-scroll {
@@ -1837,6 +1939,25 @@ h2.card-title {
 @media only screen and (min-width: 1081px) and (max-width: 1860px) {
 	.plan-panel-header {
 		padding: 16px 0 20px 40px;
+	}
+}
+
+@media only screen and (min-width: 1861px) {
+	body.header-scrolled .plan-panel-header {
+		padding-top: 16px;
+		padding-bottom: 12px;
+	}
+}
+
+@media only screen and (min-width: 1641px) and (max-width: 1860px) {
+	body.header-scrolled .plan-panel-header {
+		padding-top: 12px;
+	}
+}
+
+@media only screen and (min-width: 1081px) and (max-width: 1640px) {
+	body.header-scrolled .plan-panel-header {
+		padding-top: 10px;
 	}
 }
 
