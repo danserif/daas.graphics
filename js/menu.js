@@ -154,14 +154,7 @@
 			}
 		}
 
-		function syncOverlayBackground() {
-			if (!overlay) return;
-			// Let CSS control overlay colour (light/dark); clear any inline overrides.
-			overlay.style.backgroundColor = "";
-		}
-
 		var OVERLAY_FADE_MS = 280;
-		var PANEL_SLIDE_MS = 300;
 		// Extra delay before removing overlay so it stays until panel is fully off; can reduce theme flash on close.
 		var OVERLAY_CLOSE_DELAY_MS = 380;
 
@@ -169,7 +162,6 @@
 		var MOBILE_MAX_WIDTH = 1080;
 		var overlayTouchMoveHandler = null;
 		var panelScrollTouchMoveHandler = null;
-		var stickyBand = document.querySelector(".header-sticky-band");
 
 		function isMobileViewport() {
 			return typeof window !== "undefined" && window.innerWidth <= MOBILE_MAX_WIDTH;
@@ -213,9 +205,13 @@
 				}
 			}
 
+			// On mobile the overlay appears instantly (transition: none), so use a
+		// short delay to let the accent background paint before the panel slides
+		// in. On desktop the longer fade lets the opacity transition complete.
+			var panelDelay = isMobileViewport() ? 50 : OVERLAY_FADE_MS;
 			setTimeout(function () {
 				overlay.classList.add("is-panel-open");
-			}, OVERLAY_FADE_MS);
+			}, panelDelay);
 
 			closeBtn.focus();
 		}

@@ -1111,9 +1111,6 @@ h1.header-label {
 /* Nav overlay: mobile */
 @media only screen and (max-width: 1080px) {
 
-	/* Safari 26 samples opacity:0 fixed elements for toolbar tinting. Using display:none
-	   excludes the overlay from the render tree so Safari doesn’t pick up accent when menu
-	   is closed. Toggling to display:block on .is-open triggers Safari to re-evaluate. */
 	.nav-overlay {
 		display: none;
 	}
@@ -1137,6 +1134,12 @@ h1.header-label {
 
 	.nav-overlay.is-open {
 		display: block;
+	}
+
+	/* When the pricing panel is open, match its dark background to prevent
+	   a flash of the accent colour behind the sliding panel. */
+	.nav-overlay.is-plan-open {
+		background: #000;
 	}
 
 	/* Contain scroll inside the overlay so the page doesn’t move behind it (body scroll lock is in menu.js). */
@@ -1177,19 +1180,11 @@ h1.header-label {
 
 /* Nav panel: mobile */
 @media only screen and (max-width: 1080px) {
-	/* Safari 26 samples fixed elements at render-tree entry for toolbar tinting.
-	   Hiding the panel with display:none when closed prevents Safari from locking
-	   onto a stale background. Re-entering via .is-open triggers a fresh sample. */
 	.nav-panel {
-		display: none;
 		width: 100%;
 		max-width: 100%;
 		left: 0;
 		right: 0;
-	}
-
-	.nav-overlay.is-open .nav-panel {
-		display: flex;
 	}
 }
 
