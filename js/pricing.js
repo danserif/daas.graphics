@@ -316,10 +316,12 @@
 	function openPricingPanel(planId, refs) {
 		var overlay = refs.overlay;
 		refs._openedFromNav = overlay.classList.contains("is-panel-open");
-		// Set overlay bg to match the page background before it becomes visible,
-		// preventing a flash of the accent colour behind the pricing panel.
-		var isLight = document.documentElement.classList.contains("light-mode");
-		overlay.style.background = isLight ? "#ffffff" : "#000000";
+		if (!refs._openedFromNav) {
+			// Opened directly from the page: set overlay bg to page bg before
+			// it becomes visible to prevent a flash of accent behind the panel.
+			var isLight = document.documentElement.classList.contains("light-mode");
+			overlay.style.background = isLight ? "#ffffff" : "#000000";
+		}
 		overlay.classList.add("is-open");
 		overlay.classList.remove("is-panel-open");
 		refs.planPanel.setAttribute("aria-hidden", "false");
