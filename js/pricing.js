@@ -316,9 +316,9 @@
 	function openPricingPanel(planId, refs) {
 		var overlay = refs.overlay;
 		refs._openedFromNav = overlay.classList.contains("is-panel-open");
-		if (!refs._openedFromNav) {
-			// Opened directly from the page: set overlay bg to page bg before
-			// it becomes visible to prevent a flash of accent behind the panel.
+		if (!refs._openedFromNav && window.innerWidth <= 1080) {
+			// Mobile only: set overlay bg to page bg before it becomes visible
+			// to prevent a flash of accent behind the panel.
 			var isLight = document.documentElement.classList.contains("light-mode");
 			overlay.style.background = isLight ? "#ffffff" : "#000000";
 		}
