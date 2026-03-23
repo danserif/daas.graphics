@@ -1136,10 +1136,10 @@ h1.header-label {
 		display: block;
 	}
 
-	/* When the pricing panel is open, match its dark background to prevent
-	   a flash of the accent colour behind the sliding panel. */
+	/* When the pricing panel is open, use the page bg to prevent a flash
+	   of the accent colour behind the sliding panel. */
 	.nav-overlay.is-plan-open {
-		background: #000;
+		background: var(--color-bg);
 	}
 
 	/* Contain scroll inside the overlay so the page doesn’t move behind it (body scroll lock is in menu.js). */

@@ -316,6 +316,10 @@
 	function openPricingPanel(planId, refs) {
 		var overlay = refs.overlay;
 		refs._openedFromNav = overlay.classList.contains("is-panel-open");
+		// Set overlay bg to match the page background before it becomes visible,
+		// preventing a flash of the accent colour behind the pricing panel.
+		var isLight = document.documentElement.classList.contains("light-mode");
+		overlay.style.background = isLight ? "#ffffff" : "#000000";
 		overlay.classList.add("is-open");
 		overlay.classList.remove("is-panel-open");
 		refs.planPanel.setAttribute("aria-hidden", "false");
@@ -345,6 +349,7 @@
 			if (refs.img) refs.img.style.visibility = "";
 		}
 		overlay.classList.remove("is-plan-open");
+		overlay.style.background = "";
 		if (!refs._openedFromNav) {
 			overlay.classList.remove("is-open");
 		} else {
