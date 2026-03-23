@@ -4018,6 +4018,17 @@ img.daas-graphic.fade-in {
 		pointer-events: none;
 	}
 
+	/* Safari 26 toolbar tinting: a no-op backdrop-filter disqualifies a fixed
+	   element from background sampling, so Safari falls back to body bg
+	   (which we control via inline style in JS). */
+	.header-sticky-band,
+	.nav-overlay,
+	.nav-panel,
+	.loading-overlay {
+		-webkit-backdrop-filter: saturate(100%);
+		backdrop-filter: saturate(100%);
+	}
+
 	/* Fixed from first paint (no scroll “lock-in”) */
 	.header-sticky-band {
 		position: fixed;

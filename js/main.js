@@ -674,15 +674,12 @@ function startAnimations() {
 		meta.setAttribute("content", isLight ? "#ffffff" : "#000000");
 	}
 
-	// Safari 26: update the tinting sentinel (a fixed element with no
-	// CSS-defined background, controlled purely via inline style).
+	// Safari 26: all fixed elements have backdrop-filter on mobile, which
+	// disqualifies them from toolbar tinting. Safari falls back to body bg.
 	function pushSafariTint() {
 		if (window.innerWidth > 1080) return;
 		var isLight = root.classList.contains("light-mode");
-		var bg = isLight ? "#ffffff" : "#000000";
-		if (typeof window.setSafariTint === "function") {
-			window.setSafariTint(bg);
-		}
+		document.body.style.backgroundColor = isLight ? "#ffffff" : "#000000";
 	}
 
 	// Light/Dark Mode Toggle - Event delegation
