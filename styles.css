@@ -328,8 +328,7 @@ code {
 /* ---------------------------- */
 
 /* Title row + hr. Mobile: always position:fixed (max-width: 1080px); --header-sticky-band-height set in main.js.
-   Desktop sticky pin is temporarily disabled for ship — re-enable by restoring sticky here and the
-   min-width:1081px .header-nav-trigger block (search DESKTOP_HEADER_PIN). */
+   Desktop: .header-fixed-bar (separate fixed element) appears on scroll via IntersectionObserver. */
 .header-sticky-band {
 	display: flex;
 	flex-direction: column;
@@ -991,12 +990,6 @@ h1.header-label {
 	padding: 0;
 }
 
-/* Nudge the desktop menu arrow (the span after the button) up slightly */
-.header-nav-trigger .nav-toggle--desktop+span {
-	position: relative;
-	top: -1px;
-}
-
 /* Stack menu vertically at 1080px breakpoint */
 @media (max-width: 1080px) {
 	.anchor-links {
@@ -1045,19 +1038,6 @@ h1.header-label {
 		margin-right: -12px;
 	}
 }
-
-/* DESKTOP_HEADER_PIN — Sticky Menu next to mode row (disabled; pair with .header-sticky-band sticky above)
-@media only screen and (min-width: 1081px) {
-	.header-nav-trigger {
-		position: sticky;
-		top: env(safe-area-inset-top, 0px);
-		z-index: 500;
-		align-self: flex-start;
-		flex-shrink: 0;
-		background-color: var(--color-bg);
-	}
-}
-*/
 
 /* DESKTOP FIXED BAR — appears on scroll when header leaves viewport */
 .header-fixed-bar {

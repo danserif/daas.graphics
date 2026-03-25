@@ -640,7 +640,6 @@ window.__preloadDuringLoading = function () {
 		}
 	}
 	syncMobileHeaderStickyBandHeight();
-	document.fonts.ready.then(function () {});
 };
 
 // Wait for loading screen to complete before starting animations
@@ -849,7 +848,6 @@ function startAnimations() {
 	// On desktop, start all header labels at the same time.
 	// Hidden (display:none) labels should not add delay to visible ones.
 	const TYPEWRITER_CONCURRENCY = IS_MOBILE_VIEWPORT ? 1 : Number.POSITIVE_INFINITY;
-	const TYPEWRITER_INTRA_STAGGER = 0;
 
 	function isLabelVisible(label) {
 		if (label.closest(".header-sticky-band")) {
@@ -896,9 +894,6 @@ function startAnimations() {
 			const fullLabelHTML = label.innerHTML;
 			if (fullLabelHTML && clockElement.innerHTML) {
 				label.setAttribute("data-original", getTypewriterHTMLForViewport(label));
-				const headerColumn = label.closest(".header-column");
-				const isVisible = headerColumn && window.getComputedStyle(headerColumn).display !== "none";
-
 				setTimeout(function () {
 					typeWriter(label, TYPEWRITER_SPEED, onNavLabelComplete);
 				}, startDelay);

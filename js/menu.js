@@ -225,14 +225,6 @@
 			finishOpenOverlay(trigger);
 		}
 
-		// Expose a global helper so Safari can always open the menu via inline handlers if needed.
-		if (!window.__daasOpenNavPanel) {
-			window.__daasOpenNavPanel = function (trigger) {
-				openOverlay(trigger || null);
-				return false;
-			};
-		}
-
 		function restoreTriggerFocus() {
 			if (!lastTrigger || typeof lastTrigger.focus !== "function") return;
 			// Try to restore focus without causing a scroll jump (Chrome/Safari support).
