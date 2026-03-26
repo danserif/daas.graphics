@@ -1687,17 +1687,58 @@ initAfterLoading();
 	observer.observe(target);
 })();
 
-// "D" overlay — any D trigger opens a full-viewport accent letter; click or Escape dismisses
-function toggleDOverlay() {
+// "D" overlay — full-viewport accent letter; click / Escape / any interaction dismisses.
+// Also appears automatically after a period of inactivity (idle timer).
+(function initDOverlay() {
 	var o = document.querySelector(".d-overlay");
 	if (!o) return;
-	var show = !o.classList.contains("is-visible");
-	o.classList.toggle("is-visible", show);
-	o.setAttribute("aria-hidden", show ? "false" : "true");
-}
-document.addEventListener("click", function (e) {
-	if (e.target.closest(".d-overlay.is-visible")) toggleDOverlay();
-});
-document.addEventListener("keydown", function (e) {
-	if (e.key === "Escape" && document.querySelector(".d-overlay.is-visible")) toggleDOverlay();
-});
+
+	var IDLE_MS = 60 * 1000; // 1 minute of inactivity
+	var idleTimer = null;
+
+	function isVisible() {
+		return o.classList.contains("is-visible");
+	}
+
+	function show() {
+		if (isVisible()) return;
+		o.classList.add("is-visible");
+		o.setAttribute("aria-hidden", "false");
+	}
+
+	function hide() {
+		if (!isVisible()) return;
+		o.classList.remove("is-visible");
+		o.setAttribute("aria-hidden", "true");
+	}
+
+	function startTimer() {
+		clearTimeout(idleTimer);
+		idleTimer = setTimeout(show, IDLE_MS);
+	}
+
+	function resetTimer() {
+		if (isVisible()) hide();
+		startTimer();
+	}
+
+	var activityEvents = ["mousemove", "mousedown", "keydown", "scroll", "touchstart"];
+	activityEvents.forEach(function (evt) {
+		document.addEventListener(evt, resetTimer, { passive: true });
+	});
+
+	document.addEventListener("click", function (e) {
+		if (e.target.closest(".d-overlay.is-visible")) {
+			hide();
+			startTimer();
+		}
+	});
+	document.addEventListener("keydown", function (e) {
+		if (e.key === "Escape" && isVisible()) {
+			hide();
+			startTimer();
+		}
+	});
+
+	startTimer();
+})();
