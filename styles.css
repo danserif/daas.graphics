@@ -3545,6 +3545,14 @@ img.daas-graphic.fade-in {
 		display: flex;
 	}
 
+	.header .bonus-column {
+		order: 1;
+	}
+
+	.header > .header-column:nth-child(6) {
+		order: 2;
+	}
+
 	.header-column:nth-child(n + 4) .divider {
 		display: none;
 	}
@@ -3792,10 +3800,15 @@ img.daas-graphic.fade-in {
 	}
 
 	.header .bonus-column {
+		display: none;
+	}
+
+	.header .header-column.hide {
 		display: flex;
 	}
 
-	.header-column:nth-child(4) .divider {
+	.header-column:nth-child(4) .divider,
+	.header-column:nth-child(5) .divider {
 		display: none;
 	}
 
@@ -4295,6 +4308,11 @@ img.daas-graphic.fade-in {
 
 	.header .bonus-column {
 		display: flex;
+		order: 0;
+	}
+
+	.header > .header-column:nth-child(6) {
+		order: 0;
 	}
 
 	.header-column.hide:not(.bonus-column) {

@@ -13,7 +13,15 @@
 		var toggles = document.querySelectorAll(".nav-toggle");
 		var headerNav = document.querySelector(".header-nav");
 
-		if (!overlay || !panel || !panelScroll || !closeBtn || !linksContainer || !headerNav || !toggles.length) {
+		if (
+			!overlay ||
+			!panel ||
+			!panelScroll ||
+			!closeBtn ||
+			!linksContainer ||
+			!headerNav ||
+			!toggles.length
+		) {
 			return;
 		}
 
@@ -76,11 +84,12 @@
 			var el = document.getElementById(id);
 			if (!el) {
 				// Fallback for legacy named anchors
-				var esc = (window.CSS && typeof window.CSS.escape === "function"
-					? window.CSS.escape
-					: function (s) {
-							return String(s).replace(/[^a-zA-Z0-9_\u00A0-\uFFFF-]/g, "\\$&");
-						});
+				var esc =
+					window.CSS && typeof window.CSS.escape === "function"
+						? window.CSS.escape
+						: function (s) {
+								return String(s).replace(/[^a-zA-Z0-9_\u00A0-\uFFFF-]/g, "\\$&");
+							};
 				el = document.querySelector('[name="' + esc(id) + '"]');
 			}
 			if (!el) return;
@@ -111,6 +120,7 @@
 			if (isPricingLink(link)) {
 				// Open plan panel inside nav overlay (no overlay switch, no flash)
 				event.preventDefault();
+				event.stopPropagation();
 				var planId = link.getAttribute("data-plan");
 				if (planId) {
 					var mainLink = document.querySelector('.pricing-plan-link[data-plan="' + planId + '"]');
@@ -206,8 +216,8 @@
 			}
 
 			// On mobile the overlay appears instantly (transition: none), so use a
-		// short delay to let the accent background paint before the panel slides
-		// in. On desktop the longer fade lets the opacity transition complete.
+			// short delay to let the accent background paint before the panel slides
+			// in. On desktop the longer fade lets the opacity transition complete.
 			var panelDelay = isMobileViewport() ? 50 : OVERLAY_FADE_MS;
 			setTimeout(function () {
 				overlay.classList.add("is-panel-open");
@@ -342,4 +352,3 @@
 		initNavOverlay();
 	}
 })();
-

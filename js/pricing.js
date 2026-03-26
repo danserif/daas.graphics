@@ -401,12 +401,12 @@
 			scrollEl: overlay.querySelector(".plan-panel-scroll"),
 			closeBtn: overlay.querySelector(".plan-panel-close"),
 		};
-		document.querySelectorAll(".pricing-plan-link").forEach(function (link) {
-			link.addEventListener("click", function (e) {
-				e.preventDefault();
-				var planId = link.getAttribute("data-plan");
-				if (planId) openPricingPanel(planId, refs);
-			});
+		document.addEventListener("click", function (e) {
+			var link = e.target.closest(".pricing-plan-link");
+			if (!link) return;
+			e.preventDefault();
+			var planId = link.getAttribute("data-plan");
+			if (planId) openPricingPanel(planId, refs);
 		});
 		refs.closeBtn.addEventListener("click", function () {
 			closePricingPanel(refs);
