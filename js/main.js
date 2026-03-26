@@ -1763,3 +1763,18 @@ initAfterLoading();
 	);
 	observer.observe(target);
 })();
+
+// "D" overlay — any D trigger opens a full-viewport accent letter; click or Escape dismisses
+function toggleDOverlay() {
+	var o = document.querySelector(".d-overlay");
+	if (!o) return;
+	var show = !o.classList.contains("is-visible");
+	o.classList.toggle("is-visible", show);
+	o.setAttribute("aria-hidden", show ? "false" : "true");
+}
+document.addEventListener("click", function (e) {
+	if (e.target.closest(".d-overlay.is-visible")) toggleDOverlay();
+});
+document.addEventListener("keydown", function (e) {
+	if (e.key === "Escape" && document.querySelector(".d-overlay.is-visible")) toggleDOverlay();
+});

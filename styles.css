@@ -1120,6 +1120,87 @@ h1.header-label {
 	}
 }
 
+@media only screen and (max-width: 1440px) {
+	.header-fixed-bar h1 .desktop-only {
+		display: none;
+	}
+}
+
+/* D OVERLAY — triggered from the fixed-bar "D" button */
+.d-overlay-trigger {
+	background: none;
+	border: none;
+	padding: 0;
+	margin: 0;
+	font-size: inherit;
+	line-height: inherit;
+	color: inherit;
+	cursor: pointer;
+	transition: color 0.2s ease;
+}
+
+.d-overlay-trigger:hover {
+	opacity: 0.5;
+}
+
+.d-overlay {
+	position: fixed;
+	inset: 0;
+	z-index: 99999;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: transparent;
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	cursor: pointer;
+	transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+
+.d-overlay.is-visible {
+	opacity: 1;
+	visibility: visible;
+	pointer-events: auto;
+}
+
+.d-overlay-letter {
+	font-size: 80vh;
+	line-height: 1;
+	color: var(--color-accent);
+	user-select: none;
+}
+
+@media only screen and (max-width: 2660px) {
+	.d-overlay-letter {
+		font-size: 70vh;
+	}
+}
+
+@media only screen and (max-width: 1860px) {
+	.d-overlay-letter {
+		font-size: 60vh;
+	}
+}
+
+@media only screen and (max-width: 1640px) {
+	.d-overlay-letter {
+		font-size: 50vh;
+	}
+}
+
+@media only screen and (max-width: 1440px) {
+	.d-overlay-letter {
+		font-size: 45vh;
+	}
+}
+
+@media only screen and (max-width: 1080px) {
+	.d-overlay-letter {
+		font-size: min(40vh, 70vw);
+	}
+}
+
 /* ==========================================================================
    OVERLAY PANELS
    Shared container: .nav-overlay hosts both .nav-panel (menu) and .plan-panel (pricing).
@@ -2656,11 +2737,11 @@ a.plan-panel-cta:hover {
 }
 
 .profile-image {
-	width: 140px;
-	height: 140px;
+	width: 240px;
+	height: 240px;
 	flex-shrink: 0;
 	background-color: var(--color-accent);
-	max-width: 200px;
+	max-width: 240px;
 }
 
 .profile-image img {
@@ -4081,6 +4162,13 @@ img.daas-graphic.fade-in {
 	.ascii-text {
 		font-size: 22px;
 		line-height: 22px;
+	}
+}
+
+@media only screen and (min-width: 1081px) and (max-width: 1640px) {
+	.profile-image {
+		width: 140px;
+		height: 140px;
 	}
 }
 
