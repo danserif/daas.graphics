@@ -1852,8 +1852,7 @@ h2.card-title {
 	line-height: 33px;
 	margin: 0;
 	font-weight: normal;
-	color: var(--opacity-90);
-	opacity: 0.8;
+	color: var(--opacity-75);
 }
 
 .card-cta {
@@ -3549,7 +3548,7 @@ img.daas-graphic.fade-in {
 		order: 1;
 	}
 
-	.header > .header-column:nth-child(6) {
+	.header>.header-column:nth-child(6) {
 		order: 2;
 	}
 
@@ -4311,7 +4310,7 @@ img.daas-graphic.fade-in {
 		order: 0;
 	}
 
-	.header > .header-column:nth-child(6) {
+	.header>.header-column:nth-child(6) {
 		order: 0;
 	}
 
