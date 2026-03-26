@@ -3467,11 +3467,6 @@ img.daas-graphic.fade-in {
 	display: none;
 }
 
-/* GMT offset label: hide on desktop by default; shown in mobile media query */
-.gmt-mobile {
-	display: none;
-}
-
 .header-nav-trigger {
 	opacity: 0;
 	transition: opacity 0.4s ease;
@@ -4311,10 +4306,6 @@ img.daas-graphic.fade-in {
 	}
 
 	.mobile-only {
-		display: inline;
-	}
-
-	.gmt-mobile {
 		display: inline;
 	}
 

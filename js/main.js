@@ -370,102 +370,25 @@ function updateClocks() {
 	const gmtOffsetFooter = `<span class="opacity-50">(GMT${timezoneOffset >= 0 ? "+" : ""}${timezoneOffset})</span>`;
 	const gmtOffsetHeader = `<span class="opacity-75">(GMT${timezoneOffset >= 0 ? "+" : ""}${timezoneOffset})</span>`;
 
-	// Local (viewer) time
-	const localOffset = -now.getTimezoneOffset() / 60;
-	const localTime = now.toLocaleString(undefined, {
-		hour: "2-digit",
-		minute: "2-digit",
-		second: "2-digit",
-		hour12: true,
-	});
-
-	function getTimeZoneAbbr(date, timeZone) {
-		// Safari can be picky about `toLocaleTimeString(..., { timeZoneName })` output format.
-		// Prefer `formatToParts` when available so we can extract the timezone token reliably.
-		try {
-			const dtfOptions = {
-				timeZoneName: "short",
-				hour: "2-digit",
-				minute: "2-digit",
-				second: "2-digit",
-				hour12: true,
-			};
-			// For "local" timezone, omit `timeZone` entirely.
-			if (timeZone) dtfOptions.timeZone = timeZone;
-
-			const dtf = new Intl.DateTimeFormat("en-US", dtfOptions);
-			if (typeof dtf.formatToParts === "function") {
-				const parts = dtf.formatToParts(date);
-				const tzPart = parts.find(function (p) {
-					return p.type === "timeZoneName";
-				});
-				if (tzPart && tzPart.value) return tzPart.value;
-			}
-		} catch (e) {
-			// ignore and fall through
-		}
-
-		// Fallback: parse the string.
-		const str = timeZone
-			? date.toLocaleTimeString("en-US", { timeZone: timeZone, timeZoneName: "short" })
-			: date.toLocaleTimeString("en-US", { timeZoneName: "short" });
-		// Use last token to avoid any longer locale-specific phrasing.
-		return str.split(" ").pop() || "PT";
-	}
-
-	const localTimeZoneName = getTimeZoneAbbr(now, null);
-
 	const footerClockElement = document.getElementById("footer-clock");
 	if (footerClockElement) {
 		footerClockElement.innerHTML = `<span>${nzTime}</span> <span class="opacity-25">${nzTimeZoneName}</span> ${gmtOffsetFooter}`;
 	}
 
 	const headerClockElement = document.getElementById("header-clock");
-	const headerClockLocalElement = document.getElementById("header-clock-local");
 	const headerClockGmtElement = document.getElementById("header-clock-gmt");
 	if (headerClockElement) {
-		// Header clock: NZ time (city label temporarily removed)
 		const clockHTML = `<span class="opacity-50">${nzTimeZoneName}</span> <span>${nzTime}</span>`;
 		const headerLabel = headerClockElement.closest(".header-label");
-		// Only update main NZ clock if typewriter animation is not active
 		if (!headerLabel || !headerLabel.classList.contains("typewriter-active")) {
 			headerClockElement.innerHTML = clockHTML;
 		}
 
-		// GMT offset label is CSS-hidden on desktop.
 		if (headerClockGmtElement) {
 			headerClockGmtElement.innerHTML = gmtOffsetHeader;
 		}
 
-		// Always update the secondary clock (local or San Francisco).
-		if (headerClockLocalElement) {
-			if (localOffset !== timezoneOffset) {
-				// Local time + timezone abbreviation (no city label)
-				const localHTML = `<span class="opacity-50">${localTimeZoneName}</span> <span>${localTime}</span>`;
-				headerClockLocalElement.innerHTML = localHTML;
-			} else {
-				const sfTimeZone = "America/Los_Angeles";
-				const sfTime = now.toLocaleString("en-US", {
-					timeZone: sfTimeZone,
-					hour: "2-digit",
-					minute: "2-digit",
-					second: "2-digit",
-					hour12: true,
-				});
-				const sfTimeString = now.toLocaleTimeString("en-US", {
-					timeZone: sfTimeZone,
-					timeZoneName: "short",
-				});
-				const sfTimeZoneName = getTimeZoneAbbr(now, sfTimeZone);
-				// San Francisco time + timezone abbreviation (no city label)
-				const sfHTML = `<span class="opacity-50">${sfTimeZoneName}</span> <span>${sfTime}</span>`;
-				headerClockLocalElement.innerHTML = sfHTML;
-			}
-		}
-		// Store original content for typewriter animation if not already stored
 		if (headerLabel && !headerLabel.hasAttribute("data-original")) {
-			// Preserve the full header label HTML (including mobile-only GMT span),
-			// since the typewriter animation uses `data-original` as its source.
 			headerLabel.setAttribute("data-original", headerLabel.innerHTML);
 		}
 	}
