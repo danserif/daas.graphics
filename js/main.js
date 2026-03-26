@@ -1695,6 +1695,7 @@ initAfterLoading();
 
 	var IDLE_MS = 60 * 1000; // 1 minute of inactivity
 	var idleTimer = null;
+	var lastActivity = Date.now();
 
 	function isVisible() {
 		return o.classList.contains("is-visible");
@@ -1714,6 +1715,7 @@ initAfterLoading();
 
 	function startTimer() {
 		clearTimeout(idleTimer);
+		lastActivity = Date.now();
 		idleTimer = setTimeout(show, IDLE_MS);
 	}
 
@@ -1721,6 +1723,14 @@ initAfterLoading();
 		if (isVisible()) hide();
 		startTimer();
 	}
+
+	// Browsers throttle/suspend setTimeout in background tabs, so
+	// check elapsed time when the tab becomes visible again.
+	document.addEventListener("visibilitychange", function () {
+		if (!document.hidden && !isVisible() && Date.now() - lastActivity >= IDLE_MS) {
+			show();
+		}
+	});
 
 	var activityEvents = ["mousemove", "mousedown", "keydown", "scroll", "touchstart"];
 	activityEvents.forEach(function (evt) {
