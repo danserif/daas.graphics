@@ -1750,5 +1750,11 @@ initAfterLoading();
 		}
 	});
 
+	// Expose globally for onclick="toggleDOverlay()" in HTML
+	window.toggleDOverlay = function () {
+		if (isVisible()) { hide(); startTimer(); }
+		else { show(); clearTimeout(idleTimer); }
+	};
+
 	startTimer();
 })();
