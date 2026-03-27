@@ -204,7 +204,7 @@
 			<div class="header-sticky-band">
 				<div class="header-row">
 					<h1 class="header-label"><button type="button" class="d-overlay-trigger opacity-50 font-adhesion"
-							aria-label="Show logo" onclick="toggleDOverlay()">D</button> <span
+							aria-label="Show logo" onclick="toggleDOverlay();fathom.trackEvent('D', 0);">D</button> <span
 							class="opacity-25 label-spacer">//</span> <a href="#top"><span class="opacity-100">DaaS</span> <span
 								class="opacity-50">(Graphics)</span>
 							<span class="opacity-25">~</span> <span class="opacity-75">Dan as a Service</span></a>
@@ -220,10 +220,12 @@
 		</div>
 		<!-- SUBTITLE -->
 		<div class="header-column">
-			<h2 class="header-label"><a href="#" class="pricing-plan-link" data-plan="D-01">Coaching</a> <span
-					class="opacity-50">+</span> <a href="#" class="pricing-plan-link" data-plan="D-02">Advising</a> <span
+			<h2 class="header-label"><a href="#" class="pricing-plan-link" data-plan="D-01"
+					onclick="fathom.trackEvent('Coaching', 0);">Coaching</a> <span class="opacity-50">+</span> <a href="#"
+					class="pricing-plan-link" data-plan="D-02" onclick="fathom.trackEvent('Advising', 0);">Advising</a> <span
 					class="opacity-50">+</span>
-				<a href="#" class="pricing-plan-link" data-plan="D-03">Designing</a> <span class="desktop-only label-spacer">
+				<a href="#" class="pricing-plan-link" data-plan="D-03"
+					onclick="fathom.trackEvent('Designing', 0);">Designing</a> <span class="desktop-only label-spacer">
 					<span class="opacity-50">D-01</span>
 					<span class="opacity-25">/</span> <span class="opacity-50">D-02</span> <span class="opacity-25">/</span> <span
 						class="opacity-50">D-03</span></span>
@@ -294,16 +296,17 @@
 		<div class="header-fixed-bar desktop-only" aria-hidden="true">
 			<div class="header-fixed-bar-inner">
 				<h1 class="header-label"><button type="button" class="d-overlay-trigger opacity-50 font-adhesion"
-						aria-label="Show logo" onclick="toggleDOverlay()">D</button> <span class="opacity-25 label-spacer">//</span>
+						aria-label="Show logo" onclick="toggleDOverlay();fathom.trackEvent('D', 0);">D</button> <span class="opacity-25 label-spacer">//</span>
 					<a href="#top"><span class="opacity-100">DaaS</span> <span class="opacity-50">(Graphics)</span>
 						<span class="opacity-25">~</span> <span class="opacity-75">Dan as a Service</span></a> <span
 						class="opacity-25 label-spacer desktop-only">//</span> <span class="desktop-only opacity-50"><a href="#"
-							class="pricing-plan-link" data-plan="D-01">Coaching</a> <span class="opacity-50">+</span> <a href="#"
-							class="pricing-plan-link" data-plan="D-02">Advising</a> <span class="opacity-50">+</span>
-						<a href="#" class="pricing-plan-link" data-plan="D-03"> Designing</a></span> <span
-						class="opacity-25 label-spacer">//</span><span class="opacity-50 label-spacer"><button type="button"
-							class="face-overlay-trigger opacity-50" aria-label="Show faces"
-							onclick="toggleFaceOverlay()">(^_^)/~</button></span>
+							class="pricing-plan-link" data-plan="D-01" onclick="fathom.trackEvent('Coaching', 0);">Coaching</a> <span
+							class="opacity-50">+</span> <a href="#" class="pricing-plan-link" data-plan="D-02"
+							onclick="fathom.trackEvent('Advising', 0);">Advising</a> <span class="opacity-50">+</span>
+						<a href="#" class="pricing-plan-link" data-plan="D-03" onclick="fathom.trackEvent('Designing', 0);">
+							Designing</a></span> <span class="opacity-25 label-spacer">//</span><span
+						class="opacity-50 label-spacer"><button type="button" class="face-overlay-trigger opacity-50"
+							aria-label="Show faces" onclick="toggleFaceOverlay();fathom.trackEvent('Face', 0);">(^_^)/~</button></span>
 				</h1>
 				<span class="header-fixed-bar-right">
 					<p class="header-label header-label--nav">
@@ -332,48 +335,52 @@
 		<template class="daas-face-3-template">
 			<div class="daas-face-3">
 				<svg width="92" height="92" viewBox="0 0 92 92" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<path d="M36 92H56V88H64V84H72V80H76V76H80V72H84V64H88V52H92V40H88V28H84V20H80V16H76V12H72V8H64V4H56V0H36V4H28V8H20V12H16V16H12V20H8V28H4V40H0V52H4V64H8V72H12V76H16V80H20V84H28V88H36V92Z" fill="var(--color-text, white)"/>
-					<rect x="36" y="72" width="20" height="4" fill="var(--color-bg, black)"/>
-					<rect x="28" y="68" width="8" height="4" fill="var(--color-bg, black)"/>
-					<rect x="56" y="68" width="8" height="4" fill="var(--color-bg, black)"/>
-					<rect x="24" y="64" width="4" height="4" fill="var(--color-bg, black)"/>
-					<rect x="64" y="64" width="4" height="4" fill="var(--color-bg, black)"/>
-					<rect x="20" y="60" width="4" height="4" fill="var(--color-bg, black)"/>
-					<rect x="68" y="60" width="4" height="4" fill="var(--color-bg, black)"/>
-					<rect x="32" y="40" width="12" height="4" transform="rotate(-180 32 40)" fill="var(--color-bg, black)"/>
-					<rect x="54" y="32" width="4" height="8" transform="rotate(-180 54 32)" fill="var(--color-bg, black)"/>
-					<rect x="50" y="40" width="4" height="8" transform="rotate(-180 50 40)" fill="var(--color-bg, black)"/>
-					<rect x="46" y="48" width="4" height="8" transform="rotate(-180 46 48)" fill="var(--color-bg, black)"/>
-					<rect x="42" y="56" width="4" height="8" transform="rotate(-180 42 56)" fill="var(--color-bg, black)"/>
-					<rect x="60" y="36" width="12" height="4" fill="var(--color-bg, black)"/>
+					<path
+						d="M36 92H56V88H64V84H72V80H76V76H80V72H84V64H88V52H92V40H88V28H84V20H80V16H76V12H72V8H64V4H56V0H36V4H28V8H20V12H16V16H12V20H8V28H4V40H0V52H4V64H8V72H12V76H16V80H20V84H28V88H36V92Z"
+						fill="var(--color-text, white)" />
+					<rect x="36" y="72" width="20" height="4" fill="var(--color-bg, black)" />
+					<rect x="28" y="68" width="8" height="4" fill="var(--color-bg, black)" />
+					<rect x="56" y="68" width="8" height="4" fill="var(--color-bg, black)" />
+					<rect x="24" y="64" width="4" height="4" fill="var(--color-bg, black)" />
+					<rect x="64" y="64" width="4" height="4" fill="var(--color-bg, black)" />
+					<rect x="20" y="60" width="4" height="4" fill="var(--color-bg, black)" />
+					<rect x="68" y="60" width="4" height="4" fill="var(--color-bg, black)" />
+					<rect x="32" y="40" width="12" height="4" transform="rotate(-180 32 40)" fill="var(--color-bg, black)" />
+					<rect x="54" y="32" width="4" height="8" transform="rotate(-180 54 32)" fill="var(--color-bg, black)" />
+					<rect x="50" y="40" width="4" height="8" transform="rotate(-180 50 40)" fill="var(--color-bg, black)" />
+					<rect x="46" y="48" width="4" height="8" transform="rotate(-180 46 48)" fill="var(--color-bg, black)" />
+					<rect x="42" y="56" width="4" height="8" transform="rotate(-180 42 56)" fill="var(--color-bg, black)" />
+					<rect x="60" y="36" width="12" height="4" fill="var(--color-bg, black)" />
 				</svg>
 			</div>
 		</template>
 		<template class="daas-face-4-template">
 			<div class="daas-face-4">
 				<svg width="92" height="92" viewBox="0 0 92 92" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<path d="M36 92H56V88H64V84H72V80H76V76H80V72H84V64H88V52H92V40H88V28H84V20H80V16H76V12H72V8H64V4H56V0H36V4H28V8H20V12H16V16H12V20H8V28H4V40H0V52H4V64H8V72H12V76H16V80H20V84H28V88H36V92Z" fill="var(--color-accent, #aaff00)"/>
-					<rect x="36" y="72" width="20" height="4" fill="var(--color-bg, black)"/>
-					<rect x="28" y="68" width="8" height="4" fill="var(--color-bg, black)"/>
-					<rect x="56" y="68" width="8" height="4" fill="var(--color-bg, black)"/>
-					<rect x="24" y="64" width="4" height="4" fill="var(--color-bg, black)"/>
-					<rect x="64" y="64" width="4" height="4" fill="var(--color-bg, black)"/>
-					<rect x="20" y="60" width="4" height="4" fill="var(--color-bg, black)"/>
-					<rect x="68" y="60" width="4" height="4" fill="var(--color-bg, black)"/>
-					<rect x="60" y="40" width="4" height="4" transform="rotate(-180 60 40)" fill="var(--color-bg, black)"/>
-					<rect x="32" y="36" width="4" height="4" fill="var(--color-bg, black)"/>
-					<rect x="64" y="36" width="4" height="4" transform="rotate(-180 64 36)" fill="var(--color-bg, black)"/>
-					<rect x="28" y="40" width="4" height="4" fill="var(--color-bg, black)"/>
-					<rect x="68" y="32" width="4" height="4" transform="rotate(-180 68 32)" fill="var(--color-bg, black)"/>
-					<rect x="24" y="44" width="4" height="4" fill="var(--color-bg, black)"/>
-					<rect x="54" y="32" width="4" height="8" transform="rotate(-180 54 32)" fill="var(--color-bg, black)"/>
-					<rect x="50" y="40" width="4" height="8" transform="rotate(-180 50 40)" fill="var(--color-bg, black)"/>
-					<rect x="46" y="48" width="4" height="8" transform="rotate(-180 46 48)" fill="var(--color-bg, black)"/>
-					<rect x="42" y="56" width="4" height="8" transform="rotate(-180 42 56)" fill="var(--color-bg, black)"/>
-					<rect x="64" y="44" width="4" height="4" transform="rotate(-180 64 44)" fill="var(--color-bg, black)"/>
-					<rect x="28" y="32" width="4" height="4" fill="var(--color-bg, black)"/>
-					<rect x="68" y="48" width="4" height="4" transform="rotate(-180 68 48)" fill="var(--color-bg, black)"/>
-					<rect x="24" y="28" width="4" height="4" fill="var(--color-bg, black)"/>
+					<path
+						d="M36 92H56V88H64V84H72V80H76V76H80V72H84V64H88V52H92V40H88V28H84V20H80V16H76V12H72V8H64V4H56V0H36V4H28V8H20V12H16V16H12V20H8V28H4V40H0V52H4V64H8V72H12V76H16V80H20V84H28V88H36V92Z"
+						fill="var(--color-accent, #aaff00)" />
+					<rect x="36" y="72" width="20" height="4" fill="var(--color-bg, black)" />
+					<rect x="28" y="68" width="8" height="4" fill="var(--color-bg, black)" />
+					<rect x="56" y="68" width="8" height="4" fill="var(--color-bg, black)" />
+					<rect x="24" y="64" width="4" height="4" fill="var(--color-bg, black)" />
+					<rect x="64" y="64" width="4" height="4" fill="var(--color-bg, black)" />
+					<rect x="20" y="60" width="4" height="4" fill="var(--color-bg, black)" />
+					<rect x="68" y="60" width="4" height="4" fill="var(--color-bg, black)" />
+					<rect x="60" y="40" width="4" height="4" transform="rotate(-180 60 40)" fill="var(--color-bg, black)" />
+					<rect x="32" y="36" width="4" height="4" fill="var(--color-bg, black)" />
+					<rect x="64" y="36" width="4" height="4" transform="rotate(-180 64 36)" fill="var(--color-bg, black)" />
+					<rect x="28" y="40" width="4" height="4" fill="var(--color-bg, black)" />
+					<rect x="68" y="32" width="4" height="4" transform="rotate(-180 68 32)" fill="var(--color-bg, black)" />
+					<rect x="24" y="44" width="4" height="4" fill="var(--color-bg, black)" />
+					<rect x="54" y="32" width="4" height="8" transform="rotate(-180 54 32)" fill="var(--color-bg, black)" />
+					<rect x="50" y="40" width="4" height="8" transform="rotate(-180 50 40)" fill="var(--color-bg, black)" />
+					<rect x="46" y="48" width="4" height="8" transform="rotate(-180 46 48)" fill="var(--color-bg, black)" />
+					<rect x="42" y="56" width="4" height="8" transform="rotate(-180 42 56)" fill="var(--color-bg, black)" />
+					<rect x="64" y="44" width="4" height="4" transform="rotate(-180 64 44)" fill="var(--color-bg, black)" />
+					<rect x="28" y="32" width="4" height="4" fill="var(--color-bg, black)" />
+					<rect x="68" y="48" width="4" height="4" transform="rotate(-180 68 48)" fill="var(--color-bg, black)" />
+					<rect x="24" y="28" width="4" height="4" fill="var(--color-bg, black)" />
 				</svg>
 			</div>
 		</template>
@@ -385,7 +392,8 @@
 				<!-- FACE ICON (COLOUR) -->
 				<div class="daas-icon daas-icon-1">
 					<svg width="92" height="92" viewBox="0 0 92 92" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<path d="M36 92H56V88H64V84H72V80H76V76H80V72H84V64H88V52H92V40H88V28H84V20H80V16H76V12H72V8H64V4H56V0H36V4H28V8H20V12H16V16H12V20H8V28H4V40H0V52H4V64H8V72H12V76H16V80H20V84H28V88H36V92Z"
+						<path
+							d="M36 92H56V88H64V84H72V80H76V76H80V72H84V64H88V52H92V40H88V28H84V20H80V16H76V12H72V8H64V4H56V0H36V4H28V8H20V12H16V16H12V20H8V28H4V40H0V52H4V64H8V72H12V76H16V80H20V84H28V88H36V92Z"
 							fill="var(--color-accent, #aaff00)" />
 						<rect x="36" y="72" width="20" height="4" fill="var(--color-bg, black)" />
 						<rect x="28" y="68" width="8" height="4" fill="var(--color-bg, black)" />
@@ -395,16 +403,11 @@
 						<rect x="20" y="60" width="4" height="4" fill="var(--color-bg, black)" />
 						<rect x="68" y="60" width="4" height="4" fill="var(--color-bg, black)" />
 						<rect x="64" y="32" width="4" height="12" fill="var(--color-bg, black)" />
-						<rect x="28" y="44" width="4" height="12" transform="rotate(-180 28 44)"
-							fill="var(--color-bg, black)" />
-						<rect x="54" y="32" width="4" height="8" transform="rotate(-180 54 32)"
-							fill="var(--color-bg, black)" />
-						<rect x="50" y="40" width="4" height="8" transform="rotate(-180 50 40)"
-							fill="var(--color-bg, black)" />
-						<rect x="46" y="48" width="4" height="8" transform="rotate(-180 46 48)"
-							fill="var(--color-bg, black)" />
-						<rect x="42" y="56" width="4" height="8" transform="rotate(-180 42 56)"
-							fill="var(--color-bg, black)" />
+						<rect x="28" y="44" width="4" height="12" transform="rotate(-180 28 44)" fill="var(--color-bg, black)" />
+						<rect x="54" y="32" width="4" height="8" transform="rotate(-180 54 32)" fill="var(--color-bg, black)" />
+						<rect x="50" y="40" width="4" height="8" transform="rotate(-180 50 40)" fill="var(--color-bg, black)" />
+						<rect x="46" y="48" width="4" height="8" transform="rotate(-180 46 48)" fill="var(--color-bg, black)" />
+						<rect x="42" y="56" width="4" height="8" transform="rotate(-180 42 56)" fill="var(--color-bg, black)" />
 					</svg>
 				</div>
 				<!-- FACE ICON -->
@@ -570,7 +573,7 @@
 					need it.</h3>
 				<p class="card-subtitle font-untitled">From coaching to creative direction, <a href="#about" class="underline"
 						onclick="fathom.trackEvent('About', 0);">DaaS</a> <span class="opacity-50">(Dan as a Service)</span> has
-					flexible <a href="#" class="underline pricing-plan-link" data-plan="D-01">plans</a> to help you and your team.
+					flexible <a href="#" class="underline pricing-plan-link" data-plan="D-01" onclick="fathom.trackEvent('Plans', 0);">plans</a> to help you and your team.
 				</p>
 			</div>
 			<!-- MENU -->
@@ -674,7 +677,7 @@
 				<p>
 					Over the past two decades he’s led design teams and worked hands-on at startups like Xero, Axiom, and Stedi;
 					as well as at agencies, designing award-winning work for the likes of the
-					<a href="https://klim.co.nz" target="_blank" class="underline">Klim Type Foundry</a> and Te Papa <span
+					<a href="https://klim.co.nz" target="_blank" class="underline" onclick="fathom.trackEvent('Klim', 0);">Klim Type Foundry</a> and Te Papa <span
 						class="opacity-50">(Museum of New Zealand).</span>
 				</p>
 			</div>
@@ -696,7 +699,8 @@
 				<p>Whether you’re in San Francisco or on Stewart Island, get an experienced design partner whenever you need it.
 				</p>
 				<p>
-					DaaS <span class="opacity-50">(Graphics)</span> offers <a href="#" class="underline pricing-plan-link" data-plan="D-01">plans</a> that are flexible for individuals, early-stage
+				DaaS <span class="opacity-50">(Graphics)</span> offers <a href="#" class="underline pricing-plan-link"
+					data-plan="D-01" onclick="fathom.trackEvent('Plans', 0);">plans</a> that are flexible for individuals, early-stage
 					founders, and go-to-market teams. If you’re after advice, or a new creative direction <span
 						class="opacity-50">(branding, logos, swag, conference collateral, or a site),</span> there’s a plan
 					to help.
@@ -755,8 +759,8 @@
 				</p>
 			</div>
 			<div class="card-text">
-				<p>DaaS <span class="opacity-50">(Graphics)</span> offers <a href="#" class="underline pricing-plan-link"
-						data-plan="D-01">plans</a> that can be configured based on your size, stage, and the services you need:</p>
+			<p>DaaS <span class="opacity-50">(Graphics)</span> offers <a href="#" class="underline pricing-plan-link"
+					data-plan="D-01" onclick="fathom.trackEvent('Plans', 0);">plans</a> that can be configured based on your size, stage, and the services you need:</p>
 			</div>
 			<div class="card-text card-text--full-width">
 				<table class="pricing-table mono">
@@ -1362,7 +1366,8 @@
 			<!-- FACE ICON (COLOUR) -->
 			<div class="daas-icon daas-icon-1">
 				<svg width="92" height="92" viewBox="0 0 92 92" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<path d="M36 92H56V88H64V84H72V80H76V76H80V72H84V64H88V52H92V40H88V28H84V20H80V16H76V12H72V8H64V4H56V0H36V4H28V8H20V12H16V16H12V20H8V28H4V40H0V52H4V64H8V72H12V76H16V80H20V84H28V88H36V92Z"
+					<path
+						d="M36 92H56V88H64V84H72V80H76V76H80V72H84V64H88V52H92V40H88V28H84V20H80V16H76V12H72V8H64V4H56V0H36V4H28V8H20V12H16V16H12V20H8V28H4V40H0V52H4V64H8V72H12V76H16V80H20V84H28V88H36V92Z"
 						fill="var(--color-accent, #aaff00)" />
 					<rect x="36" y="72" width="20" height="4" fill="var(--color-bg, black)" />
 					<rect x="28" y="68" width="8" height="4" fill="var(--color-bg, black)" />
@@ -1372,16 +1377,11 @@
 					<rect x="20" y="60" width="4" height="4" fill="var(--color-bg, black)" />
 					<rect x="68" y="60" width="4" height="4" fill="var(--color-bg, black)" />
 					<rect x="64" y="32" width="4" height="12" fill="var(--color-bg, black)" />
-					<rect x="28" y="44" width="4" height="12" transform="rotate(-180 28 44)"
-						fill="var(--color-bg, black)" />
-					<rect x="54" y="32" width="4" height="8" transform="rotate(-180 54 32)"
-						fill="var(--color-bg, black)" />
-					<rect x="50" y="40" width="4" height="8" transform="rotate(-180 50 40)"
-						fill="var(--color-bg, black)" />
-					<rect x="46" y="48" width="4" height="8" transform="rotate(-180 46 48)"
-						fill="var(--color-bg, black)" />
-					<rect x="42" y="56" width="4" height="8" transform="rotate(-180 42 56)"
-						fill="var(--color-bg, black)" />
+					<rect x="28" y="44" width="4" height="12" transform="rotate(-180 28 44)" fill="var(--color-bg, black)" />
+					<rect x="54" y="32" width="4" height="8" transform="rotate(-180 54 32)" fill="var(--color-bg, black)" />
+					<rect x="50" y="40" width="4" height="8" transform="rotate(-180 50 40)" fill="var(--color-bg, black)" />
+					<rect x="46" y="48" width="4" height="8" transform="rotate(-180 46 48)" fill="var(--color-bg, black)" />
+					<rect x="42" y="56" width="4" height="8" transform="rotate(-180 42 56)" fill="var(--color-bg, black)" />
 				</svg>
 			</div>
 			<!-- FACE ICON -->
