@@ -1201,6 +1201,58 @@ h1.header-label {
 	}
 }
 
+/* FACE OVERLAY — triggered from the fixed-bar "(^_^)/~" button */
+.face-overlay-trigger {
+	background: none;
+	border: none;
+	color: inherit;
+	font: inherit;
+	padding: 0;
+	cursor: pointer;
+	opacity: 0.5;
+}
+
+.face-overlay-trigger:hover {
+	opacity: 1;
+}
+
+.face-overlay {
+	position: fixed;
+	inset: 0;
+	z-index: 99999;
+	overflow: hidden;
+	background: transparent;
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	cursor: pointer;
+	transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+
+.face-overlay.is-visible {
+	opacity: 1;
+	visibility: visible;
+	pointer-events: auto;
+}
+
+.face-overlay .face-overlay-icon {
+	position: absolute;
+	pointer-events: auto;
+	user-select: none;
+	cursor: pointer;
+}
+
+.face-overlay .face-overlay-icon svg {
+	display: block;
+	width: 100%;
+	height: auto;
+	transition: transform 0.25s ease;
+}
+
+.face-overlay .face-overlay-icon:hover svg {
+	transform: rotate(5deg);
+}
+
 /* ==========================================================================
    OVERLAY PANELS
    Shared container: .nav-overlay hosts both .nav-panel (menu) and .plan-panel (pricing).

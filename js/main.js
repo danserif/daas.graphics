@@ -1096,6 +1096,8 @@ function startAnimations() {
 		requestAnimationFrame(animate);
 	}
 
+	window.createConfetti = createConfetti;
+
 	// Add click handlers to all icons
 	icons.forEach(function (icon) {
 		icon.addEventListener("click", function (e) {
@@ -1757,4 +1759,123 @@ initAfterLoading();
 	};
 
 	startTimer();
+})();
+
+// Face overlay — fills viewport with random daas-icon-1 / daas-icon-2 faces.
+// Triggered from the "(^_^)/~" button in the fixed bar.
+(function initFaceOverlay() {
+	var overlay = document.querySelector(".face-overlay");
+	if (!overlay) return;
+
+	var icon1El = document.querySelector(".hero-icons .daas-icon-1");
+	var icon2El = document.querySelector(".hero-icons .daas-icon-2");
+	if (!icon1El || !icon2El) return;
+
+	var svg1 = icon1El.querySelector("svg").outerHTML;
+	// icon-2's SVG uses preserveAspectRatio="none" for layout; override to keep 1:1
+	var svg2Raw = icon2El.querySelector("svg").outerHTML;
+	var svg2 = svg2Raw
+		.replace(/preserveAspectRatio="[^"]*"/, 'preserveAspectRatio="xMidYMid meet"')
+		.replace(/width="[^"]*"/, 'width="92"')
+		.replace(/height="[^"]*"/, 'height="92"');
+
+	var tpl3 = overlay.querySelector(".daas-face-3-template");
+	var tpl4 = overlay.querySelector(".daas-face-4-template");
+	var svg3 = tpl3 ? tpl3.content.querySelector("svg").outerHTML : null;
+	var svg4 = tpl4 ? tpl4.content.querySelector("svg").outerHTML : null;
+
+	var faces = [
+		{ svg: svg1, cls: "daas-face-1" },
+		{ svg: svg2, cls: "daas-face-2" },
+	];
+	if (svg3) faces.push({ svg: svg3, cls: "daas-face-3" });
+	if (svg4) faces.push({ svg: svg4, cls: "daas-face-4" });
+
+	function isVisible() {
+		return overlay.classList.contains("is-visible");
+	}
+
+	function rectsOverlap(a, b) {
+		return a.x < b.x + b.s && a.x + a.s > b.x && a.y < b.y + b.s && a.y + a.s > b.y;
+	}
+
+	function populate() {
+		var icons = overlay.querySelectorAll(".face-overlay-icon");
+		for (var k = 0; k < icons.length; k++) icons[k].remove();
+		var vw = window.innerWidth;
+		var vh = window.innerHeight;
+		var count = Math.round(20 + Math.random() * 10);
+		var placed = [];
+		var maxAttempts = 200;
+
+		for (var i = 0; i < count; i++) {
+			var pick = Math.floor(Math.random() * faces.length);
+			var size = 40 + Math.random() * 100;
+			var candidate = null;
+			var ok = false;
+
+			for (var attempt = 0; attempt < maxAttempts; attempt++) {
+				var x = Math.random() * (vw - size);
+				var y = Math.random() * (vh - size);
+				candidate = { x: x, y: y, s: size };
+				ok = true;
+				for (var j = 0; j < placed.length; j++) {
+					if (rectsOverlap(candidate, placed[j])) {
+						ok = false;
+						break;
+					}
+				}
+				if (ok) break;
+			}
+			if (!ok) continue;
+
+			placed.push(candidate);
+
+			var el = document.createElement("div");
+			el.className = "face-overlay-icon " + faces[pick].cls;
+			el.innerHTML = faces[pick].svg;
+			el.style.width = size + "px";
+			el.style.height = size + "px";
+			el.style.left = candidate.x + "px";
+			el.style.top = candidate.y + "px";
+			el.style.transform = "rotate(" + Math.floor(Math.random() * 360) + "deg)";
+			overlay.appendChild(el);
+		}
+	}
+
+	function show() {
+		if (isVisible()) return;
+		populate();
+		overlay.classList.add("is-visible");
+		overlay.setAttribute("aria-hidden", "false");
+	}
+
+	function hide() {
+		if (!isVisible()) return;
+		overlay.classList.remove("is-visible");
+		overlay.setAttribute("aria-hidden", "true");
+	}
+
+	overlay.addEventListener("click", function (e) {
+		var iconEl = e.target.closest(".face-overlay-icon");
+		if (iconEl && typeof window.createConfetti === "function") {
+			e.stopPropagation();
+			for (var i = 0; i < 5; i++) {
+				(function (el, delay) {
+					setTimeout(function () { window.createConfetti(el); }, delay);
+				})(iconEl, i * 50);
+			}
+			return;
+		}
+		hide();
+	});
+
+	document.addEventListener("keydown", function (e) {
+		if (e.key === "Escape" && isVisible()) hide();
+	});
+
+	window.toggleFaceOverlay = function () {
+		if (isVisible()) hide();
+		else show();
+	};
 })();
