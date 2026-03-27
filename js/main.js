@@ -1695,22 +1695,25 @@ initAfterLoading();
 	var o = document.querySelector(".d-overlay");
 	if (!o) return;
 
-	var IDLE_MS = 60 * 1000; // 1 minute of inactivity
+	var IDLE_MS = 30 * 1000; // 30 seconds of inactivity
 	var idleTimer = null;
 	var lastActivity = Date.now();
+	var openedByIdle = false;
 
 	function isVisible() {
 		return o.classList.contains("is-visible");
 	}
 
-	function show() {
+	function show(fromIdle) {
 		if (isVisible()) return;
+		openedByIdle = !!fromIdle;
 		o.classList.add("is-visible");
 		o.setAttribute("aria-hidden", "false");
 	}
 
 	function hide() {
 		if (!isVisible()) return;
+		openedByIdle = false;
 		o.classList.remove("is-visible");
 		o.setAttribute("aria-hidden", "true");
 	}
@@ -1718,25 +1721,25 @@ initAfterLoading();
 	function startTimer() {
 		clearTimeout(idleTimer);
 		lastActivity = Date.now();
-		idleTimer = setTimeout(show, IDLE_MS);
+		idleTimer = setTimeout(function () { show(true); }, IDLE_MS);
 	}
 
-	function resetTimer() {
-		if (isVisible()) hide();
+	// Activity only auto-dismisses the idle-triggered overlay;
+	// manually opened overlay is only closed by click or Escape.
+	function onActivity() {
+		if (isVisible() && openedByIdle) hide();
 		startTimer();
 	}
 
-	// Browsers throttle/suspend setTimeout in background tabs, so
-	// check elapsed time when the tab becomes visible again.
 	document.addEventListener("visibilitychange", function () {
 		if (!document.hidden && !isVisible() && Date.now() - lastActivity >= IDLE_MS) {
-			show();
+			show(true);
 		}
 	});
 
 	var activityEvents = ["mousemove", "mousedown", "keydown", "scroll", "touchstart"];
 	activityEvents.forEach(function (evt) {
-		document.addEventListener(evt, resetTimer, { passive: true });
+		document.addEventListener(evt, onActivity, { passive: true });
 	});
 
 	document.addEventListener("click", function (e) {
@@ -1755,7 +1758,7 @@ initAfterLoading();
 	// Expose globally for onclick="toggleDOverlay()" in HTML
 	window.toggleDOverlay = function () {
 		if (isVisible()) { hide(); startTimer(); }
-		else { show(); clearTimeout(idleTimer); }
+		else { show(false); clearTimeout(idleTimer); }
 	};
 
 	startTimer();
