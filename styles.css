@@ -3283,11 +3283,13 @@ a.plan-panel-cta:hover {
 	display: inline-flex;
 	align-items: center;
 	white-space: nowrap;
+	will-change: transform;
 	animation: marquee-scroll 90s linear infinite;
 }
 
 .marquee ul {
 	display: inline-flex;
+	flex-shrink: 0;
 	align-items: center;
 	gap: 1.5rem;
 	padding: 18px 0;
