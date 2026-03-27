@@ -1,0 +1,56 @@
+# DaaS (Graphics)
+
+> DaaS (Dan as a Service) is a design and coaching subscription service run by Dan Newman. Get design and leadership support for your startup, team, or business — only when you need it. Flexible plans cover coaching, advising, creative direction, branding, and more.
+
+## About
+
+Tagline: Authenticity & Aesthetics. 
+
+Founder: Dan Newman (Designer / Creative Director), based in Wellington, New Zealand. Two decades of experience leading design teams and working hands-on at startups (Xero, Axiom, Stedi), agencies (Springload, Tigerspike), and with international brands (Nintendo, The Economist, Al Jazeera, Icebreaker). Award-winning work for Klim Type Foundry and Te Papa (Museum of New Zealand). Master's (with Distinction) in Computer Graphic Design, Whanganui School of Design (New Zealand); studied at Nottingham University (England) and FH Oberösterreich (Austria). 
+
+Awards: Red Dot (Best of the Best), AGDA (Pinnacle/Distinction), Type Directors Club, Communication Arts, DINZ Best Awards (Gold/Silver/Bronze/Judge), D&AD.
+
+Services: For individuals, early-stage founders, and go-to-market teams. Includes coaching (D-01), design leadership (D-02), branding design (D-03), and custom plans (D-04). Plans are configurable by size, stage, and needs — from hourly coaching sessions to new creative direction (branding, logos, swag, conference collateral, sites). DaaS (Graphics) is not a high-volume agency — the goal is long-term partnerships and dedicated support for people who care about design.
+
+## Plans
+
+- **D-01 / Coaching** (Sessions): For founders, leaders, or individuals. Starting at $250 USD per hour. Support, feedback, strategy.
+- **D-02 / Advising** (Leadership): For startups, teams, and businesses. Starting at $10,000 USD per month. Creative direction, zero to one, marketing and product reviews. 
+- **D-03 / Designing** (Brands): For startups and businesses. Starting at $7,000 USD per week. Branding, identity, landing pages, campaigns. 
+- **D-04 / Vibing** (Expansion Pack): Custom plans configured to your needs. Pricing TBC. Long-term partnerships, multi-discipline teams, AI support.
+
+## Skills
+
+Branding and identity design, creative direction, art direction, design systems, websites and landing pages, design leadership and team management, product design, marketing and advertising campaigns, conference and event design, swag and merchandise, pitch decks and presentations, design coaching and mentoring, recruitment support, AI-assisted design.
+
+## Clients
+
+Dan has worked with clients across startups, government, agencies, and international brands including: Axiom, Klim Type Foundry, Stedi, Xero, Springload, Delivereasy, Te Papa (Museum of New Zealand), Callaghan Innovation, Massey University, NZ On Air, Airwallex, DIA (Department of Internal Affairs), NZ Government, NZ Customs, MSD (Ministry of Social Development), ACC, Kiwibank, Koordinates, Loophole Labs, Formway, Accuro, Icebreaker, SPCA, Spy Valley Wines, Nintendo, American Express, The Economist, Virgin, Al Jazeera, ESPN Cricinfo, France Télévisions, ODEON Cinemas, The Telegraph, Travelex, and Tigerspike.
+
+## Sections
+
+The site is a single page with the following sections: TL;DR, About, Services, Tagline/Mission, Experience, Pricing, Availability, Graphics/Work (image gallery), Clients (logo marquee), Experiments/Lab (image gallery), Awards/Recognition, Testimonials, and Footer (proprietor, socials, location/time, colophon, colors, copyright).
+
+## Contact
+
+- [Email: dan@newman.is](mailto:dan@newman.is): Primary contact; use for pricing, waitlist, and general enquiries.
+- [LinkedIn: /in/danserif](https://www.linkedin.com/in/danserif/): Dan Newman on LinkedIn.
+- [Twitter: @danserif](https://www.twitter.com/danserif/): Dan Newman on Twitter.
+- [Personal site: danserif.com](https://danserif.com): Dan Newman's personal site.
+- [Newsletter: danserif.com/newsletter](danserif.com/newsletter): Dan Newman's newsletter.
+
+## Site
+
+- [DaaS (Graphics)](https://daas.graphics/): Full site with about, services, pricing, availability, work samples, experiments, awards, and testimonials.
+
+## Source
+
+- [GitHub: daas.graphics](https://github.com/danserif/daas.graphics): Source for this site.
+
+## Disambiguation
+
+DaaS here refers to "Dan as a Service" — not "Desktop as a Service" or "Data as a Service". DaaS (Graphics) refers exclusively to Dan Newman's design practice at daas.graphics.
+
+## Keywords
+
+DaaS (Graphics), Dan as a Service, Dan Newman, Daniel Newman, danserif, design coaching, creative direction, branding, design leadership, startup design, design partner, fractional design leader, design subscription, New Zealand designer, Aotearoa, New Zealand, Wellington.
