@@ -2943,7 +2943,7 @@ a.plan-panel-cta:hover {
 .award-image {
 	display: block;
 	width: auto;
-	max-width: 60%;
+	max-width: 50%;
 	object-fit: contain;
 	color: var(--color-text);
 	opacity: 0.375;
@@ -2963,7 +2963,7 @@ a.plan-panel-cta:hover {
 
 @media only screen and (max-width: 1440px) {
 	.award-image {
-		max-width: 520px;
+		max-width: 400px;
 	}
 }
 
