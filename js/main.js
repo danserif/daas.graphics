@@ -1704,8 +1704,14 @@ initAfterLoading();
 		return o.classList.contains("is-visible");
 	}
 
+	function faceOverlayOpen() {
+		var f = document.querySelector(".face-overlay");
+		return f && f.classList.contains("is-visible");
+	}
+
 	function show(fromIdle) {
 		if (isVisible()) return;
+		if (fromIdle && faceOverlayOpen()) { startTimer(); return; }
 		openedByIdle = !!fromIdle;
 		o.classList.add("is-visible");
 		o.setAttribute("aria-hidden", "false");
@@ -1807,7 +1813,7 @@ initAfterLoading();
 		for (var k = 0; k < icons.length; k++) icons[k].remove();
 		var vw = window.innerWidth;
 		var vh = window.innerHeight;
-		var count = Math.round(20 + Math.random() * 10);
+		var count = Math.round(10 + Math.random() * 10);
 		var placed = [];
 		var maxAttempts = 200;
 
