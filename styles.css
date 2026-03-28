@@ -3081,13 +3081,20 @@ a.plan-panel-cta:hover {
 	grid-column: span 4;
 }
 
+/* Placeholder + border stay visible while the img fades in (img opacity does not affect the frame) */
+.work-image-frame {
+	width: 100%;
+	box-sizing: border-box;
+	background-color: #080808;
+	border: 1px solid #1D1D1D;
+	overflow: hidden;
+}
+
 .work-image {
 	width: 100%;
 	height: auto;
 	display: block;
-	background-color: #080808;
-	border: 1px solid #1D1D1D;
-	transition: filter 0.3s ease, opacity 0.3s ease;
+	transition: filter 0.3s ease, opacity 0.9s ease-out;
 	opacity: 0;
 	color: transparent;
 }
@@ -3100,7 +3107,7 @@ a.plan-panel-cta:hover {
 	filter: grayscale(100%);
 }
 
-.light-mode .work-image {
+.light-mode .work-image-frame {
 	background-color: #F5F5F5;
 	border-color: #DDDDDD;
 }

@@ -95,6 +95,9 @@ document.addEventListener("DOMContentLoaded", function () {
 	// basePath: e.g. "/images/work/", filename: e.g. "project.jpg"
 	// Resolves to /images/work/dark/project.jpg or /images/work/light/project.jpg
 	function createWorkImage(basePath, filename, altText) {
+		const frame = document.createElement("div");
+		frame.className = "work-image-frame";
+
 		const img = document.createElement("img");
 		img.className = "work-image";
 		img.dataset.basePath = basePath;
@@ -126,7 +129,8 @@ document.addEventListener("DOMContentLoaded", function () {
 		};
 		tempImg.src = basePath + "dark/" + filename;
 
-		return img;
+		frame.appendChild(img);
+		return frame;
 	}
 
 	// Build the "meta" caption line as a <p class="work-text"> with spans inside
