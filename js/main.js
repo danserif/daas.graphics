@@ -1281,7 +1281,9 @@ function startAnimations() {
 			const observerOptions = {
 				root: null,
 				rootMargin: "0px",
-				threshold: 0.3, // Trigger when 30% of element is visible
+				// Observe the glyph itself, not the whole section: long blocks (e.g. #work) can be
+				// anchor-scrolled with <30% of the parent in view, so the glyph would never trigger.
+				threshold: 0,
 			};
 
 			const observer = new IntersectionObserver(function (entries) {
@@ -1291,12 +1293,12 @@ function startAnimations() {
 						setTimeout(function () {
 							animateIcon();
 						}, 200);
-						observer.unobserve(parentElement);
+						observer.unobserve(icon);
 					}
 				});
 			}, observerOptions);
 
-			observer.observe(parentElement);
+			observer.observe(icon);
 		}
 	});
 
@@ -1719,7 +1721,10 @@ initAfterLoading();
 
 	function show(fromIdle) {
 		if (isVisible()) return;
-		if (fromIdle && faceOverlayOpen()) { startTimer(); return; }
+		if (fromIdle && faceOverlayOpen()) {
+			startTimer();
+			return;
+		}
 		openedByIdle = !!fromIdle;
 		o.classList.add("is-visible");
 		o.setAttribute("aria-hidden", "false");
@@ -1735,7 +1740,9 @@ initAfterLoading();
 	function startTimer() {
 		clearTimeout(idleTimer);
 		lastActivity = Date.now();
-		idleTimer = setTimeout(function () { show(true); }, IDLE_MS);
+		idleTimer = setTimeout(function () {
+			show(true);
+		}, IDLE_MS);
 	}
 
 	// Activity only auto-dismisses the idle-triggered overlay;
@@ -1771,8 +1778,13 @@ initAfterLoading();
 
 	// Expose globally for onclick="toggleDOverlay()" in HTML
 	window.toggleDOverlay = function () {
-		if (isVisible()) { hide(); startTimer(); }
-		else { show(false); clearTimeout(idleTimer); }
+		if (isVisible()) {
+			hide();
+			startTimer();
+		} else {
+			show(false);
+			clearTimeout(idleTimer);
+		}
 	};
 
 	startTimer();
@@ -1879,7 +1891,9 @@ initAfterLoading();
 			e.stopPropagation();
 			for (var i = 0; i < 5; i++) {
 				(function (el, delay) {
-					setTimeout(function () { window.createConfetti(el); }, delay);
+					setTimeout(function () {
+						window.createConfetti(el);
+					}, delay);
 				})(iconEl, i * 50);
 			}
 			return;
