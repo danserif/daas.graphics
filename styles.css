@@ -1102,7 +1102,7 @@ h1.header-label {
 
 @media only screen and (max-width: 1860px) {
 	.header-fixed-bar {
-		padding: 1.5rem 2rem 0;
+		padding: 1.5rem 3rem 0;
 	}
 
 	.header-fixed-bar-inner {
@@ -3062,6 +3062,7 @@ a.plan-panel-cta:hover {
 	flex-direction: column;
 	gap: var(--gap-section);
 	overflow: hidden;
+	align-self: start;
 }
 
 .work-item[data-columns="1"] {
@@ -3083,16 +3084,22 @@ a.plan-panel-cta:hover {
 .work-image {
 	width: 100%;
 	height: auto;
-	min-height: 200px;
 	display: block;
-	object-fit: contain;
-	/* FALLBACK MINIMUM HEIGHT */
-	background-color: #1D1D1D;
-	filter: grayscale(100%);
+	background-color: #080808;
+	border: 1px solid #1D1D1D;
 	transition: filter 0.3s ease;
 }
 
-.work-item:hover .work-image {
+#work .work-image {
+	filter: grayscale(100%);
+}
+
+.light-mode .work-image {
+	background-color: #F5F5F5;
+	border-color: #DDDDDD;
+}
+
+#work .work-item:hover .work-image {
 	filter: grayscale(0%);
 }
 

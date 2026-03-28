@@ -608,6 +608,7 @@ function startAnimations() {
 	document.addEventListener("click", function (e) {
 		if (e.target.classList.contains("dark-mode-toggle")) {
 			e.preventDefault();
+			if (typeof fathom !== "undefined" && fathom.trackEvent) fathom.trackEvent("Dark", 0);
 			root.classList.remove("light-mode");
 			localStorage.setItem("colorMode", "dark");
 			updateAccentColorValue();
@@ -616,11 +617,15 @@ function startAnimations() {
 			if (typeof window.updateNavOverlayBackground === "function") {
 				window.updateNavOverlayBackground();
 			}
+			if (typeof window.updateGalleryTheme === "function") {
+				window.updateGalleryTheme();
+			}
 			if (typeof window.triggerLoadingScreen === "function") {
 				window.triggerLoadingScreen();
 			}
 		} else if (e.target.classList.contains("light-mode-toggle")) {
 			e.preventDefault();
+			if (typeof fathom !== "undefined" && fathom.trackEvent) fathom.trackEvent("Light", 0);
 			root.classList.add("light-mode");
 			localStorage.setItem("colorMode", "light");
 			updateAccentColorValue();
@@ -628,6 +633,9 @@ function startAnimations() {
 			pushSafariTint();
 			if (typeof window.updateNavOverlayBackground === "function") {
 				window.updateNavOverlayBackground();
+			}
+			if (typeof window.updateGalleryTheme === "function") {
+				window.updateGalleryTheme();
 			}
 			if (typeof window.triggerLoadingScreen === "function") {
 				window.triggerLoadingScreen();

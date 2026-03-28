@@ -1,9 +1,46 @@
 {
   "items": [
     {
-      "filename": "g-007.png",
-      "description": "Example (test) experiment description",
+      "filename": "dandisk.png",
+      "number": "G-007",
+      "description": "DANDISK (ASCII)",
+      "columns": 2
+    },
+    {
+      "filename": "dandroids.jpg",
+      "number": "G-006",
+      "description": "DANDRØIDS (UI)",
       "columns": 4
+    },
+    {
+      "filename": "daas-stickers.png",
+      "number": "G-005",
+      "description": "DaaS (Stickers)",
+      "columns": 4
+    },
+    {
+      "filename": "daas-globe.png",
+      "number": "G-004",
+      "description": "DaaS (Globe)",
+      "columns": 1
+    },
+    {
+      "filename": "daas-poster.jpg",
+      "number": "G-003",
+      "description": "DaaS (Poster)",
+      "columns": 3
+    },
+    {
+      "filename": "departure-mono.png",
+      "number": "G-002",
+      "description": "Departure Mono (Helena Zang)",
+      "columns": 4
+    },
+    {
+      "filename": "acdc.png",
+      "number": "G-001",
+      "description": "DaaS (AC/DC)",
+      "columns": 2
     }
   ]
 }

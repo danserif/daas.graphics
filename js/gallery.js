@@ -6,7 +6,33 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	// Development controls: Temporarily disable JSON loading
 	// Set to true to skip loading graphics.json and experiments.json
-	const DISABLE_JSON_LOADING = true; // Change to false to re-enable
+	const DISABLE_JSON_LOADING = false;
+
+	// Theme-aware images: tracks light variants that 404'd so we don't retry them
+	const lightImageMissing = new Set();
+
+	function getThemedSrc(basePath, filename) {
+		const isLight = document.documentElement.classList.contains("light-mode");
+		if (isLight && !lightImageMissing.has(basePath + filename)) {
+			return basePath + "light/" + filename;
+		}
+		return basePath + "dark/" + filename;
+	}
+
+	// Swap all gallery images to match the current theme
+	window.updateGalleryTheme = function () {
+		document.querySelectorAll("img.work-image[data-base-path][data-filename]").forEach(function (img) {
+			var basePath = img.dataset.basePath;
+			var filename = img.dataset.filename;
+			var newSrc = getThemedSrc(basePath, filename);
+
+			if (img.dataset.src) {
+				img.dataset.src = newSrc;
+			} else if (img.src) {
+				img.src = newSrc;
+			}
+		});
+	};
 
 	// Lazy loading with Intersection Observer
 	function setupLazyLoading() {
@@ -65,21 +91,37 @@ document.addEventListener("DOMContentLoaded", function () {
 		return null;
 	}
 
-	// Create an image element with shared behavior (dataset src, alt, lazy loading, aspect ratio)
-	function createWorkImage(src, altText) {
+	// Create an image element with theme-aware src (dark default, optional light variant)
+	// basePath: e.g. "/images/work/", filename: e.g. "project.jpg"
+	// Resolves to /images/work/dark/project.jpg or /images/work/light/project.jpg
+	function createWorkImage(basePath, filename, altText) {
 		const img = document.createElement("img");
 		img.className = "work-image";
-		img.dataset.src = src;
+		img.dataset.basePath = basePath;
+		img.dataset.filename = filename;
+		img.dataset.src = getThemedSrc(basePath, filename);
 		img.alt = altText || "";
 		img.loading = "lazy";
 
-		// Set aspect ratio from image dimensions
+		// If a light variant 404s, cache the miss and fall back to dark
+		img.addEventListener("error", function () {
+			var bp = this.dataset.basePath;
+			var fn = this.dataset.filename;
+			if (!bp || !fn) return;
+			var darkSrc = bp + "dark/" + fn;
+			if (this.src && !this.src.endsWith(darkSrc)) {
+				lightImageMissing.add(bp + fn);
+				this.src = darkSrc;
+			}
+		});
+
+		// Set aspect ratio from dark image dimensions (canonical size)
 		const tempImg = new Image();
 		tempImg.onload = function () {
 			const aspectRatio = this.naturalWidth / this.naturalHeight;
 			img.style.aspectRatio = aspectRatio.toString();
 		};
-		tempImg.src = src;
+		tempImg.src = basePath + "dark/" + filename;
 
 		return img;
 	}
@@ -157,7 +199,6 @@ document.addEventListener("DOMContentLoaded", function () {
 		const hasLogo = item.logo;
 
 		if (hasImage) {
-			// Alt text: client - description (fallbacks to client, then description, then filename)
 			let altText = "";
 			if (item.client && item.description) {
 				altText = item.client + " - " + item.description;
@@ -168,8 +209,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			} else if (item.filename) {
 				altText = item.filename;
 			}
-			// Graphics images now live in /images/work
-			const img = createWorkImage("/images/work/" + item.filename, altText);
+			const img = createWorkImage("/images/work/", item.filename, altText);
 			workItem.appendChild(img);
 		} else if (hasLogo) {
 			const logoImg = document.createElement("img");
@@ -193,12 +233,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 		if (item.filename || item.logo) {
 			const fileToShow = item.filename || item.logo;
-			// Images live in /images/work, logos in /images/logos
-			const path = item.filename ? "/images/work/" : "/images/logos/";
-
-			// Get file size for images (not logos)
-			const sizeUrl = item.filename ? path + fileToShow : null;
-			buildWorkFilenameLine(path, fileToShow, sizeUrl).then(function (filenameEl) {
+			const displayPath = item.filename ? "/images/work/" : "/images/logos/";
+			const sizeUrl = item.filename ? "/images/work/dark/" + fileToShow : null;
+			buildWorkFilenameLine(displayPath, fileToShow, sizeUrl).then(function (filenameEl) {
 				caption.appendChild(filenameEl);
 			});
 		}
@@ -234,7 +271,6 @@ document.addEventListener("DOMContentLoaded", function () {
 		}
 
 		if (item.filename) {
-			// Alt text: Number - description (fallbacks to number, then description, then filename)
 			let altText = "";
 			const displayNumber = itemNumber ? itemNumber.toUpperCase() : "";
 			if (displayNumber && item.description) {
@@ -247,7 +283,7 @@ document.addEventListener("DOMContentLoaded", function () {
 				altText = item.filename;
 			}
 
-			const img = createWorkImage("/images/lab/" + item.filename, altText);
+			const img = createWorkImage("/images/lab/", item.filename, altText);
 			workItem.appendChild(img);
 		}
 
@@ -267,9 +303,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 		if (item.filename) {
 			const displayName = pathFilename;
-			const basePath = "/images/lab/";
-			const sizeUrl = basePath + item.filename;
-			const filenameEl = await buildWorkFilenameLine(basePath, displayName, sizeUrl);
+			const displayPath = "/images/lab/";
+			const sizeUrl = "/images/lab/dark/" + item.filename;
+			const filenameEl = await buildWorkFilenameLine(displayPath, displayName, sizeUrl);
 			caption.appendChild(filenameEl);
 		}
 
@@ -287,10 +323,10 @@ document.addEventListener("DOMContentLoaded", function () {
 			const icon = sections[i].querySelector(".work-icon");
 			if (icon) {
 				const iconText = icon.textContent.trim();
-				if (sectionType === "graphics" && iconText === "G") {
+				if (sectionType === "graphics" && iconText === "⌘") {
 					section = sections[i];
 					break;
-				} else if (sectionType === "experiments" && iconText === "¶") {
+				} else if (sectionType === "experiments" && iconText === "∑") {
 					section = sections[i];
 					break;
 				}
@@ -435,9 +471,9 @@ document.addEventListener("DOMContentLoaded", function () {
 		}
 	}
 
-	// Initialize both galleries (only if not disabled)
+	// Initialize galleries (only if not disabled)
 	if (!DISABLE_JSON_LOADING) {
-		initWorkGallery("graphics", "/data/graphics.json", renderGraphicsItem);
+		// initWorkGallery("graphics", "/data/graphics.json", renderGraphicsItem);
 		initWorkGallery("experiments", "/data/experiments.json", renderExperimentItem);
 	}
 });
