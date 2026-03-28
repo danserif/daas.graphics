@@ -3191,7 +3191,8 @@ a.plan-panel-cta:hover {
 }
 
 .load-more-button:disabled,
-.load-more-button.hidden {
+.load-more-button.hidden,
+.work-content > .divider.hidden {
 	display: none;
 }
 

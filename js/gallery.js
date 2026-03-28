@@ -355,15 +355,15 @@ document.addEventListener("DOMContentLoaded", function () {
 		grid.className = "work-grid";
 		workContent.appendChild(grid);
 
-		// Create divider before load more button
+		// Create divider before load more button (hidden until we know there are extra items)
 		const divider = document.createElement("hr");
-		divider.className = "divider";
+		divider.className = "divider hidden";
 		workContent.appendChild(divider);
 
 		// Create load more button
 		const loadMoreBtn = document.createElement("button");
 		loadMoreBtn.className = "load-more-button";
-		loadMoreBtn.innerHTML = 'Load More <span class="accent">></span>';
+		loadMoreBtn.innerHTML = 'Load More <span class="accent">+</span>';
 		workContent.appendChild(loadMoreBtn);
 
 		let allItems = [];
@@ -420,11 +420,11 @@ document.addEventListener("DOMContentLoaded", function () {
 					batchCount = calculateDisplayCount(remainingItems, 10); // 1 row × 10 columns
 				}
 
-				if (batchCount === 0) {
-					// Nothing more to show
-					loadMoreBtn.classList.add("hidden");
-					return;
-				}
+			if (batchCount === 0) {
+				loadMoreBtn.classList.add("hidden");
+				divider.classList.add("hidden");
+				return;
+			}
 
 				const batch = remainingItems.slice(0, batchCount);
 
@@ -436,9 +436,9 @@ document.addEventListener("DOMContentLoaded", function () {
 				// Setup lazy loading for new images
 				setupLazyLoading();
 
-				// Hide button if all items are displayed
 				if (displayedCount >= allItems.length) {
 					loadMoreBtn.classList.add("hidden");
+					divider.classList.add("hidden");
 				}
 			}
 
@@ -458,9 +458,11 @@ document.addEventListener("DOMContentLoaded", function () {
 				// Setup lazy loading for new images
 				setupLazyLoading();
 
-				// Hide button if all items are displayed
 				if (displayedCount >= allItems.length) {
 					loadMoreBtn.classList.add("hidden");
+					divider.classList.add("hidden");
+				} else {
+					divider.classList.remove("hidden");
 				}
 			})().catch(function (error) {
 				console.error("Error displaying batch:", error);
