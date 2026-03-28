@@ -103,7 +103,10 @@ document.addEventListener("DOMContentLoaded", function () {
 		img.alt = altText || "";
 		img.loading = "lazy";
 
-		// If a light variant 404s, cache the miss and fall back to dark
+		img.addEventListener("load", function () {
+			this.classList.add("is-loaded");
+		});
+
 		img.addEventListener("error", function () {
 			var bp = this.dataset.basePath;
 			var fn = this.dataset.filename;
