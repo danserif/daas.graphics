@@ -1,6 +1,24 @@
 {
   "items": [
     {
+      "filename": "d-gfx.png",
+      "number": "G-010",
+      "description": "D.OS (GFX)",
+      "columns": 3
+    },
+    {
+      "filename": "operating-system.png",
+      "number": "G-009",
+      "description": "~ $ DAAS_GRAPHICS",
+      "columns": 4
+    },
+    {
+      "filename": "daas-globe-ext.png",
+      "number": "G-008",
+      "description": "DaaS (Globe)",
+      "columns": 3
+    },
+    {
       "filename": "dandisk.png",
       "number": "G-007",
       "description": "DANDISK (ASCII)",
