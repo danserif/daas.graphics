@@ -1,10 +1,28 @@
 {
   "items": [
     {
-      "filename": "axiom-homepage.jpg",
-      "client": "Axiom (2022—2025)",
-      "description": "Homepage montage. ",
-      "columns": 2
+      "filename": "es-logo.png",
+      "client": "Enter Startup (2025—2026)",
+      "description": "Logo + ASCII Maze",
+      "columns": 3
+    },
+    {
+      "filename": "es-cover.png",
+      "client": "ES",
+      "description": "Cover + ASCII Maze",
+      "columns": 3
+    },
+    {
+      "filename": "es-mockup.jpg",
+      "client": "ES",
+      "description": "Book Cover (Mockup) ",
+      "columns": 3
+    },
+    {
+      "filename": "es-mark.png",
+      "client": "ES",
+      "description": "→× (Mark)",
+      "columns": 1
     }
   ]
 }

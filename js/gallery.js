@@ -1,5 +1,5 @@
 // gallery.js
-// Graphics / Clients + Experiments / Lab 
+// Graphics / Clients + Experiments / Lab
 
 document.addEventListener("DOMContentLoaded", function () {
 	const ITEMS_PER_PAGE = 12;
@@ -21,17 +21,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	// Swap all gallery images to match the current theme
 	window.updateGalleryTheme = function () {
-		document.querySelectorAll("img.work-image[data-base-path][data-filename]").forEach(function (img) {
-			var basePath = img.dataset.basePath;
-			var filename = img.dataset.filename;
-			var newSrc = getThemedSrc(basePath, filename);
+		document
+			.querySelectorAll("img.work-image[data-base-path][data-filename]")
+			.forEach(function (img) {
+				var basePath = img.dataset.basePath;
+				var filename = img.dataset.filename;
+				var newSrc = getThemedSrc(basePath, filename);
 
-			if (img.dataset.src) {
-				img.dataset.src = newSrc;
-			} else if (img.src) {
-				img.src = newSrc;
-			}
-		});
+				if (img.dataset.src) {
+					img.dataset.src = newSrc;
+				} else if (img.src) {
+					img.src = newSrc;
+				}
+			});
 	};
 
 	// Lazy loading with Intersection Observer
@@ -51,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			},
 			{
 				rootMargin: "50px",
-			}
+			},
 		);
 
 		document.querySelectorAll("img[data-src]").forEach(function (img) {
@@ -193,6 +195,54 @@ document.addEventListener("DOMContentLoaded", function () {
 		return filename;
 	}
 
+	// Optional work item URL: full href + protocol + remainder for caption display
+	function normalizeWorkLink(link) {
+		if (!link || typeof link !== "string") return null;
+		const t = link.trim();
+		if (!t) return null;
+		let href = t;
+		if (!/^https?:\/\//i.test(t)) {
+			href = "https://" + t;
+		}
+		const m = href.match(/^(https?:\/\/)(.+)$/i);
+		if (!m) return null;
+		return {
+			href: href,
+			protocol: m[1].toLowerCase(),
+			rest: m[2],
+		};
+	}
+
+	// Caption line: muted protocol + url + arrow (clickable)
+	function buildWorkLinkLine(link) {
+		const parsed = normalizeWorkLink(link);
+		if (!parsed) return null;
+
+		const p = document.createElement("p");
+		p.className = "work-link";
+
+		const a = document.createElement("a");
+		a.href = parsed.href;
+		a.target = "_blank";
+		a.rel = "noopener noreferrer";
+
+		const proto = document.createElement("span");
+		proto.className = "opacity-25";
+		proto.textContent = parsed.protocol;
+
+		a.appendChild(proto);
+		a.appendChild(document.createTextNode(" "));
+		a.appendChild(document.createTextNode(parsed.rest));
+
+		const arrow = document.createElement("span");
+		arrow.className = "accent";
+		arrow.textContent = " →";
+		a.appendChild(arrow);
+
+		p.appendChild(a);
+		return p;
+	}
+
 	// Render Graphics/Clients item
 	function renderGraphicsItem(item, container) {
 		const workItem = document.createElement("div");
@@ -201,11 +251,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		const columns = item.columns && [1, 2, 3, 4].includes(item.columns) ? item.columns : 1;
 		workItem.setAttribute("data-columns", columns);
 
-		// Determine if we have image, logo, or both
-		const hasImage = item.filename;
-		const hasLogo = item.logo;
-
-		if (hasImage) {
+		if (item.filename) {
 			let altText = "";
 			if (item.client && item.description) {
 				altText = item.client + " - " + item.description;
@@ -213,19 +259,21 @@ document.addEventListener("DOMContentLoaded", function () {
 				altText = item.client;
 			} else if (item.description) {
 				altText = item.description;
-			} else if (item.filename) {
+			} else {
 				altText = item.filename;
 			}
-			const img = createWorkImage("/images/work/", item.filename, altText);
-			workItem.appendChild(img);
-		} else if (hasLogo) {
-			const logoImg = document.createElement("img");
-			logoImg.className = "work-item-logo";
-			logoImg.src = "/images/logos/" + item.logo;
-			logoImg.alt = item.client || item.logo;
-			// Mark logo-only items so we can style them differently on mobile
-			workItem.classList.add("work-logo-item");
-			workItem.appendChild(logoImg);
+			const frame = createWorkImage("/images/work/", item.filename, altText);
+			const parsedLink = normalizeWorkLink(item.link);
+			if (parsedLink) {
+				const imgA = document.createElement("a");
+				imgA.href = parsedLink.href;
+				imgA.target = "_blank";
+				imgA.rel = "noopener noreferrer";
+				imgA.appendChild(frame);
+				workItem.appendChild(imgA);
+			} else {
+				workItem.appendChild(frame);
+			}
 		}
 
 		// Caption
@@ -238,12 +286,13 @@ document.addEventListener("DOMContentLoaded", function () {
 			caption.appendChild(metaLine);
 		}
 
-		if (item.filename || item.logo) {
-			const fileToShow = item.filename || item.logo;
-			const displayPath = item.filename ? "/images/work/" : "/images/logos/";
-			const sizeUrl = item.filename ? "/images/work/dark/" + fileToShow : null;
-			buildWorkFilenameLine(displayPath, fileToShow, sizeUrl).then(function (filenameEl) {
+		if (item.filename) {
+			const fileToShow = item.filename;
+			const sizeUrl = "/images/work/dark/" + fileToShow;
+			buildWorkFilenameLine("/images/work/", fileToShow, sizeUrl).then(function (filenameEl) {
 				caption.appendChild(filenameEl);
+				const linkEl = buildWorkLinkLine(item.link);
+				if (linkEl) caption.appendChild(linkEl);
 			});
 		}
 
@@ -290,8 +339,18 @@ document.addEventListener("DOMContentLoaded", function () {
 				altText = item.filename;
 			}
 
-			const img = createWorkImage("/images/lab/", item.filename, altText);
-			workItem.appendChild(img);
+			const frame = createWorkImage("/images/lab/", item.filename, altText);
+			const parsedLink = normalizeWorkLink(item.link);
+			if (parsedLink) {
+				const imgA = document.createElement("a");
+				imgA.href = parsedLink.href;
+				imgA.target = "_blank";
+				imgA.rel = "noopener noreferrer";
+				imgA.appendChild(frame);
+				workItem.appendChild(imgA);
+			} else {
+				workItem.appendChild(frame);
+			}
 		}
 
 		// Caption
@@ -302,7 +361,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		const metaLine = buildWorkTextLine(
 			itemNumber ? itemNumber.toUpperCase() : "",
 			item.description,
-			"work-number"
+			"work-number",
 		);
 		if (metaLine && metaLine.childNodes.length > 0) {
 			caption.appendChild(metaLine);
@@ -314,6 +373,8 @@ document.addEventListener("DOMContentLoaded", function () {
 			const sizeUrl = "/images/lab/dark/" + item.filename;
 			const filenameEl = await buildWorkFilenameLine(displayPath, displayName, sizeUrl);
 			caption.appendChild(filenameEl);
+			const linkEl = buildWorkLinkLine(item.link);
+			if (linkEl) caption.appendChild(linkEl);
 		}
 
 		workItem.appendChild(caption);
@@ -370,7 +431,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		// Create load more button
 		const loadMoreBtn = document.createElement("button");
 		loadMoreBtn.className = "load-more-button";
-		loadMoreBtn.innerHTML = 'Load More <span class="accent">+</span>';
+		loadMoreBtn.innerHTML = 'Load More <span class="accent">[+]</span>';
 		workContent.appendChild(loadMoreBtn);
 
 		let allItems = [];
@@ -427,11 +488,11 @@ document.addEventListener("DOMContentLoaded", function () {
 					batchCount = calculateDisplayCount(remainingItems, 10); // 1 row × 10 columns
 				}
 
-			if (batchCount === 0) {
-				loadMoreBtn.classList.add("hidden");
-				divider.classList.add("hidden");
-				return;
-			}
+				if (batchCount === 0) {
+					loadMoreBtn.classList.add("hidden");
+					divider.classList.add("hidden");
+					return;
+				}
 
 				const batch = remainingItems.slice(0, batchCount);
 
@@ -482,8 +543,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	// Initialize galleries (only if not disabled)
 	if (!DISABLE_JSON_LOADING) {
-		// initWorkGallery("graphics", "/data/graphics.json", renderGraphicsItem);
+		initWorkGallery("graphics", "/data/graphics.json", renderGraphicsItem);
 		initWorkGallery("experiments", "/data/experiments.json", renderExperimentItem);
 	}
 });
-

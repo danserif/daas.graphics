@@ -199,6 +199,11 @@ code {
 	font-family: "Departure Mono", monospace;
 }
 
+.mono.small {
+	font-size: 11px;
+	line-height: 16.5px;
+}
+
 /* OPACITY UTILITY CLASSES */
 .opacity-15 {
 	opacity: 0.15;
@@ -3184,6 +3189,15 @@ a.plan-panel-cta:hover {
 	display: block;
 }
 
+.work-link a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.work-link a:hover {
+	opacity: 0.75;
+}
+
 .load-more-button {
 	font-family: "Departure Mono", monospace;
 	font-size: 11px;
@@ -3205,7 +3219,7 @@ a.plan-panel-cta:hover {
 
 .load-more-button:disabled,
 .load-more-button.hidden,
-.work-content > .divider.hidden {
+.work-content>.divider.hidden {
 	display: none;
 }
 
