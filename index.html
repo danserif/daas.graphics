@@ -203,8 +203,9 @@
 		<div class="header-column">
 			<div class="header-sticky-band">
 				<div class="header-row">
-					<h1 class="header-label"><button type="button" class="d-overlay-trigger opacity-50 font-adhesion"
-							aria-label="Show logo" onclick="toggleDOverlay();fathom.trackEvent('D', 0);">D</button> <span
+					<h1 class="header-label"><button type="button" class="d-overlay-trigger font-adhesion" aria-label="Show logo"
+							onclick="toggleDOverlay();fathom.trackEvent('D', 0);"><span class="accent desktop-only">D</span><span
+							class="opacity-50 mobile-only">D</span></button> <span
 							class="opacity-25 label-spacer">//</span> <a href="#top"><span class="opacity-100">DaaS</span> <span
 								class="opacity-50">(Graphics)</span>
 							<span class="opacity-25">~</span> <span class="opacity-75">Dan as a Service</span></a>
@@ -322,10 +323,10 @@
 						<span class="opacity-50 label-spacer">//</span>
 					</p>
 					<button type="button" class="nav-toggle nav-toggle--desktop" aria-label="Open menu" aria-expanded="false"
-						aria-controls="nav-panel">Menu&nbsp;<span class="accent">[>]</span></button>
+						aria-controls="nav-panel">Menu&nbsp;<span class="opacity-50">[>]</span></button>
 				</span>
 			</div>
-			<hr class="divider" />
+			<hr class=" divider" />
 		</div>
 	</header>
 	<!-- LETTER D (OVERLAY) -->
