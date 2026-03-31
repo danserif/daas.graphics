@@ -13,16 +13,16 @@
       "columns": 3
     },
     {
-      "filename": "es-mockup.jpg",
-      "client": "ES",
-      "description": "Book Cover (Mockup) ",
-      "columns": 3
-    },
-    {
       "filename": "es-mark.png",
       "client": "ES",
       "description": "→× (Mark)",
       "columns": 1
+    },
+    {
+      "filename": "es-mockup.jpg",
+      "client": "ES",
+      "description": "Book Cover (Mockup) ",
+      "columns": 3
     }
   ]
 }
