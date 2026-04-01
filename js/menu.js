@@ -2,6 +2,35 @@
 (function () {
 	"use strict";
 
+	function workSectionIntersectsViewport() {
+		var workSection = document.getElementById("work");
+		if (!workSection) return false;
+		var r = workSection.getBoundingClientRect();
+		var vv = window.visualViewport;
+		var vTop = vv ? vv.offsetTop : 0;
+		var vLeft = vv ? vv.offsetLeft : 0;
+		var vh = vv && vv.height ? vv.height : window.innerHeight;
+		var vw = vv && vv.width ? vv.width : window.innerWidth;
+		return (
+			r.bottom > vTop &&
+			r.top < vTop + vh &&
+			r.right > vLeft &&
+			r.left < vLeft + vw
+		);
+	}
+
+	function syncNavBackdropGrayscaleForWork() {
+		var overlay = document.getElementById("nav-overlay");
+		var root = document.documentElement;
+		if (!overlay || !overlay.classList.contains("is-open")) {
+			root.classList.remove("nav-overlay-page-grayscale-over-work");
+			return;
+		}
+		root.classList.toggle("nav-overlay-page-grayscale-over-work", workSectionIntersectsViewport());
+	}
+
+	window.syncNavBackdropGrayscaleForWork = syncNavBackdropGrayscaleForWork;
+
 	function initNavOverlay() {
 		var overlay = document.querySelector("[data-nav-overlay]");
 		var root = document.documentElement;
@@ -192,6 +221,7 @@
 		function finishOpenOverlay(trigger) {
 			setThemeColorForMenu(true);
 			overlay.classList.add("is-open");
+			syncNavBackdropGrayscaleForWork();
 			if (trigger) {
 				trigger.setAttribute("aria-expanded", "true");
 			}
@@ -251,6 +281,7 @@
 			overlay.classList.remove("is-panel-open");
 			if (immediate) {
 				overlay.classList.remove("is-open");
+				syncNavBackdropGrayscaleForWork();
 				setThemeColorForMenu(false);
 				if (overlayTouchMoveHandler) {
 					overlay.removeEventListener("touchmove", overlayTouchMoveHandler);
@@ -273,6 +304,7 @@
 			// Remove overlay and restore theme only after panel has fully slid off (no fade, just delay).
 			setTimeout(function () {
 				overlay.classList.remove("is-open");
+				syncNavBackdropGrayscaleForWork();
 				setThemeColorForMenu(false);
 				if (overlayTouchMoveHandler) {
 					overlay.removeEventListener("touchmove", overlayTouchMoveHandler);
@@ -342,8 +374,15 @@
 			if (overlay.classList.contains("is-open") && isMobileViewport()) {
 				setThemeColorForMenu(true);
 			}
+			syncNavBackdropGrayscaleForWork();
 		};
 
+		window.addEventListener("scroll", syncNavBackdropGrayscaleForWork, { passive: true });
+		window.addEventListener("resize", syncNavBackdropGrayscaleForWork, { passive: true });
+		if (window.visualViewport) {
+			window.visualViewport.addEventListener("resize", syncNavBackdropGrayscaleForWork);
+			window.visualViewport.addEventListener("scroll", syncNavBackdropGrayscaleForWork);
+		}
 	}
 
 	if (document.readyState === "loading") {

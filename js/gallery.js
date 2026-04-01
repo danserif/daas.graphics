@@ -243,6 +243,62 @@ document.addEventListener("DOMContentLoaded", function () {
 		return p;
 	}
 
+	function appendWorkSlashDivider(paragraph) {
+		const slash = document.createElement("span");
+		slash.className = "opacity-25";
+		slash.textContent = " //";
+		paragraph.appendChild(slash);
+	}
+
+	// Full-width section title (graphics.json: type "title")
+	function renderGraphicsTitleItem(item, container) {
+		const wrap = document.createElement("div");
+		wrap.className = "work-grid-title";
+
+		const line = document.createElement("p");
+		line.className = "work-text work-title-line";
+
+		if (item.name) {
+			const nameSpan = document.createElement("span");
+			nameSpan.className = "work-title-name";
+			appendBracketStyledText(item.name, nameSpan);
+			line.appendChild(nameSpan);
+		}
+
+		if (item.date) {
+			if (line.childNodes.length > 0) {
+				line.appendChild(document.createTextNode(" "));
+			}
+			const dateSpan = document.createElement("span");
+			dateSpan.className = "opacity-50";
+			appendBracketStyledText(item.date, dateSpan);
+			line.appendChild(dateSpan);
+		}
+
+		if (item.description) {
+			if (line.childNodes.length > 0) {
+				appendWorkSlashDivider(line);
+			}
+			const descSpan = document.createElement("span");
+			descSpan.className = "work-description";
+			appendBracketStyledText(" " + item.description, descSpan);
+			line.appendChild(descSpan);
+		}
+
+		if (line.childNodes.length > 0) {
+			wrap.appendChild(line);
+		}
+
+		const linkEl = buildWorkLinkLine(item.link);
+		if (linkEl) {
+			wrap.appendChild(linkEl);
+		}
+
+		if (wrap.childNodes.length > 0) {
+			container.appendChild(wrap);
+		}
+	}
+
 	// Render Graphics/Clients item
 	function renderGraphicsItem(item, container) {
 		if (item.divider) {
@@ -253,18 +309,26 @@ document.addEventListener("DOMContentLoaded", function () {
 			return;
 		}
 
+		if (item.type === "title") {
+			renderGraphicsTitleItem(item, container);
+			return;
+		}
+
 		const workItem = document.createElement("div");
 		workItem.className = "work-item";
 		// Allow 1, 2, 3, or 4 columns, default to 1
 		const columns = item.columns && [1, 2, 3, 4].includes(item.columns) ? item.columns : 1;
 		workItem.setAttribute("data-columns", columns);
 
+		const graphicsLabel =
+			item.number != null && item.number !== "" ? String(item.number) : "";
+
 		if (item.filename) {
 			let altText = "";
-			if (item.client && item.description) {
-				altText = item.client + " - " + item.description;
-			} else if (item.client) {
-				altText = item.client;
+			if (graphicsLabel && item.description) {
+				altText = graphicsLabel + " - " + item.description;
+			} else if (graphicsLabel) {
+				altText = graphicsLabel;
 			} else if (item.description) {
 				altText = item.description;
 			} else {
@@ -288,8 +352,8 @@ document.addEventListener("DOMContentLoaded", function () {
 		const caption = document.createElement("div");
 		caption.className = "work-caption";
 
-		// Graphics: name // description
-		const metaLine = buildWorkTextLine(item.client, item.description, "work-client");
+		// Graphics: number // description
+		const metaLine = buildWorkTextLine(graphicsLabel, item.description, "work-number");
 		if (metaLine && metaLine.childNodes.length > 0) {
 			caption.appendChild(metaLine);
 		}
@@ -310,7 +374,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	// Render Experiments/Lab item
 	async function renderExperimentItem(item, container) {
-		if (item.divider) {
+		if (item.divider || item.type === "title") {
 			return;
 		}
 
@@ -457,7 +521,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			// Use JSON array order for both graphics and experiments
 
 			// Calculate how many items fit within a given column budget (maxColumns).
-			// Graphics dividers are included in the slice but do not consume column budget.
+			// Graphics dividers and title rows are included in the slice but do not consume column budget.
 			// Used to cap initial display (2 rows) and each subsequent "Load More" (2 rows) on desktop
 			function calculateDisplayCount(items, maxColumns) {
 				let totalColumns = 0;
@@ -465,7 +529,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 				for (let i = 0; i < items.length; i++) {
 					const item = items[i];
-					if (sectionType === "graphics" && item.divider) {
+					if (sectionType === "graphics" && (item.divider || item.type === "title")) {
 						count++;
 						continue;
 					}
@@ -483,14 +547,14 @@ document.addEventListener("DOMContentLoaded", function () {
 				return count;
 			}
 
-			// Mobile: cap by non-divider "content" slots; dividers in between are included but not counted toward the cap
+			// Mobile: cap by image "content" slots; dividers / title rows in between are included but not counted toward the cap
 			function countMobileBatchItems(items, maxContentItems) {
 				let contentIncluded = 0;
 				let count = 0;
 
 				for (let i = 0; i < items.length; i++) {
 					const item = items[i];
-					if (sectionType === "graphics" && item.divider) {
+					if (sectionType === "graphics" && (item.divider || item.type === "title")) {
 						count++;
 						continue;
 					}
@@ -504,8 +568,12 @@ document.addEventListener("DOMContentLoaded", function () {
 				return count;
 			}
 
-			// Graphics: do not end a batch with a divider row when more items exist after it (defer hr until the next batch).
-			// Final batch (reaches end of list) keeps trailing dividers. If the raw batch is only dividers but more follow, extend the batch until it ends with non-divider.
+			function isGraphicsBatchDeferrableTailItem(item) {
+				return item && (item.divider === true || item.type === "title");
+			}
+
+			// Graphics: do not end a batch with a divider or title row when more items exist after (defer until next batch).
+			// Final batch (reaches end of list) keeps trailing divider/title. If the raw batch is only deferrable rows but more follow, extend until it ends with image/content.
 			function adjustBatchCountForTrailingDividers(remainingItems, rawBatchCount) {
 				if (sectionType !== "graphics" || rawBatchCount === 0) {
 					return rawBatchCount;
@@ -514,12 +582,12 @@ document.addEventListener("DOMContentLoaded", function () {
 					return rawBatchCount;
 				}
 				let n = rawBatchCount;
-				while (n > 0 && remainingItems[n - 1].divider) {
+				while (n > 0 && isGraphicsBatchDeferrableTailItem(remainingItems[n - 1])) {
 					n--;
 				}
 				if (n === 0) {
 					n = rawBatchCount;
-					while (n < remainingItems.length && remainingItems[n - 1].divider) {
+					while (n < remainingItems.length && isGraphicsBatchDeferrableTailItem(remainingItems[n - 1])) {
 						n++;
 					}
 				}

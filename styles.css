@@ -1300,6 +1300,18 @@ h1.header-label {
 	pointer-events: auto;
 }
 
+/* Mute colourful page (e.g. work gallery) behind the backdrop when #work is in view */
+:root.nav-overlay-page-grayscale-over-work body > *:not(#nav-overlay) {
+	filter: grayscale(1);
+	transition: filter 0.25s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	:root.nav-overlay-page-grayscale-over-work body > *:not(#nav-overlay) {
+		transition: none;
+	}
+}
+
 /* Overlay tint per theme */
 :root.light-mode .nav-overlay {
 	background: rgba(255, 255, 255, 0.9);

@@ -324,6 +324,9 @@
 		}
 		overlay.classList.add("is-open");
 		overlay.classList.remove("is-panel-open");
+		if (typeof window.syncNavBackdropGrayscaleForWork === "function") {
+			window.syncNavBackdropGrayscaleForWork();
+		}
 		refs.planPanel.setAttribute("aria-hidden", "false");
 		if (!refs._openedFromNav) {
 			document.body.style.overflow = "hidden";
@@ -332,6 +335,9 @@
 		if (refs.scrollEl) refs.scrollEl.offsetHeight;
 		requestAnimationFrame(function () {
 			overlay.classList.add("is-plan-open");
+			if (typeof window.syncNavBackdropGrayscaleForWork === "function") {
+				window.syncNavBackdropGrayscaleForWork();
+			}
 		});
 		refs.closeBtn.focus();
 	}
@@ -356,6 +362,9 @@
 			overlay.classList.remove("is-open");
 		} else {
 			overlay.classList.add("is-panel-open");
+		}
+		if (typeof window.syncNavBackdropGrayscaleForWork === "function") {
+			window.syncNavBackdropGrayscaleForWork();
 		}
 		var panel = refs.planPanel;
 		function finishClose() {
