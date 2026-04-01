@@ -2,25 +2,25 @@
   "items": [
     {
       "filename": "es-logo.png",
-      "client": "Enter Startup (2025—2026)",
+      "client": "Enter Startup (2026)",
       "description": "Logo + ASCII Maze",
       "columns": 3
     },
     {
       "filename": "es-cover.png",
-      "client": "ES",
+      "client": "ES-2",
       "description": "Cover + ASCII Maze",
       "columns": 3
     },
     {
       "filename": "es-mark.png",
-      "client": "ES",
+      "client": "ES-3",
       "description": "→× (Mark)",
       "columns": 1
     },
     {
       "filename": "es-mockup.jpg",
-      "client": "ES",
+      "client": "ES-4",
       "description": "Book Cover (Mockup) ",
       "columns": 3
     },
@@ -29,8 +29,8 @@
     },
     {
       "filename": "ax-logs.png",
-      "client": "AX",
-      "description": "Logs. Loooooogs. Looooooooooooogs.",
+      "client": "AX-1",
+      "description": "Logs. Loooogs. Looooooooooooogs.",
       "columns": 1
     },
     {
@@ -41,75 +41,156 @@
     },
     {
       "filename": "ax-blog-elements.png",
-      "client": "AX",
+      "client": "AX-3",
       "description": "Blog – Illustration (Elements) ",
       "columns": 2
     },
     {
       "filename": "ax-collateral.png",
-      "client": "AX",
-      "description": "Marketing & Sales Collateral (A4/Letter)",
+      "client": "AX-4",
+      "description": "Sales Collateral (A4/Letter)",
       "columns": 2
     },
     {
       "filename": "ax-dashboard.png",
-      "client": "AX",
+      "client": "AX-5",
       "description": "Dashboard (ASCII) ",
       "columns": 2
     },
     {
       "filename": "ax-tshirts.jpg",
-      "client": "AX",
+      "client": "AX-6",
       "description": "T-Shirts (AX-02)",
       "columns": 3
     },
     {
       "filename": "ax-blog-post.png",
-      "client": "AX",
+      "client": "AX-7",
       "description": "Blog – Post (Monitoring)",
       "columns": 2
     },
     {
       "filename": "ax-invite.png",
-      "client": "AX",
+      "client": "AX-8",
       "description": "Axiom + AWS (Party Invite)",
       "columns": 2
     },
     {
       "filename": "ax-design-system.png",
-      "client": "AX",
+      "client": "AX-9",
       "description": "Axe (Design System)",
       "columns": 3
     },
     {
       "filename": "ax-calculator.png",
-      "client": "AX",
+      "client": "AX-10",
       "description": "Savings Calculator",
       "columns": 2
     },
     {
       "filename": "ax-skateboard.jpg",
-      "client": "AX",
+      "client": "AX-11",
       "description": "Skateboard (SK8-02)",
       "columns": 2
     },
     {
       "filename": "ax-advertisement.png",
-      "client": "AX",
+      "client": "AX-12",
       "description": "THIS IS AN AXIOM AD → → →",
       "columns": 2
     },
     {
       "filename": "ax-cards.jpg",
-      "client": "AX",
+      "client": "AX-13",
       "description": "Business Cards",
       "columns": 2
     },
     {
       "filename": "ax-blog-compliance.png",
-      "client": "AX",
+      "client": "AX-14",
       "description": "Blog – Illustration (Compliance)",
       "columns": 2
+    },
+    {
+      "divider": true
+    },
+    {
+      "filename": "k-mobile-montage.png",
+      "client": "Klim Type Foundry (2020)",
+      "description": "Mobile (Montage)",
+      "columns": 3
+    },
+    {
+      "filename": "k-soehne-specimen.png",
+      "client": "K-2",
+      "description": "Söhne (Specimen)",
+      "columns": 2
+    },
+    {
+      "filename": "k-soehne-grid.png",
+      "client": "K-3",
+      "description": "Josef Müller-Brockmann (Homage)",
+      "columns": 2
+    },
+    {
+      "filename": "k-untitled-serif.png",
+      "client": "K-4",
+      "description": "Untitled Serif (Cart)",
+      "columns": 3
+    },
+    {
+      "filename": "k-untitled-sans.png",
+      "client": "K-5",
+      "description": "Untitled Sans (Specimen)",
+      "columns": 2
+    },
+    {
+      "filename": "k-homepage.png",
+      "client": "K-6",
+      "description": "Homepage (Montage)",
+      "columns": 2
+    },
+    {
+      "filename": "k-financier-specimen.png",
+      "client": "K-7",
+      "description": "Financier Display (Specimen)",
+      "columns": 2
+    },
+    {
+      "filename": "k-financier-glyphs.png",
+      "client": "K-8",
+      "description": "Financier Display (Glyphs)",
+      "columns": 2
+    },
+    {
+      "filename": "k-blog.png",
+      "client": "K-9",
+      "description": "70,471 words about letters...",
+      "columns": 2
+    },
+    {
+      "filename": "k-heldane-text.png",
+      "client": "K-10",
+      "description": "Heldane Text (Cart)",
+      "columns": 3
+    },
+    {
+      "filename": "k-heldane-display.png",
+      "client": "K-11",
+      "description": "Heldane Display (Specimen)",
+      "columns": 2
+    },
+    {
+      "filename": "k-fonts-in-use.png",
+      "client": "K-12",
+      "description": "Fonts In Use (FIU)",
+      "columns": 2
+    },
+    {
+      "filename": "k-custom-fonts.png",
+      "client": "K-13",
+      "description": "Custom Fonts (Menu)",
+      "columns": 3
     }
   ]
 }
