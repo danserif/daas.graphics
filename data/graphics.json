@@ -23,6 +23,93 @@
       "client": "ES",
       "description": "Book Cover (Mockup) ",
       "columns": 3
+    },
+    {
+      "divider": true
+    },
+    {
+      "filename": "ax-logs.png",
+      "client": "AX",
+      "description": "Logs. Loooooogs. Looooooooooooogs.",
+      "columns": 1
+    },
+    {
+      "filename": "ax-homepage.png",
+      "client": "Axiom (2022—2025)",
+      "description": "feat: homepage",
+      "columns": 3
+    },
+    {
+      "filename": "ax-blog-elements.png",
+      "client": "AX",
+      "description": "Blog – Illustration (Elements) ",
+      "columns": 2
+    },
+    {
+      "filename": "ax-collateral.png",
+      "client": "AX",
+      "description": "Marketing & Sales Collateral (A4/Letter)",
+      "columns": 2
+    },
+    {
+      "filename": "ax-dashboard.png",
+      "client": "AX",
+      "description": "Dashboard (ASCII) ",
+      "columns": 2
+    },
+    {
+      "filename": "ax-tshirts.jpg",
+      "client": "AX",
+      "description": "T-Shirts (AX-02)",
+      "columns": 3
+    },
+    {
+      "filename": "ax-blog-post.png",
+      "client": "AX",
+      "description": "Blog – Post (Monitoring)",
+      "columns": 2
+    },
+    {
+      "filename": "ax-invite.png",
+      "client": "AX",
+      "description": "Axiom + AWS (Party Invite)",
+      "columns": 2
+    },
+    {
+      "filename": "ax-design-system.png",
+      "client": "AX",
+      "description": "Axe (Design System)",
+      "columns": 3
+    },
+    {
+      "filename": "ax-calculator.png",
+      "client": "AX",
+      "description": "Savings Calculator",
+      "columns": 2
+    },
+    {
+      "filename": "ax-skateboard.jpg",
+      "client": "AX",
+      "description": "Skateboard (SK8-02)",
+      "columns": 2
+    },
+    {
+      "filename": "ax-advertisement.png",
+      "client": "AX",
+      "description": "THIS IS AN AXIOM AD → → →",
+      "columns": 2
+    },
+    {
+      "filename": "ax-cards.jpg",
+      "client": "AX",
+      "description": "Business Cards",
+      "columns": 2
+    },
+    {
+      "filename": "ax-blog-compliance.png",
+      "client": "AX",
+      "description": "Blog – Illustration (Compliance)",
+      "columns": 2
     }
   ]
 }
