@@ -235,7 +235,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		a.appendChild(document.createTextNode(parsed.rest));
 
 		const arrow = document.createElement("span");
-		arrow.className = "accent";
+		arrow.className = "opacity-50";
 		arrow.textContent = " →";
 		a.appendChild(arrow);
 
@@ -245,6 +245,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	// Render Graphics/Clients item
 	function renderGraphicsItem(item, container) {
+		if (item.divider) {
+			const hr = document.createElement("hr");
+			hr.className = "divider work-grid-divider";
+			hr.setAttribute("aria-hidden", "true");
+			container.appendChild(hr);
+			return;
+		}
+
 		const workItem = document.createElement("div");
 		workItem.className = "work-item";
 		// Allow 1, 2, 3, or 4 columns, default to 1
@@ -302,6 +310,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	// Render Experiments/Lab item
 	async function renderExperimentItem(item, container) {
+		if (item.divider) {
+			return;
+		}
+
 		const workItem = document.createElement("div");
 		workItem.className = "work-item";
 		// Allow 1, 2, 3, or 4 columns, default to 2
@@ -431,7 +443,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		// Create load more button
 		const loadMoreBtn = document.createElement("button");
 		loadMoreBtn.className = "load-more-button";
-		loadMoreBtn.innerHTML = 'Load More <span class="accent">[+]</span>';
+		loadMoreBtn.innerHTML = 'Load More <span class="opacity-50">[+]</span>';
 		workContent.appendChild(loadMoreBtn);
 
 		let allItems = [];
@@ -444,14 +456,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
 			// Use JSON array order for both graphics and experiments
 
-			// Calculate how many items fit within a given column budget (maxColumns)
-			// Used to cap initial display (2 rows) and each subsequent "Load More" row (1 row) on desktop
+			// Calculate how many items fit within a given column budget (maxColumns).
+			// Graphics dividers are included in the slice but do not consume column budget.
+			// Used to cap initial display (2 rows) and each subsequent "Load More" (2 rows) on desktop
 			function calculateDisplayCount(items, maxColumns) {
 				let totalColumns = 0;
 				let count = 0;
 
 				for (let i = 0; i < items.length; i++) {
 					const item = items[i];
+					if (sectionType === "graphics" && item.divider) {
+						count++;
+						continue;
+					}
+
 					const itemColumns = item.columns || (sectionType === "experiments" ? 2 : 1);
 
 					if (totalColumns + itemColumns <= maxColumns) {
@@ -465,27 +483,48 @@ document.addEventListener("DOMContentLoaded", function () {
 				return count;
 			}
 
-			// Detect mobile layout (single-column work grid)
-			const isMobile = window.matchMedia("(max-width: 980px)").matches;
+			// Mobile: cap by non-divider "content" slots; dividers in between are included but not counted toward the cap
+			function countMobileBatchItems(items, maxContentItems) {
+				let contentIncluded = 0;
+				let count = 0;
+
+				for (let i = 0; i < items.length; i++) {
+					const item = items[i];
+					if (sectionType === "graphics" && item.divider) {
+						count++;
+						continue;
+					}
+					if (contentIncluded >= maxContentItems) {
+						break;
+					}
+					contentIncluded++;
+					count++;
+				}
+
+				return count;
+			}
+
+			// Detect mobile layout (single-column work grid; matches CSS max-width: 1080px)
+			const isMobile = window.matchMedia("(max-width: 1080px)").matches;
 
 			// Initial display:
 			// - Desktop: max 2 rows (20 columns at largest breakpoint)
-			// - Mobile: max 4 items
+			// - Mobile: max 4 content items (+ graphics dividers in the same slice)
 			const initialDisplayCount = isMobile
-				? Math.min(4, allItems.length)
+				? countMobileBatchItems(allItems, 4)
 				: calculateDisplayCount(allItems, 20);
 
 			async function displayNextBatch() {
 				const remainingItems = allItems.slice(displayedCount);
 
 				// Each click:
-				// - Desktop: loads approximately one additional row (10 columns)
-				// - Mobile: loads 2 more items
+				// - Desktop: ~2 additional rows (20 columns)
+				// - Mobile: 4 more content items (+ dividers in the same slice)
 				let batchCount;
 				if (isMobile) {
-					batchCount = Math.min(2, remainingItems.length);
+					batchCount = countMobileBatchItems(remainingItems, 4);
 				} else {
-					batchCount = calculateDisplayCount(remainingItems, 10); // 1 row × 10 columns
+					batchCount = calculateDisplayCount(remainingItems, 20);
 				}
 
 				if (batchCount === 0) {

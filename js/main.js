@@ -1709,9 +1709,43 @@ initAfterLoading();
 	var idleTimer = null;
 	var lastActivity = Date.now();
 	var openedByIdle = false;
+	/* Must match .d-overlay { transition: opacity … } — keep letter colour until fade finishes */
+	var D_OVERLAY_FADE_MS = 350;
+	var overWorkClassClearTimer = null;
 
 	function isVisible() {
 		return o.classList.contains("is-visible");
+	}
+
+	function updateDOverlayOverWork() {
+		if (!isVisible()) {
+			return;
+		}
+		var workSection = document.getElementById("work");
+		if (!workSection) {
+			o.classList.remove("d-overlay--over-work");
+			return;
+		}
+		var r = workSection.getBoundingClientRect();
+		var vv = window.visualViewport;
+		var vTop = vv ? vv.offsetTop : 0;
+		var vLeft = vv ? vv.offsetLeft : 0;
+		var vh = vv && vv.height ? vv.height : window.innerHeight;
+		var vw = vv && vv.width ? vv.width : window.innerWidth;
+		var intersects =
+			r.bottom > vTop &&
+			r.top < vTop + vh &&
+			r.right > vLeft &&
+			r.left < vLeft + vw;
+		o.classList.toggle("d-overlay--over-work", intersects);
+	}
+
+	/* Idle / tab-wake opens run from a timer; layout + visual viewport can lag one frame. */
+	function scheduleDOverlayOverWorkRecheck() {
+		setTimeout(updateDOverlayOverWork, 0);
+		requestAnimationFrame(function () {
+			requestAnimationFrame(updateDOverlayOverWork);
+		});
 	}
 
 	function faceOverlayOpen() {
@@ -1721,6 +1755,10 @@ initAfterLoading();
 
 	function show(fromIdle) {
 		if (isVisible()) return;
+		if (overWorkClassClearTimer) {
+			clearTimeout(overWorkClassClearTimer);
+			overWorkClassClearTimer = null;
+		}
 		if (fromIdle && faceOverlayOpen()) {
 			startTimer();
 			return;
@@ -1728,6 +1766,10 @@ initAfterLoading();
 		openedByIdle = !!fromIdle;
 		o.classList.add("is-visible");
 		o.setAttribute("aria-hidden", "false");
+		updateDOverlayOverWork();
+		if (fromIdle) {
+			scheduleDOverlayOverWorkRecheck();
+		}
 	}
 
 	function hide() {
@@ -1735,6 +1777,13 @@ initAfterLoading();
 		openedByIdle = false;
 		o.classList.remove("is-visible");
 		o.setAttribute("aria-hidden", "true");
+		if (overWorkClassClearTimer) {
+			clearTimeout(overWorkClassClearTimer);
+		}
+		overWorkClassClearTimer = setTimeout(function () {
+			overWorkClassClearTimer = null;
+			o.classList.remove("d-overlay--over-work");
+		}, D_OVERLAY_FADE_MS);
 	}
 
 	function startTimer() {
@@ -1762,6 +1811,9 @@ initAfterLoading();
 	activityEvents.forEach(function (evt) {
 		document.addEventListener(evt, onActivity, { passive: true });
 	});
+
+	window.addEventListener("scroll", updateDOverlayOverWork, { passive: true });
+	window.addEventListener("resize", updateDOverlayOverWork, { passive: true });
 
 	document.addEventListener("click", function (e) {
 		if (e.target.closest(".d-overlay.is-visible")) {
@@ -1824,6 +1876,30 @@ initAfterLoading();
 		return overlay.classList.contains("is-visible");
 	}
 
+	function updateFaceOverlayOverWork() {
+		var workSection = document.getElementById("work");
+		if (!workSection) {
+			overlay.classList.remove("face-overlay--over-work");
+			return;
+		}
+		if (!isVisible()) {
+			overlay.classList.remove("face-overlay--over-work");
+			return;
+		}
+		var r = workSection.getBoundingClientRect();
+		var vv = window.visualViewport;
+		var vTop = vv ? vv.offsetTop : 0;
+		var vLeft = vv ? vv.offsetLeft : 0;
+		var vh = vv && vv.height ? vv.height : window.innerHeight;
+		var vw = vv && vv.width ? vv.width : window.innerWidth;
+		var intersects =
+			r.bottom > vTop &&
+			r.top < vTop + vh &&
+			r.right > vLeft &&
+			r.left < vLeft + vw;
+		overlay.classList.toggle("face-overlay--over-work", intersects);
+	}
+
 	function rectsOverlap(a, b) {
 		return a.x < b.x + b.s && a.x + a.s > b.x && a.y < b.y + b.s && a.y + a.s > b.y;
 	}
@@ -1877,11 +1953,13 @@ initAfterLoading();
 		populate();
 		overlay.classList.add("is-visible");
 		overlay.setAttribute("aria-hidden", "false");
+		updateFaceOverlayOverWork();
 	}
 
 	function hide() {
 		if (!isVisible()) return;
 		overlay.classList.remove("is-visible");
+		overlay.classList.remove("face-overlay--over-work");
 		overlay.setAttribute("aria-hidden", "true");
 	}
 
@@ -1909,4 +1987,7 @@ initAfterLoading();
 		if (isVisible()) hide();
 		else show();
 	};
+
+	window.addEventListener("scroll", updateFaceOverlayOverWork, { passive: true });
+	window.addEventListener("resize", updateFaceOverlayOverWork, { passive: true });
 })();
