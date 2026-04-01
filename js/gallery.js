@@ -93,10 +93,30 @@ document.addEventListener("DOMContentLoaded", function () {
 		return null;
 	}
 
+	// Canonical dimensions from dark/ (same pixel size as light/ per site convention)
+	function probeWorkImageAspectRatio(basePath, filename) {
+		return new Promise(function (resolve) {
+			const probe = new Image();
+			probe.onload = function () {
+				if (this.naturalWidth > 0 && this.naturalHeight > 0) {
+					resolve(this.naturalWidth / this.naturalHeight);
+				} else {
+					resolve(null);
+				}
+			};
+			probe.onerror = function () {
+				resolve(null);
+			};
+			probe.src = basePath + "dark/" + filename;
+		});
+	}
+
 	// Create an image element with theme-aware src (dark default, optional light variant)
 	// basePath: e.g. "/images/work/", filename: e.g. "project.jpg"
-	// Resolves to /images/work/dark/project.jpg or /images/work/light/project.jpg
-	function createWorkImage(basePath, filename, altText) {
+	// Awaits dark/ probe so aspect-ratio is set before the frame enters the DOM (avoids wrong placeholder ratio on Load more).
+	async function createWorkImage(basePath, filename, altText) {
+		const aspectRatio = await probeWorkImageAspectRatio(basePath, filename);
+
 		const frame = document.createElement("div");
 		frame.className = "work-image-frame";
 
@@ -107,6 +127,10 @@ document.addEventListener("DOMContentLoaded", function () {
 		img.dataset.src = getThemedSrc(basePath, filename);
 		img.alt = altText || "";
 		img.loading = "lazy";
+
+		if (aspectRatio != null) {
+			img.style.aspectRatio = String(aspectRatio);
+		}
 
 		img.addEventListener("load", function () {
 			this.classList.add("is-loaded");
@@ -122,14 +146,6 @@ document.addEventListener("DOMContentLoaded", function () {
 				this.src = darkSrc;
 			}
 		});
-
-		// Set aspect ratio from dark image dimensions (canonical size)
-		const tempImg = new Image();
-		tempImg.onload = function () {
-			const aspectRatio = this.naturalWidth / this.naturalHeight;
-			img.style.aspectRatio = aspectRatio.toString();
-		};
-		tempImg.src = basePath + "dark/" + filename;
 
 		frame.appendChild(img);
 		return frame;
@@ -300,7 +316,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	}
 
 	// Render Graphics/Clients item
-	function renderGraphicsItem(item, container) {
+	async function renderGraphicsItem(item, container) {
 		if (item.divider) {
 			const hr = document.createElement("hr");
 			hr.className = "divider work-grid-divider";
@@ -334,7 +350,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			} else {
 				altText = item.filename;
 			}
-			const frame = createWorkImage("/images/work/", item.filename, altText);
+			const frame = await createWorkImage("/images/work/", item.filename, altText);
 			const parsedLink = normalizeWorkLink(item.link);
 			if (parsedLink) {
 				const imgA = document.createElement("a");
@@ -415,7 +431,7 @@ document.addEventListener("DOMContentLoaded", function () {
 				altText = item.filename;
 			}
 
-			const frame = createWorkImage("/images/lab/", item.filename, altText);
+			const frame = await createWorkImage("/images/lab/", item.filename, altText);
 			const parsedLink = normalizeWorkLink(item.link);
 			if (parsedLink) {
 				const imgA = document.createElement("a");
@@ -522,7 +538,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 			// Calculate how many items fit within a given column budget (maxColumns).
 			// Graphics dividers and title rows are included in the slice but do not consume column budget.
-			// Used to cap initial display (2 rows) and each subsequent "Load More" (2 rows) on desktop
+			// Used to cap initial display (2 rows) and "Load more" batches on desktop (separate larger budget per click below)
 			function calculateDisplayCount(items, maxColumns) {
 				let totalColumns = 0;
 				let count = 0;
@@ -608,14 +624,12 @@ document.addEventListener("DOMContentLoaded", function () {
 			async function displayNextBatch() {
 				const remainingItems = allItems.slice(displayedCount);
 
-				// Each click:
-				// - Desktop: ~2 additional rows (20 columns)
-				// - Mobile: 4 more content items (+ dividers in the same slice)
+				// Each click: larger batch than initial paint (desktop ~4 rows, mobile 8 tiles)
 				let rawBatchCount;
 				if (isMobile) {
-					rawBatchCount = countMobileBatchItems(remainingItems, 4);
+					rawBatchCount = countMobileBatchItems(remainingItems, 8);
 				} else {
-					rawBatchCount = calculateDisplayCount(remainingItems, 20);
+					rawBatchCount = calculateDisplayCount(remainingItems, 40);
 				}
 				const batchCount = adjustBatchCountForTrailingDividers(remainingItems, rawBatchCount);
 
