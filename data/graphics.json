@@ -4,19 +4,19 @@
       "type": "title",
       "name": "Loophole Labs, Inc.",
       "date": "(2025-Present)",
-      "description": "Logos, branding, illustrations, landing pages, product, and a design system for a new infrastructure startup."
-    },
-    {
-      "filename": "ll-c-mark.png",
-      "number": "LL-01",
-      "description": "{∞} (Company Mark)",
-      "columns": 1
+      "description": "Logos, branding, illustrations, landing pages, product, and design system for a new infrastructure startup."
     },
     {
       "filename": "ll-c-mark-specification.png",
-      "number": "LL-02",
+      "number": "LL-01",
       "description": "Loophole Labs (Mark Specification)",
       "columns": 3
+    },
+    {
+      "filename": "ll-c-mark.png",
+      "number": "LL-02",
+      "description": "{∞} (Mark)",
+      "columns": 1
     },
     {
       "filename": "ll-tote-bag.jpg",
@@ -49,16 +49,15 @@
       "columns": 2
     },
     {
-      "filename": "ll-p-mark.png",
-      "number": "LL-08",
-      "description": "/~\\ (Company Mark)",
-      "columns": 1
-    },
-    {
       "filename": "ll-p-mark-specification.png",
-      "number": "LL-09",
+      "number": "LL-08",
       "description": "Architect (Mark Specification)",
       "columns": 3
+    },
+    {
+      "filename": "ll-p-mark.png",
+      "number": "LL-09",
+      "description": "/~\\ (Mark)"
     },
     {
       "filename": "ll-blog-migrations.png",
@@ -130,7 +129,7 @@
       "type": "title",
       "name": "Axiom, Inc.",
       "date": "(2022—2025)",
-      "description": "Website, branding, ads, diagrams, swag, and a design system for a logging and observability platform."
+      "description": "Website, branding, ads, diagrams, swag, and design system for a logging and observability platform."
     },
     {
       "filename": "ax-logs.png",
