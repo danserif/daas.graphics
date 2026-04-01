@@ -60,19 +60,19 @@
     {
       "filename": "ax-blog-elements.png",
       "number": "AX-03",
-      "description": "Blog – Illustration (Elements) ",
+      "description": "Blog Illustration (Elements) ",
       "columns": 2
     },
     {
       "filename": "ax-collateral.png",
       "number": "AX-04",
-      "description": "Sales Collateral (A4/Letter)",
+      "description": "Sales & Marketing (Collateral)",
       "columns": 2
     },
     {
       "filename": "ax-dashboard.png",
       "number": "AX-05",
-      "description": "Dashboard (ASCII) ",
+      "description": "Diagram (Dashboard) ",
       "columns": 2
     },
     {
@@ -84,7 +84,7 @@
     {
       "filename": "ax-blog-post.png",
       "number": "AX-07",
-      "description": "Blog – Post (Monitoring)",
+      "description": "Blog Post (Monitoring)",
       "columns": 2
     },
     {
@@ -126,7 +126,7 @@
     {
       "filename": "ax-blog-compliance.png",
       "number": "AX-14",
-      "description": "Blog – Illustration (Compliance)",
+      "description": "Blog Illustration (Compliance)",
       "columns": 2
     },
     {
