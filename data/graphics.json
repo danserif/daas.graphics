@@ -4,19 +4,19 @@
       "type": "title",
       "name": "Loophole Labs, Inc.",
       "date": "(2025-Present)",
-      "description": "Logos, branding, illustrations, landing pages, product, and design system for a new infrastructure startup."
-    },
-    {
-      "filename": "ll-c-mark-specification.png",
-      "number": "LL-01",
-      "description": "Loophole Labs (Mark Specification)",
-      "columns": 3
+      "description": "Branding, logos, illustrations, landing pages, product, and design system for a new infrastructure startup."
     },
     {
       "filename": "ll-c-mark.png",
-      "number": "LL-02",
+      "number": "LL-01",
       "description": "{∞} (Mark)",
       "columns": 1
+    },
+    {
+      "filename": "ll-c-mark-specification.png",
+      "number": "LL-02",
+      "description": "Company: Loophole Labs (Mark Specification)",
+      "columns": 3
     },
     {
       "filename": "ll-tote-bag.jpg",
@@ -49,15 +49,15 @@
       "columns": 2
     },
     {
-      "filename": "ll-p-mark-specification.png",
+      "filename": "ll-p-mark.png",
       "number": "LL-08",
-      "description": "Architect (Mark Specification)",
-      "columns": 3
+      "description": "/~\\ (Mark)"
     },
     {
-      "filename": "ll-p-mark.png",
+      "filename": "ll-p-mark-specification.png",
       "number": "LL-09",
-      "description": "/~\\ (Mark)"
+      "description": "Product: Architect (Mark Specification)",
+      "columns": 3
     },
     {
       "filename": "ll-blog-migrations.png",
@@ -90,7 +90,7 @@
       "type": "title",
       "name": "Enter Startup",
       "date": "(2026)",
-      "description": "Brand, ASCII maze, and cover design for a new startup book."
+      "description": "Branding, logos, illustrations, ASCII maze, and cover design for a new startup book, community, and training program."
     },
     {
       "filename": "es-logo.png",
@@ -129,7 +129,7 @@
       "type": "title",
       "name": "Axiom, Inc.",
       "date": "(2022—2025)",
-      "description": "Website, branding, ads, diagrams, swag, and design system for a logging and observability platform."
+      "description": "Website, branding, ads, diagrams, illustrations, swag, and design system for a logging and observability platform."
     },
     {
       "filename": "ax-logs.png",
@@ -222,7 +222,7 @@
       "type": "title",
       "name": "Klim Type Foundry",
       "date": "(2018-2020)",
-      "description": "Award winning website design and direction for a renowned type foundry."
+      "description": "Design and creative direction of a custom ecommerce website, specimen builder, blog, fonts in use gallery, glyph inspector, and type tester for a renowned foundry."
     },
     {
       "filename": "k-mobile-montage.png",
