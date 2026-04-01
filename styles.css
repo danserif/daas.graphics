@@ -3121,9 +3121,12 @@ a.plan-panel-cta:hover {
 /* Full-width section title (graphics.json type "title") */
 .work-grid-title {
 	grid-column: 1 / -1;
+	justify-self: start;
+	width: 100%;
+	max-width: 530px;
 	font-family: "Departure Mono", monospace;
 	font-size: 11px;
-	line-height: 1.5;
+	line-height: 1.65;
 	color: var(--color-text);
 	margin: 0;
 	display: flex;
@@ -3133,6 +3136,11 @@ a.plan-panel-cta:hover {
 
 .work-grid-title .work-title-line {
 	margin: 0;
+	line-height: 1.65;
+}
+
+.work-grid-title .work-link {
+	line-height: 1.65;
 }
 
 .work-grid-title .work-title-name {
