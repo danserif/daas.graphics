@@ -1,32 +1,38 @@
 {
   "items": [
     {
+      "type": "title",
+      "name": "Enter Startup",
+      "date": "(2026)",
+      "description": "Brand, ASCII maze, and cover design for a new startup book."
+    },
+    {
       "filename": "es-logo.png",
-      "client": "Enter Startup (2026)",
-      "description": "Logo + ASCII Maze",
+      "number": "ES-01",
+      "description": "Logo + ASCII Maze (S)",
       "columns": 2
     },
     {
       "filename": "es-mark.png",
-      "client": "ES-2",
+      "number": "ES-02",
       "description": "→× (Mark)",
       "columns": 1
     },
     {
       "filename": "es-cover.png",
-      "client": "ES-3",
-      "description": "Cover + ASCII Maze",
+      "number": "ES-03",
+      "description": "Cover + ASCII Maze (L)",
       "columns": 2
     },
     {
       "filename": "es-logotype.png",
-      "client": "ES-4",
-      "description": "Logotype",
+      "number": "ES-04",
+      "description": "→× (Logotype)",
       "columns": 2
     },
     {
       "filename": "es-mockup.jpg",
-      "client": "ES-5",
+      "number": "ES-05",
       "description": "Book Cover (Mockup) ",
       "columns": 3
     },
@@ -34,86 +40,92 @@
       "divider": true
     },
     {
+      "type": "title",
+      "name": "Axiom, Inc.",
+      "date": "(2022—2025)",
+      "description": "Website, branding, ads, diagrams, swag, and design system for a logging and observability platform."
+    },
+    {
       "filename": "ax-logs.png",
-      "client": "AX-1",
-      "description": "Logs. Loooogs. Looooooooooooogs.",
+      "number": "AX-01",
+      "description": "Logs. Looogs. Looooooooooogs. (Ad)",
       "columns": 1
     },
     {
       "filename": "ax-homepage.png",
-      "client": "Axiom (2022—2025)",
+      "number": "AX-02",
       "description": "feat: homepage",
       "columns": 3
     },
     {
       "filename": "ax-blog-elements.png",
-      "client": "AX-3",
+      "number": "AX-03",
       "description": "Blog – Illustration (Elements) ",
       "columns": 2
     },
     {
       "filename": "ax-collateral.png",
-      "client": "AX-4",
+      "number": "AX-04",
       "description": "Sales Collateral (A4/Letter)",
       "columns": 2
     },
     {
       "filename": "ax-dashboard.png",
-      "client": "AX-5",
+      "number": "AX-05",
       "description": "Dashboard (ASCII) ",
       "columns": 2
     },
     {
       "filename": "ax-tshirts.jpg",
-      "client": "AX-6",
+      "number": "AX-06",
       "description": "T-Shirts (AX-02)",
       "columns": 3
     },
     {
       "filename": "ax-blog-post.png",
-      "client": "AX-7",
+      "number": "AX-07",
       "description": "Blog – Post (Monitoring)",
       "columns": 2
     },
     {
       "filename": "ax-invite.png",
-      "client": "AX-8",
+      "number": "AX-08",
       "description": "Axiom + AWS (Party Invite)",
       "columns": 2
     },
     {
       "filename": "ax-design-system.png",
-      "client": "AX-9",
+      "number": "AX-9",
       "description": "Axe (Design System)",
       "columns": 3
     },
     {
       "filename": "ax-calculator.png",
-      "client": "AX-10",
+      "number": "AX-10",
       "description": "Savings Calculator",
       "columns": 2
     },
     {
       "filename": "ax-skateboard.jpg",
-      "client": "AX-11",
+      "number": "AX-11",
       "description": "Skateboard (SK8-02)",
       "columns": 2
     },
     {
       "filename": "ax-advertisement.png",
-      "client": "AX-12",
+      "number": "AX-12",
       "description": "THIS IS AN AXIOM AD → → →",
       "columns": 2
     },
     {
       "filename": "ax-cards.jpg",
-      "client": "AX-13",
+      "number": "AX-13",
       "description": "Business Cards",
       "columns": 2
     },
     {
       "filename": "ax-blog-compliance.png",
-      "client": "AX-14",
+      "number": "AX-14",
       "description": "Blog – Illustration (Compliance)",
       "columns": 2
     },
@@ -121,80 +133,86 @@
       "divider": true
     },
     {
+      "type": "title",
+      "name": "Klim Type Foundry",
+      "date": "(2018-2020)",
+      "description": "Award winning website design and direction for a renowned type foundry."
+    },
+    {
       "filename": "k-mobile-montage.png",
-      "client": "Klim Type Foundry (2020)",
+      "number": "K-01",
       "description": "Mobile (Montage)",
       "columns": 3
     },
     {
       "filename": "k-soehne-specimen.png",
-      "client": "K-2",
+      "number": "K-02",
       "description": "Söhne (Specimen)",
       "columns": 2
     },
     {
       "filename": "k-soehne-grid.png",
-      "client": "K-3",
+      "number": "K-03",
       "description": "Josef Müller-Brockmann (Homage)",
       "columns": 2
     },
     {
       "filename": "k-untitled-serif.png",
-      "client": "K-4",
+      "number": "K-04",
       "description": "Untitled Serif (Cart)",
       "columns": 3
     },
     {
       "filename": "k-untitled-sans.png",
-      "client": "K-5",
+      "number": "K-05",
       "description": "Untitled Sans (Specimen)",
       "columns": 2
     },
     {
       "filename": "k-homepage.png",
-      "client": "K-6",
+      "number": "K-06",
       "description": "Homepage (Montage)",
       "columns": 2
     },
     {
       "filename": "k-financier-specimen.png",
-      "client": "K-7",
+      "number": "K-07",
       "description": "Financier Display (Specimen)",
       "columns": 2
     },
     {
       "filename": "k-financier-glyphs.png",
-      "client": "K-8",
+      "number": "K-08",
       "description": "Financier Display (Glyphs)",
       "columns": 2
     },
     {
       "filename": "k-blog.png",
-      "client": "K-9",
+      "number": "K-09",
       "description": "70,471 words about letters...",
       "columns": 2
     },
     {
       "filename": "k-heldane-text.png",
-      "client": "K-10",
+      "number": "K-10",
       "description": "Heldane Text (Cart)",
       "columns": 3
     },
     {
       "filename": "k-heldane-display.png",
-      "client": "K-11",
+      "number": "K-11",
       "description": "Heldane Display (Specimen)",
       "columns": 2
     },
     {
       "filename": "k-fonts-in-use.png",
-      "client": "K-12",
+      "number": "K-12",
       "description": "Fonts In Use (FIU)",
       "columns": 2
     },
     {
       "filename": "k-custom-fonts.png",
-      "client": "K-13",
+      "number": "K-13",
       "description": "Custom Fonts (Menu)",
       "columns": 3
     }
