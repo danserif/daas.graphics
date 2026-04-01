@@ -1176,6 +1176,11 @@ h1.header-label {
 	user-select: none;
 }
 
+/* Over #work imagery, accent can clash — use theme text (white / black) */
+.d-overlay.d-overlay--over-work .d-overlay-letter {
+	color: var(--color-text);
+}
+
 @media only screen and (max-width: 2660px) {
 	.d-overlay-letter {
 		font-size: 70vh;
@@ -1256,6 +1261,15 @@ h1.header-label {
 
 .face-overlay .face-overlay-icon:hover svg {
 	transform: rotate(5deg);
+}
+
+/* Over #work: monochrome faces (same logic as D overlay over work) */
+.face-overlay.face-overlay--over-work .face-overlay-icon svg path {
+	fill: var(--color-text);
+}
+
+.face-overlay.face-overlay--over-work .face-overlay-icon svg rect {
+	fill: var(--color-bg);
 }
 
 /* ==========================================================================
@@ -3086,6 +3100,12 @@ a.plan-panel-cta:hover {
 	grid-column: span 4;
 }
 
+/* Full-width row break in grid; line style matches global .divider (dashed border) */
+.work-grid > hr.work-grid-divider {
+	grid-column: 1 / -1;
+	margin-bottom: calc(var(--gap-section) * 2);
+}
+
 /* Placeholder + border stay visible while the img fades in (img opacity does not affect the frame) */
 .work-image-frame {
 	width: 100%;
@@ -3108,17 +3128,14 @@ a.plan-panel-cta:hover {
 	opacity: 1;
 }
 
+/* TEMP: graphics in full color — restore: #work .work-image { filter: grayscale(100%); } and hover { filter: grayscale(0%); } */
 #work .work-image {
-	filter: grayscale(100%);
+	filter: grayscale(0%);
 }
 
 .light-mode .work-image-frame {
 	background-color: #F5F5F5;
 	border-color: #DDDDDD;
-}
-
-#work .work-item:hover .work-image {
-	filter: grayscale(0%);
 }
 
 /* ENSURE IMAGE LINKS DISPLAY PROPERLY (ONLY DIRECT CHILD LINKS WRAPPING IMAGES) */
