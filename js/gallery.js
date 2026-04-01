@@ -504,15 +504,38 @@ document.addEventListener("DOMContentLoaded", function () {
 				return count;
 			}
 
+			// Graphics: do not end a batch with a divider row when more items exist after it (defer hr until the next batch).
+			// Final batch (reaches end of list) keeps trailing dividers. If the raw batch is only dividers but more follow, extend the batch until it ends with non-divider.
+			function adjustBatchCountForTrailingDividers(remainingItems, rawBatchCount) {
+				if (sectionType !== "graphics" || rawBatchCount === 0) {
+					return rawBatchCount;
+				}
+				if (rawBatchCount >= remainingItems.length) {
+					return rawBatchCount;
+				}
+				let n = rawBatchCount;
+				while (n > 0 && remainingItems[n - 1].divider) {
+					n--;
+				}
+				if (n === 0) {
+					n = rawBatchCount;
+					while (n < remainingItems.length && remainingItems[n - 1].divider) {
+						n++;
+					}
+				}
+				return n;
+			}
+
 			// Detect mobile layout (single-column work grid; matches CSS max-width: 1080px)
 			const isMobile = window.matchMedia("(max-width: 1080px)").matches;
 
 			// Initial display:
 			// - Desktop: max 2 rows (20 columns at largest breakpoint)
 			// - Mobile: max 4 content items (+ graphics dividers in the same slice)
-			const initialDisplayCount = isMobile
+			const rawInitialCount = isMobile
 				? countMobileBatchItems(allItems, 4)
 				: calculateDisplayCount(allItems, 20);
+			const initialDisplayCount = adjustBatchCountForTrailingDividers(allItems, rawInitialCount);
 
 			async function displayNextBatch() {
 				const remainingItems = allItems.slice(displayedCount);
@@ -520,12 +543,13 @@ document.addEventListener("DOMContentLoaded", function () {
 				// Each click:
 				// - Desktop: ~2 additional rows (20 columns)
 				// - Mobile: 4 more content items (+ dividers in the same slice)
-				let batchCount;
+				let rawBatchCount;
 				if (isMobile) {
-					batchCount = countMobileBatchItems(remainingItems, 4);
+					rawBatchCount = countMobileBatchItems(remainingItems, 4);
 				} else {
-					batchCount = calculateDisplayCount(remainingItems, 20);
+					rawBatchCount = calculateDisplayCount(remainingItems, 20);
 				}
+				const batchCount = adjustBatchCountForTrailingDividers(remainingItems, rawBatchCount);
 
 				if (batchCount === 0) {
 					loadMoreBtn.classList.add("hidden");
