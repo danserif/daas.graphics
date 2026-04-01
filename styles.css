@@ -963,7 +963,7 @@ h1.header-label {
 	justify-content: center;
 	border: none;
 	background: transparent;
-	color: var(--color-accent);
+	color: var(--color-text);
 	font-family: "Departure Mono", monospace;
 	font-size: 22px;
 	text-transform: uppercase;
@@ -3101,9 +3101,31 @@ a.plan-panel-cta:hover {
 }
 
 /* Full-width row break in grid; line style matches global .divider (dashed border) */
-.work-grid > hr.work-grid-divider {
+.work-grid>hr.work-grid-divider {
 	grid-column: 1 / -1;
 	margin-bottom: calc(var(--gap-section) * 2);
+}
+
+/* Full-width section title (graphics.json type "title") */
+.work-grid-title {
+	grid-column: 1 / -1;
+	font-family: "Departure Mono", monospace;
+	font-size: 11px;
+	line-height: 1.5;
+	color: var(--color-text);
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.work-grid-title .work-title-line {
+	margin: 0;
+}
+
+.work-grid-title .work-title-name {
+	opacity: 1;
+	color: var(--color-text);
 }
 
 /* Placeholder + border stay visible while the img fades in (img opacity does not affect the frame) */
@@ -3128,7 +3150,6 @@ a.plan-panel-cta:hover {
 	opacity: 1;
 }
 
-/* TEMP: graphics in full color — restore: #work .work-image { filter: grayscale(100%); } and hover { filter: grayscale(0%); } */
 #work .work-image {
 	filter: grayscale(0%);
 }
