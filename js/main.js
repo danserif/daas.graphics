@@ -1848,6 +1848,10 @@ initAfterLoading();
 	var overlay = document.querySelector(".face-overlay");
 	if (!overlay) return;
 
+	/* Must match .face-overlay { transition: opacity … } — keep monochrome fills until fade finishes */
+	var FACE_OVERLAY_FADE_MS = 350;
+	var faceOverWorkClassClearTimer = null;
+
 	var icon1El = document.querySelector(".hero-icons .daas-icon-1");
 	var icon2El = document.querySelector(".hero-icons .daas-icon-2");
 	if (!icon1El || !icon2El) return;
@@ -1877,12 +1881,11 @@ initAfterLoading();
 	}
 
 	function updateFaceOverlayOverWork() {
-		var workSection = document.getElementById("work");
-		if (!workSection) {
-			overlay.classList.remove("face-overlay--over-work");
+		if (!isVisible()) {
 			return;
 		}
-		if (!isVisible()) {
+		var workSection = document.getElementById("work");
+		if (!workSection) {
 			overlay.classList.remove("face-overlay--over-work");
 			return;
 		}
@@ -1950,6 +1953,10 @@ initAfterLoading();
 
 	function show() {
 		if (isVisible()) return;
+		if (faceOverWorkClassClearTimer) {
+			clearTimeout(faceOverWorkClassClearTimer);
+			faceOverWorkClassClearTimer = null;
+		}
 		populate();
 		overlay.classList.add("is-visible");
 		overlay.setAttribute("aria-hidden", "false");
@@ -1959,8 +1966,14 @@ initAfterLoading();
 	function hide() {
 		if (!isVisible()) return;
 		overlay.classList.remove("is-visible");
-		overlay.classList.remove("face-overlay--over-work");
 		overlay.setAttribute("aria-hidden", "true");
+		if (faceOverWorkClassClearTimer) {
+			clearTimeout(faceOverWorkClassClearTimer);
+		}
+		faceOverWorkClassClearTimer = setTimeout(function () {
+			faceOverWorkClassClearTimer = null;
+			overlay.classList.remove("face-overlay--over-work");
+		}, FACE_OVERLAY_FADE_MS);
 	}
 
 	overlay.addEventListener("click", function (e) {
