@@ -4,23 +4,29 @@
       "filename": "es-logo.png",
       "client": "Enter Startup (2026)",
       "description": "Logo + ASCII Maze",
-      "columns": 3
-    },
-    {
-      "filename": "es-cover.png",
-      "client": "ES-2",
-      "description": "Cover + ASCII Maze",
-      "columns": 3
+      "columns": 2
     },
     {
       "filename": "es-mark.png",
-      "client": "ES-3",
+      "client": "ES-2",
       "description": "→× (Mark)",
       "columns": 1
     },
     {
-      "filename": "es-mockup.jpg",
+      "filename": "es-cover.png",
+      "client": "ES-3",
+      "description": "Cover + ASCII Maze",
+      "columns": 2
+    },
+    {
+      "filename": "es-logotype.png",
       "client": "ES-4",
+      "description": "Logotype",
+      "columns": 2
+    },
+    {
+      "filename": "es-mockup.jpg",
+      "client": "ES-5",
       "description": "Book Cover (Mockup) ",
       "columns": 3
     },
