@@ -1301,13 +1301,13 @@ h1.header-label {
 }
 
 /* Mute colourful page (e.g. work gallery) behind the backdrop when #work is in view */
-:root.nav-overlay-page-grayscale-over-work body > *:not(#nav-overlay) {
+:root.nav-overlay-page-grayscale-over-work body>*:not(#nav-overlay) {
 	filter: grayscale(1);
 	transition: filter 0.25s ease;
 }
 
 @media (prefers-reduced-motion: reduce) {
-	:root.nav-overlay-page-grayscale-over-work body > *:not(#nav-overlay) {
+	:root.nav-overlay-page-grayscale-over-work body>*:not(#nav-overlay) {
 		transition: none;
 	}
 }
@@ -3204,10 +3204,14 @@ a.plan-panel-cta:hover {
 	margin: 0;
 }
 
-.work-client,
-.work-number {
+.work-client {
 	color: var(--color-text);
 	opacity: 0.75;
+}
+
+.work-number {
+	color: var(--color-text);
+	opacity: 0.50;
 }
 
 /* ENSURE LINKS WITHIN CLIENT/NUMBER ARE INLINE */
@@ -3219,7 +3223,7 @@ a.plan-panel-cta:hover {
 }
 
 .work-description {
-	color: var(--opacity-50);
+	color: var(--opacity-75);
 	margin-top: 0;
 	display: inline;
 }
