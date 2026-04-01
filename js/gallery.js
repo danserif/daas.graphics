@@ -270,7 +270,7 @@ document.addEventListener("DOMContentLoaded", function () {
 				line.appendChild(document.createTextNode(" "));
 			}
 			const dateSpan = document.createElement("span");
-			dateSpan.className = "opacity-50";
+			dateSpan.className = "opacity-75";
 			appendBracketStyledText(item.date, dateSpan);
 			line.appendChild(dateSpan);
 		}
