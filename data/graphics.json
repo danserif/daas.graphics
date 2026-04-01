@@ -2,6 +2,93 @@
   "items": [
     {
       "type": "title",
+      "name": "Loophole Labs, Inc.",
+      "date": "(2025-Present)",
+      "description": "Logos, branding, illustrations, landing pages, product, and a design system for a new infrastructure startup."
+    },
+    {
+      "filename": "ll-c-mark.png",
+      "number": "LL-01",
+      "description": "{∞} (Company Mark)",
+      "columns": 1
+    },
+    {
+      "filename": "ll-c-mark-specification.png",
+      "number": "LL-02",
+      "description": "Loophole Labs (Mark Specification)",
+      "columns": 3
+    },
+    {
+      "filename": "ll-tote-bag.jpg",
+      "number": "LL-03",
+      "description": "Tote Bag (B-01)",
+      "columns": 2
+    },
+    {
+      "filename": "ll-team.png",
+      "number": "LL-04",
+      "description": "[°…°] ~/ humans.txt",
+      "columns": 2
+    },
+    {
+      "filename": "ll-diagram.png",
+      "number": "LL-05",
+      "description": "Diagram (Pods)",
+      "columns": 2
+    },
+    {
+      "filename": "ll-terminal.png",
+      "number": "LL-06",
+      "description": "Terminal (Mockup)",
+      "columns": 2
+    },
+    {
+      "filename": "ll-authentication.png",
+      "number": "LL-07",
+      "description": "Authentication (Sign Up)",
+      "columns": 2
+    },
+    {
+      "filename": "ll-p-mark.png",
+      "number": "LL-08",
+      "description": "/~\\ (Company Mark)",
+      "columns": 1
+    },
+    {
+      "filename": "ll-p-mark-specification.png",
+      "number": "LL-09",
+      "description": "Architect (Mark Specification)",
+      "columns": 3
+    },
+    {
+      "filename": "ll-blog-migrations.png",
+      "number": "LL-10",
+      "description": "Blog Illustration (Migrations)",
+      "columns": 2
+    },
+    {
+      "filename": "ll-sigil-marketing.png",
+      "number": "LL-11",
+      "description": "Sigil Design System (Marketing)",
+      "columns": 3
+    },
+    {
+      "filename": "ll-sigil-product.png",
+      "number": "LL-12",
+      "description": "Sigil Design System (Product)",
+      "columns": 4
+    },
+    {
+      "filename": "ll-homepage.png",
+      "number": "LL-13",
+      "description": "feat: homepage",
+      "columns": 3
+    },
+    {
+      "divider": true
+    },
+    {
+      "type": "title",
       "name": "Enter Startup",
       "date": "(2026)",
       "description": "Brand, ASCII maze, and cover design for a new startup book."
@@ -43,7 +130,7 @@
       "type": "title",
       "name": "Axiom, Inc.",
       "date": "(2022—2025)",
-      "description": "Website, branding, ads, diagrams, swag, and design system for a logging and observability platform."
+      "description": "Website, branding, ads, diagrams, swag, and a design system for a logging and observability platform."
     },
     {
       "filename": "ax-logs.png",
