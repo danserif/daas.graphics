@@ -93,6 +93,17 @@ document.addEventListener("DOMContentLoaded", function () {
 		return null;
 	}
 
+	// Optional width/height from JSON (canonical dark/ pixels); avoids per-tile probe when present.
+	function aspectRatioFromJsonDimensions(dims) {
+		if (!dims || typeof dims.width !== "number" || typeof dims.height !== "number") {
+			return null;
+		}
+		if (dims.width <= 0 || dims.height <= 0) {
+			return null;
+		}
+		return dims.width / dims.height;
+	}
+
 	// Canonical dimensions from dark/ (same pixel size as light/ per site convention)
 	function probeWorkImageAspectRatio(basePath, filename) {
 		return new Promise(function (resolve) {
@@ -113,9 +124,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	// Create an image element with theme-aware src (dark default, optional light variant)
 	// basePath: e.g. "/images/work/", filename: e.g. "project.jpg"
-	// Awaits dark/ probe so aspect-ratio is set before the frame enters the DOM (avoids wrong placeholder ratio on Load more).
-	async function createWorkImage(basePath, filename, altText) {
-		const aspectRatio = await probeWorkImageAspectRatio(basePath, filename);
+	// dims: optional { width, height } from JSON; otherwise awaits dark/ probe before paint.
+	async function createWorkImage(basePath, filename, altText, dims) {
+		let aspectRatio = aspectRatioFromJsonDimensions(dims);
+		if (aspectRatio == null) {
+			aspectRatio = await probeWorkImageAspectRatio(basePath, filename);
+		}
 
 		const frame = document.createElement("div");
 		frame.className = "work-image-frame";
@@ -350,7 +364,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			} else {
 				altText = item.filename;
 			}
-			const frame = await createWorkImage("/images/work/", item.filename, altText);
+			const frame = await createWorkImage("/images/work/", item.filename, altText, item);
 			const parsedLink = normalizeWorkLink(item.link);
 			if (parsedLink) {
 				const imgA = document.createElement("a");
@@ -431,7 +445,7 @@ document.addEventListener("DOMContentLoaded", function () {
 				altText = item.filename;
 			}
 
-			const frame = await createWorkImage("/images/lab/", item.filename, altText);
+			const frame = await createWorkImage("/images/lab/", item.filename, altText, item);
 			const parsedLink = normalizeWorkLink(item.link);
 			if (parsedLink) {
 				const imgA = document.createElement("a");

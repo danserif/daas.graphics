@@ -4,61 +4,81 @@
       "filename": "d-gfx.png",
       "number": "G-10",
       "description": "D.OS (GFX)",
-      "columns": 3
+      "columns": 3,
+      "width": 1628,
+      "height": 1072
     },
     {
       "filename": "operating-system.png",
       "number": "G-09",
       "description": "~ $ DAAS_GRAPHICS",
-      "columns": 4
+      "columns": 4,
+      "width": 2184,
+      "height": 2184
     },
     {
       "filename": "daas-globe-ext.png",
       "number": "G-08",
       "description": "DaaS (Globe)",
-      "columns": 3
+      "columns": 3,
+      "width": 1628,
+      "height": 832
     },
     {
       "filename": "dandisk.png",
       "number": "G-07",
       "description": "DANDISK (ASCII)",
-      "columns": 2
+      "columns": 2,
+      "width": 1072,
+      "height": 1072
     },
     {
       "filename": "dandroids.jpg",
       "number": "G-06",
       "description": "DANDRØIDS (UI)",
-      "columns": 4
+      "columns": 4,
+      "width": 2184,
+      "height": 2184
     },
     {
       "filename": "daas-stickers.png",
       "number": "G-05",
       "description": "DaaS (Stickers)",
-      "columns": 4
+      "columns": 4,
+      "width": 2184,
+      "height": 1072
     },
     {
       "filename": "daas-globe.png",
       "number": "G-04",
       "description": "DaaS (Globe)",
-      "columns": 1
+      "columns": 1,
+      "width": 1032,
+      "height": 1032
     },
     {
       "filename": "daas-poster.jpg",
       "number": "G-03",
       "description": "DaaS (Poster)",
-      "columns": 3
+      "columns": 3,
+      "width": 1628,
+      "height": 1628
     },
     {
       "filename": "departure-mono.png",
       "number": "G-02",
       "description": "Departure Mono (Helena Zang)",
-      "columns": 4
+      "columns": 4,
+      "width": 2184,
+      "height": 992
     },
     {
       "filename": "acdc.png",
       "number": "G-01",
       "description": "DaaS (AC/DC)",
-      "columns": 2
+      "columns": 2,
+      "width": 1608,
+      "height": 774
     }
   ]
 }
