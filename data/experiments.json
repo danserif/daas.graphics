@@ -1,52 +1,76 @@
 {
   "items": [
     {
+      "filename": "daas-face.png",
+      "number": "G-13",
+      "description": "DaaS (Face)",
+      "columns": 1,
+      "width": 1032,
+      "height": 1032
+    },
+    {
       "filename": "d-gfx.png",
-      "number": "G-10",
+      "number": "G-12",
       "description": "D.OS (GFX)",
-      "columns": 3,
-      "width": 1628,
-      "height": 1072
+      "columns": 2,
+      "width": 1072,
+      "height": 672
     },
     {
       "filename": "operating-system.png",
-      "number": "G-09",
+      "number": "G-11",
       "description": "~ $ DAAS_GRAPHICS",
-      "columns": 4,
-      "width": 2184,
-      "height": 2184
+      "columns": 2,
+      "width": 1072,
+      "height": 1660
+    },
+    {
+      "filename": "danserif-bookmarks.png",
+      "number": "G-10",
+      "description": "~/bookmarks (danserif.com)",
+      "columns": 3,
+      "width": 1622,
+      "height": 940
     },
     {
       "filename": "daas-globe-ext.png",
-      "number": "G-08",
+      "number": "G-09",
       "description": "DaaS (Globe)",
-      "columns": 3,
-      "width": 1628,
-      "height": 832
+      "columns": 2,
+      "width": 1072,
+      "height": 624
     },
     {
       "filename": "dandisk.png",
-      "number": "G-07",
+      "number": "G-08",
       "description": "DANDISK (ASCII)",
       "columns": 2,
       "width": 1072,
       "height": 1072
     },
     {
-      "filename": "dandroids.jpg",
-      "number": "G-06",
+      "filename": "dandroids-ui.jpg",
+      "number": "G-07",
       "description": "DANDRØIDS (UI)",
       "columns": 4,
       "width": 2184,
       "height": 2184
     },
     {
+      "filename": "dd-mark.png",
+      "number": "G-06",
+      "description": "ø̈ (Mark)",
+      "columns": 1,
+      "width": 1032,
+      "height": 1032
+    },
+    {
       "filename": "daas-stickers.png",
       "number": "G-05",
       "description": "DaaS (Stickers)",
-      "columns": 4,
-      "width": 2184,
-      "height": 1072
+      "columns": 3,
+      "width": 1628,
+      "height": 796
     },
     {
       "filename": "daas-globe.png",
