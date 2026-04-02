@@ -1705,7 +1705,7 @@ initAfterLoading();
 	var o = document.querySelector(".d-overlay");
 	if (!o) return;
 
-	var IDLE_MS = 30 * 1000; // 30 seconds of inactivity
+	var IDLE_MS = 60 * 1000; // 60 seconds of inactivity
 	var idleTimer = null;
 	var lastActivity = Date.now();
 	var openedByIdle = false;
