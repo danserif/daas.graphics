@@ -477,10 +477,11 @@ document.addEventListener("DOMContentLoaded", function () {
 			const displayName = pathFilename;
 			const displayPath = "/images/lab/";
 			const sizeUrl = "/images/lab/dark/" + item.filename;
-			const filenameEl = await buildWorkFilenameLine(displayPath, displayName, sizeUrl);
-			caption.appendChild(filenameEl);
-			const linkEl = buildWorkLinkLine(item.link);
-			if (linkEl) caption.appendChild(linkEl);
+			buildWorkFilenameLine(displayPath, displayName, sizeUrl).then(function (filenameEl) {
+				caption.appendChild(filenameEl);
+				const linkEl = buildWorkLinkLine(item.link);
+				if (linkEl) caption.appendChild(linkEl);
+			});
 		}
 
 		workItem.appendChild(caption);
