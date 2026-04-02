@@ -27,6 +27,15 @@ Branding and identity design, creative direction, art direction, design systems,
 
 Dan has worked with clients across startups, government, agencies, and international brands including: Axiom, Klim Type Foundry, Stedi, Xero, Springload, Delivereasy, Te Papa (Museum of New Zealand), Callaghan Innovation, Massey University, NZ On Air, Airwallex, DIA (Department of Internal Affairs), NZ Government, NZ Customs, MSD (Ministry of Social Development), ACC, Kiwibank, Koordinates, Loophole Labs, Formway, Accuro, Icebreaker, SPCA, Spy Valley Wines, Nintendo, American Express, The Economist, Virgin, Al Jazeera, ESPN Cricinfo, France Télévisions, ODEON Cinemas, The Telegraph, Travelex, and Tigerspike.
 
+### Projects
+
+The **Graphics/Work** section on the site groups case-study imagery by client:
+
+- **Loophole Labs, Inc.** (2025-Present): Branding, logos, illustrations, landing pages, product, and design system for a new infrastructure startup.
+- **Enter Startup** (2026): Branding, logos, illustrations, ASCII maze, and cover design for a new startup book, community, and training program.
+- **Axiom, Inc.** (2022—2025): Website, branding, ads, diagrams, illustrations, swag, and design system for a logging and observability platform.
+- **Klim Type Foundry** (2018-2020): Design and creative direction of a custom ecommerce website including a specimen builder, blog, fonts in use gallery, glyph inspector, and type tester for a renowned foundry.
+
 ## Sections
 
 The site is a single page with the following sections: TL;DR, About, Services, Tagline/Mission, Experience, Pricing, Availability, Graphics/Work (image gallery), Clients (logo marquee), Experiments/Lab (image gallery), Awards/Recognition, Testimonials, and Footer (proprietor, socials, location/time, colophon, colors, copyright).
