@@ -983,6 +983,15 @@ h1.header-label {
 	outline: none;
 }
 
+/* WebKit (iOS Safari, etc.): default tap highlight is a grey wash; large mobile
+   hit targets and accent menu backgrounds make it obvious. Keyboard focus still
+   uses the global :focus-visible outline. */
+.nav-toggle,
+.nav-overlay a,
+.nav-overlay button {
+	-webkit-tap-highlight-color: transparent;
+}
+
 /* Desktop menu trigger: match surrounding label text (11px) */
 .nav-toggle--desktop {
 	/* Make the button baseline-align like surrounding inline text */
@@ -3173,6 +3182,18 @@ a.plan-panel-cta:hover {
 #work .work-image {
 	filter: grayscale(0%);
 }
+
+/* #work .work-image,
+#lab .work-image {
+	filter: grayscale(1);
+}
+
+#work .work-item:hover .work-image,
+#work .work-item:focus-within .work-image,
+#lab .work-item:hover .work-image,
+#lab .work-item:focus-within .work-image {
+	filter: grayscale(0%);
+} */
 
 .light-mode .work-image-frame {
 	background-color: #F5F5F5;
