@@ -30,7 +30,9 @@
       "description": "~/bookmarks (danserif.com)",
       "columns": 3,
       "width": 1622,
-      "height": 940
+      "height": 940,
+      "link": "https://danserif.com/bookmarks",
+      "linkDisplay": "https://danserif.com"
     },
     {
       "filename": "daas-globe-ext.png",
@@ -94,7 +96,8 @@
       "description": "Departure Mono (Helena Zang)",
       "columns": 4,
       "width": 2184,
-      "height": 992
+      "height": 992,
+      "link": "https://departuremono.com"
     },
     {
       "filename": "acdc.png",

@@ -3275,10 +3275,11 @@ a.plan-panel-cta:hover {
 .work-link a {
 	color: inherit;
 	text-decoration: none;
+	opacity: 0.75;
 }
 
 .work-link a:hover {
-	opacity: 0.75;
+	opacity: 1;
 }
 
 .load-more-button {

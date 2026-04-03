@@ -107,7 +107,8 @@
       "description": "feat: homepage",
       "columns": 3,
       "width": 1628,
-      "height": 976
+      "height": 976,
+      "link": "https://loopholelabs.io"
     },
     {
       "divider": true
@@ -181,7 +182,8 @@
       "description": "feat: homepage",
       "columns": 3,
       "width": 1628,
-      "height": 1232
+      "height": 1232,
+      "link": "https://axiom.co"
     },
     {
       "filename": "ax-blog-elements.png",
@@ -294,7 +296,8 @@
       "description": "Mobile (Montage)",
       "columns": 3,
       "width": 1628,
-      "height": 1160
+      "height": 1160,
+      "link": "https://klim.co.nz"
     },
     {
       "filename": "k-soehne-specimen.png",
