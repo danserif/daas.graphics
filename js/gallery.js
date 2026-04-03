@@ -225,7 +225,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		return filename;
 	}
 
-	// Optional work item URL: full href + protocol + remainder for caption display
+	// Optional work item URL: normalized href + host/path for caption after [URL]
 	function normalizeWorkLink(link) {
 		if (!link || typeof link !== "string") return null;
 		const t = link.trim();
@@ -234,17 +234,22 @@ document.addEventListener("DOMContentLoaded", function () {
 		if (!/^https?:\/\//i.test(t)) {
 			href = "https://" + t;
 		}
-		const m = href.match(/^(https?:\/\/)(.+)$/i);
+		const m = href.match(/^https?:\/\/(.+)$/i);
 		if (!m) return null;
-		return {
-			href: href,
-			protocol: m[1].toLowerCase(),
-			rest: m[2],
-		};
+		return { href, rest: m[1] };
 	}
 
-	// Caption line: muted protocol + url + arrow (clickable)
-	function buildWorkLinkLine(link) {
+	function appendLinkCaptionParts(anchor, rest) {
+		const label = document.createElement("span");
+		label.className = "opacity-25";
+		label.textContent = "[URL]";
+		anchor.appendChild(label);
+		anchor.appendChild(document.createTextNode(" "));
+		anchor.appendChild(document.createTextNode(rest));
+	}
+
+	// Caption line: dim [URL] + path; linkDisplay shortens visible path, href still from link
+	function buildWorkLinkLine(link, linkDisplay) {
 		const parsed = normalizeWorkLink(link);
 		if (!parsed) return null;
 
@@ -256,13 +261,21 @@ document.addEventListener("DOMContentLoaded", function () {
 		a.target = "_blank";
 		a.rel = "noopener noreferrer";
 
-		const proto = document.createElement("span");
-		proto.className = "opacity-25";
-		proto.textContent = parsed.protocol;
+		const displayRaw =
+			linkDisplay && typeof linkDisplay === "string" && linkDisplay.trim()
+				? linkDisplay.trim()
+				: null;
 
-		a.appendChild(proto);
-		a.appendChild(document.createTextNode(" "));
-		a.appendChild(document.createTextNode(parsed.rest));
+		if (displayRaw) {
+			const displayParsed = normalizeWorkLink(displayRaw);
+			if (displayParsed) {
+				appendLinkCaptionParts(a, displayParsed.rest);
+			} else {
+				a.appendChild(document.createTextNode(displayRaw));
+			}
+		} else {
+			appendLinkCaptionParts(a, parsed.rest);
+		}
 
 		const arrow = document.createElement("span");
 		arrow.className = "opacity-50";
@@ -319,7 +332,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			wrap.appendChild(line);
 		}
 
-		const linkEl = buildWorkLinkLine(item.link);
+		const linkEl = buildWorkLinkLine(item.link, item.linkDisplay);
 		if (linkEl) {
 			wrap.appendChild(linkEl);
 		}
@@ -365,17 +378,7 @@ document.addEventListener("DOMContentLoaded", function () {
 				altText = item.filename;
 			}
 			const frame = await createWorkImage("/images/work/", item.filename, altText, item);
-			const parsedLink = normalizeWorkLink(item.link);
-			if (parsedLink) {
-				const imgA = document.createElement("a");
-				imgA.href = parsedLink.href;
-				imgA.target = "_blank";
-				imgA.rel = "noopener noreferrer";
-				imgA.appendChild(frame);
-				workItem.appendChild(imgA);
-			} else {
-				workItem.appendChild(frame);
-			}
+			workItem.appendChild(frame);
 		}
 
 		// Caption
@@ -393,7 +396,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			const sizeUrl = "/images/work/dark/" + fileToShow;
 			buildWorkFilenameLine("/images/work/", fileToShow, sizeUrl).then(function (filenameEl) {
 				caption.appendChild(filenameEl);
-				const linkEl = buildWorkLinkLine(item.link);
+				const linkEl = buildWorkLinkLine(item.link, item.linkDisplay);
 				if (linkEl) caption.appendChild(linkEl);
 			});
 		}
@@ -446,17 +449,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			}
 
 			const frame = await createWorkImage("/images/lab/", item.filename, altText, item);
-			const parsedLink = normalizeWorkLink(item.link);
-			if (parsedLink) {
-				const imgA = document.createElement("a");
-				imgA.href = parsedLink.href;
-				imgA.target = "_blank";
-				imgA.rel = "noopener noreferrer";
-				imgA.appendChild(frame);
-				workItem.appendChild(imgA);
-			} else {
-				workItem.appendChild(frame);
-			}
+			workItem.appendChild(frame);
 		}
 
 		// Caption
@@ -479,7 +472,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			const sizeUrl = "/images/lab/dark/" + item.filename;
 			buildWorkFilenameLine(displayPath, displayName, sizeUrl).then(function (filenameEl) {
 				caption.appendChild(filenameEl);
-				const linkEl = buildWorkLinkLine(item.link);
+				const linkEl = buildWorkLinkLine(item.link, item.linkDisplay);
 				if (linkEl) caption.appendChild(linkEl);
 			});
 		}
