@@ -33,7 +33,7 @@
     {
       "filename": "ll-team.png",
       "number": "LL-04",
-      "description": "[°…°] ~/ humans.txt",
+      "description": "humans.txt",
       "columns": 2,
       "width": 1072,
       "height": 604
@@ -109,6 +109,46 @@
       "width": 1628,
       "height": 976,
       "link": "https://loopholelabs.io"
+    },
+    {
+      "filename": "ll-wizard.png",
+      "number": "LL-14",
+      "description": "Archibald (Mascot)",
+      "columns": 1,
+      "width": 774,
+      "height": 1374
+    },
+    {
+      "filename": "ll-sigil-graphic.png",
+      "number": "LL-15",
+      "description": "Sigil Design System (Graphic)",
+      "columns": 2,
+      "width": 1072,
+      "height": 604
+    },
+    {
+      "filename": "ll-glyph-faces.png",
+      "number": "LL-16",
+      "description": "{*_*} ¦^_^¦ [°…°] \\~_~/ (Glyph Faces)",
+      "columns": 3,
+      "width": 1628,
+      "height": 916
+    },
+    {
+      "filename": "ll-logo-specifications.png",
+      "number": "LL-17",
+      "description": "{∞} + /~\\ (Logo Specifications)",
+      "columns": 2,
+      "width": 1072,
+      "height": 672
+    },
+    {
+      "filename": "ll-stickers.png",
+      "number": "LL-18",
+      "description": "Stickers",
+      "columns": 2,
+      "width": 1072,
+      "height": 600
     },
     {
       "divider": true
@@ -252,7 +292,7 @@
     {
       "filename": "ax-skateboard.jpg",
       "number": "AX-11",
-      "description": "Skateboard (SK8-02)",
+      "description": "Skateboard (SK8-02) # POP AN O11Y",
       "columns": 2,
       "width": 1072,
       "height": 1340
