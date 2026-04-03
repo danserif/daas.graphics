@@ -132,6 +132,8 @@
 	function renderPricingPanel(planId, refs) {
 		var plan = PRICING_PLANS[planId];
 		if (!plan || !refs) return;
+		refs._pixelationSeq = (refs._pixelationSeq || 0) + 1;
+		var pixelationSeq = refs._pixelationSeq;
 		var img = refs.img;
 		var statusEl = refs.statusEl;
 		var nameEl = refs.nameEl;
@@ -203,17 +205,32 @@
 			tab.classList.toggle("is-active", tab.getAttribute("data-plan") === planId);
 		});
 
-		// Run pixelation animation when image loads (panel open or tab switch)
+		// Wait until this src is decoded for canvas; avoid trusting `complete` right after
+		// `src` changes (stale dimensions / previous frame). Invalidate if user switches plan.
 		function startPixelation() {
+			if (refs._pixelationSeq !== pixelationSeq) return;
 			runPixelationAnimation(img, heroEl);
 		}
-		if (img.complete && img.naturalWidth) {
-			startPixelation();
+		function schedulePixelation() {
+			if (refs._pixelationSeq !== pixelationSeq) return;
+			requestAnimationFrame(startPixelation);
+		}
+		if (typeof img.decode === "function") {
+			img.decode().then(schedulePixelation).catch(function () {});
+		} else if (img.complete && img.naturalWidth) {
+			schedulePixelation();
 		} else {
-			img.addEventListener("load", function onLoad() {
+			function onLoad() {
 				img.removeEventListener("load", onLoad);
-				startPixelation();
-			});
+				img.removeEventListener("error", onError);
+				schedulePixelation();
+			}
+			function onError() {
+				img.removeEventListener("load", onLoad);
+				img.removeEventListener("error", onError);
+			}
+			img.addEventListener("load", onLoad);
+			img.addEventListener("error", onError);
 		}
 	}
 
