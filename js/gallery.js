@@ -61,20 +61,40 @@ document.addEventListener("DOMContentLoaded", function () {
 		});
 	}
 
-	// Append text to a parent element, wrapping any "(...)" segments in a span with opacity-50
+	// Append text to a parent element, wrapping any "(...)" segments in a span with opacity-50,
+	// and "<Name/>"-style tokens so only "<" and "/>" use opacity-50 (inner name stays full opacity).
 	function appendBracketStyledText(text, parent) {
 		if (!text) return;
-		const parts = text.split(/(\([^)]*\))/); // keep brackets in the result
+		const tagParts = text.split(/(<[^/]+\/>)/);
 
-		parts.forEach(function (part) {
-			if (!part) return;
-			// Create a span so we don't disturb the parent's own classes
-			const span = document.createElement("span");
-			if (part.startsWith("(") && part.endsWith(")")) {
-				span.className = "opacity-50";
+		tagParts.forEach(function (segment) {
+			if (!segment) return;
+			const tagMatch = segment.match(/^<([^/]+)\/>$/);
+			if (tagMatch) {
+				const open = document.createElement("span");
+				open.className = "opacity-50";
+				open.textContent = "<";
+				parent.appendChild(open);
+				const mid = document.createElement("span");
+				mid.textContent = tagMatch[1];
+				parent.appendChild(mid);
+				const close = document.createElement("span");
+				close.className = "opacity-50";
+				close.textContent = "/>";
+				parent.appendChild(close);
+				return;
 			}
-			span.textContent = part;
-			parent.appendChild(span);
+
+			const parts = segment.split(/(\([^)]*\))/);
+			parts.forEach(function (part) {
+				if (!part) return;
+				const span = document.createElement("span");
+				if (part.startsWith("(") && part.endsWith(")")) {
+					span.className = "opacity-50";
+				}
+				span.textContent = part;
+				parent.appendChild(span);
+			});
 		});
 	}
 
