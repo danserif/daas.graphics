@@ -1447,7 +1447,7 @@ h1.header-label {
 /* Nav panel: narrow desktop (matches plan panel width) */
 @media only screen and (min-width: 1081px) and (max-width: 1640px) {
 	.nav-panel {
-		width: 480px;
+		width: 500px;
 	}
 }
 
@@ -2558,7 +2558,7 @@ a.plan-panel-cta:hover {
 /* Plan panel: narrow desktop */
 @media only screen and (min-width: 1081px) and (max-width: 1640px) {
 	.plan-panel {
-		width: 480px;
+		width: 500px;
 	}
 }
 
