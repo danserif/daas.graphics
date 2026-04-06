@@ -322,6 +322,46 @@
       "height": 648
     },
     {
+      "filename": "ax-lols.png",
+      "number": "AX-15",
+      "description": "Live. Laugh. Log. (Ad)",
+      "columns": 1,
+      "width": 1032,
+      "height": 1032
+    },
+    {
+      "filename": "ax-remote.png",
+      "number": "AX-16",
+      "description": "<Designed/> and Engineered() globally.",
+      "columns": 2,
+      "width": 1072,
+      "height": 660
+    },
+    {
+      "filename": "ax-footer.png",
+      "number": "AX-17",
+      "description": "Footer (Mobile)",
+      "columns": 2,
+      "width": 1072,
+      "height": 1988
+    },
+    {
+      "filename": "ax-hot-sauce.jpg",
+      "number": "AX-18",
+      "description": "Hot Sauce (Mockup)",
+      "columns": 2,
+      "width": 1072,
+      "height": 1296
+    },
+    {
+      "filename": "ax-stickers.png",
+      "number": "AX-19",
+      "description": "Stickers",
+      "columns": 3,
+      "width": 1628,
+      "height": 912
+    },
+    {
       "divider": true
     },
     {
