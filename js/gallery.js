@@ -98,19 +98,43 @@ document.addEventListener("DOMContentLoaded", function () {
 		});
 	}
 
-	// Get file size in KB
-	async function getFileSize(url) {
+	// Raw Content-Length in bytes (HEAD), or null
+	async function getFileSizeBytes(url) {
 		try {
 			const response = await fetch(url, { method: "HEAD" });
 			const contentLength = response.headers.get("Content-Length");
 			if (contentLength) {
-				const sizeInKB = Math.round(parseInt(contentLength, 10) / 1024);
-				return sizeInKB;
+				return parseInt(contentLength, 10);
 			}
 		} catch (error) {
 			console.warn("Could not fetch file size for", url);
 		}
 		return null;
+	}
+
+	// Get file size in KB
+	async function getFileSize(url) {
+		const bytes = await getFileSizeBytes(url);
+		if (bytes == null) return null;
+		return Math.round(bytes / 1024);
+	}
+
+	// e.g. 3mb, 2.4mb, 512kb — lowercase suffix per site copy
+	function formatCompactDataSize(bytes) {
+		if (bytes == null || bytes <= 0) {
+			return null;
+		}
+		const MB = 1024 * 1024;
+		if (bytes >= MB) {
+			const x = bytes / MB;
+			if (x >= 10) {
+				return Math.round(x) + "mb";
+			}
+			const rounded = Math.round(x * 10) / 10;
+			const s = Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1);
+			return s.replace(/\.0$/, "") + "mb";
+		}
+		return Math.max(1, Math.round(bytes / 1024)) + "kb";
 	}
 
 	// Optional width/height from JSON (canonical dark/ pixels); avoids per-tile probe when present.
@@ -383,8 +407,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		const columns = item.columns && [1, 2, 3, 4].includes(item.columns) ? item.columns : 1;
 		workItem.setAttribute("data-columns", columns);
 
-		const graphicsLabel =
-			item.number != null && item.number !== "" ? String(item.number) : "";
+		const graphicsLabel = item.number != null && item.number !== "" ? String(item.number) : "";
 
 		if (item.filename) {
 			let altText = "";
@@ -543,16 +566,33 @@ document.addEventListener("DOMContentLoaded", function () {
 		grid.className = "work-grid";
 		workContent.appendChild(grid);
 
-		// Create divider before load more button (hidden until we know there are extra items)
+		// Divider between grid and load-more / image count row (hidden until first batch paints)
 		const divider = document.createElement("hr");
 		divider.className = "divider hidden";
 		workContent.appendChild(divider);
 
-		// Create load more button
+		// Load more control + live image count (items with filename only)
+		const loadMoreRow = document.createElement("div");
+		loadMoreRow.className = "load-more-row";
+
 		const loadMoreBtn = document.createElement("button");
 		loadMoreBtn.className = "load-more-button";
 		loadMoreBtn.innerHTML = 'Load More <span class="opacity-50">[+]</span>';
-		workContent.appendChild(loadMoreBtn);
+
+		const loadMoreSep = document.createElement("span");
+		loadMoreSep.className = "load-more-separator opacity-15";
+		loadMoreSep.setAttribute("aria-hidden", "true");
+		loadMoreSep.textContent = "/";
+
+		const loadMoreStatus = document.createElement("span");
+		loadMoreStatus.className = "load-more-status opacity-25";
+		loadMoreStatus.setAttribute("aria-live", "polite");
+
+		loadMoreRow.appendChild(loadMoreBtn);
+		loadMoreRow.appendChild(loadMoreSep);
+		loadMoreRow.appendChild(loadMoreStatus);
+		loadMoreSep.classList.add("hidden");
+		workContent.appendChild(loadMoreRow);
 
 		let allItems = [];
 		let displayedCount = 0;
@@ -561,6 +601,89 @@ document.addEventListener("DOMContentLoaded", function () {
 			const response = await fetch(jsonPath);
 			const data = await response.json();
 			allItems = data.items || [];
+
+			const workImageBasePath = sectionType === "graphics" ? "/images/work/" : "/images/lab/";
+			let workImageBytesByIndex = null;
+
+			function countWorkImages(items) {
+				let n = 0;
+				for (let i = 0; i < items.length; i++) {
+					if (items[i].filename) {
+						n++;
+					}
+				}
+				return n;
+			}
+
+			function countWorkImagesShown(items, displayedItemCount) {
+				let n = 0;
+				const end = Math.min(displayedItemCount, items.length);
+				for (let i = 0; i < end; i++) {
+					if (items[i].filename) {
+						n++;
+					}
+				}
+				return n;
+			}
+
+			function sumBytesForDisplayedImages() {
+				if (!workImageBytesByIndex) {
+					return null;
+				}
+				let sum = 0;
+				let any = false;
+				const end = Math.min(displayedCount, allItems.length);
+				for (let i = 0; i < end; i++) {
+					if (!allItems[i].filename) {
+						continue;
+					}
+					const b = workImageBytesByIndex[i];
+					if (b != null) {
+						sum += b;
+						any = true;
+					}
+				}
+				return any ? sum : null;
+			}
+
+			function updateLoadMoreStatus() {
+				const total = countWorkImages(allItems);
+				const shown = countWorkImagesShown(allItems, displayedCount);
+				const label = total === 1 ? "Image" : "Images";
+				const sizeStr = formatCompactDataSize(sumBytesForDisplayedImages());
+				loadMoreStatus.replaceChildren();
+				loadMoreStatus.appendChild(document.createTextNode(shown + " of " + total + " " + label));
+				if (sizeStr) {
+					const sizeWrap = document.createElement("span");
+					sizeWrap.className = "opacity-75";
+					sizeWrap.textContent = " (" + sizeStr + ")";
+					loadMoreStatus.appendChild(sizeWrap);
+				}
+				loadMoreSep.classList.toggle("hidden", loadMoreBtn.classList.contains("hidden"));
+			}
+
+			void (async function fetchWorkImageByteSizesByIndex() {
+				workImageBytesByIndex = new Array(allItems.length);
+				const tasks = [];
+				for (let i = 0; i < allItems.length; i++) {
+					workImageBytesByIndex[i] = null;
+					if (!allItems[i].filename) {
+						continue;
+					}
+					const idx = i;
+					const url = workImageBasePath + "dark/" + allItems[i].filename;
+					tasks.push(
+						getFileSizeBytes(url).then(function (bytes) {
+							workImageBytesByIndex[idx] = bytes;
+						}),
+					);
+				}
+				if (tasks.length === 0) {
+					return;
+				}
+				await Promise.all(tasks);
+				updateLoadMoreStatus();
+			})();
 
 			// Use JSON array order for both graphics and experiments
 
@@ -631,7 +754,10 @@ document.addEventListener("DOMContentLoaded", function () {
 				}
 				if (n === 0) {
 					n = rawBatchCount;
-					while (n < remainingItems.length && isGraphicsBatchDeferrableTailItem(remainingItems[n - 1])) {
+					while (
+						n < remainingItems.length &&
+						isGraphicsBatchDeferrableTailItem(remainingItems[n - 1])
+					) {
 						n++;
 					}
 				}
@@ -663,7 +789,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 				if (batchCount === 0) {
 					loadMoreBtn.classList.add("hidden");
-					divider.classList.add("hidden");
+					updateLoadMoreStatus();
 					return;
 				}
 
@@ -679,8 +805,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 				if (displayedCount >= allItems.length) {
 					loadMoreBtn.classList.add("hidden");
-					divider.classList.add("hidden");
 				}
+				updateLoadMoreStatus();
 			}
 
 			loadMoreBtn.addEventListener("click", function () {
@@ -701,10 +827,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 				if (displayedCount >= allItems.length) {
 					loadMoreBtn.classList.add("hidden");
-					divider.classList.add("hidden");
-				} else {
-					divider.classList.remove("hidden");
 				}
+				divider.classList.remove("hidden");
+				updateLoadMoreStatus();
 			})().catch(function (error) {
 				console.error("Error displaying batch:", error);
 			});
