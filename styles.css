@@ -388,13 +388,14 @@ code {
 	visibility: visible;
 }
 
-.header-label .label-spacer {
+/* Inline separators (//, [$], grouped meta): horizontal rhythm in mono UI lines */
+.meta-separator {
 	padding-left: 11px;
 	padding-right: 11px;
 }
 
 @media only screen and (max-width: 1079px) {
-	.header-label .label-spacer {
+	.header-label .meta-separator {
 		padding-left: 0;
 		padding-right: 0;
 	}
@@ -921,6 +922,16 @@ h1.header-label {
 	margin: 0 auto;
 	margin-top: 240px;
 	padding: 0 60px;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+/* Same horizontal inset as .cards; no section top margin (sits after .cards). */
+.status-section {
+	max-width: var(--max-width);
+	margin-left: auto;
+	margin-right: auto;
+	padding: 60px 60px 0;
 	width: 100%;
 	box-sizing: border-box;
 }
@@ -2879,6 +2890,35 @@ a.plan-panel-cta:hover {
 	margin-top: 8px;
 }
 
+.status-footer {
+	font-family: "Departure Mono", monospace;
+	font-size: 11px;
+	text-transform: uppercase;
+	line-height: 1.5;
+	padding: 24px 0 0;
+	margin: 0;
+	color: var(--opacity-75);
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 4px;
+}
+
+/* Block <li>: inline flow inside each line so spaces after the glyph <span> aren’t flex-boundary quirks. */
+.status-footer li {
+	margin: 0;
+}
+
+@media only screen and (min-width: 1081px) {
+	.status-footer {
+		flex-direction: row;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 0;
+	}
+}
+
 .quote-text {
 	flex: 1;
 }
@@ -3155,6 +3195,7 @@ a.plan-panel-cta:hover {
 .work-grid-title .work-title-name {
 	opacity: 1;
 	color: var(--color-text);
+	text-transform: uppercase;
 }
 
 /* Placeholder + border stay visible while the img fades in (img opacity does not affect the frame) */
@@ -3282,6 +3323,35 @@ a.plan-panel-cta:hover {
 	opacity: 1;
 }
 
+.load-more-row {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 0.5em 1em;
+	margin-top: var(--gap-section);
+	/* Vertical rhythm lives on the row so it stays when the button is hidden */
+	padding: var(--gap-section) 0;
+}
+
+.load-more-row .load-more-button {
+	margin-top: 0;
+}
+
+.load-more-separator {
+	white-space: pre;
+}
+
+.load-more-separator.hidden {
+	display: none;
+}
+
+.load-more-status {
+	font-family: "Departure Mono", monospace;
+	font-size: 11px;
+	line-height: normal;
+	text-transform: uppercase;
+}
+
 .load-more-button {
 	font-family: "Departure Mono", monospace;
 	font-size: 11px;
@@ -3290,8 +3360,8 @@ a.plan-panel-cta:hover {
 	color: var(--opacity-90);
 	background: none;
 	border: none;
-	padding: var(--gap-section) 0;
-	margin-top: var(--gap-section);
+	padding: 0;
+	margin-top: 0;
 	cursor: pointer;
 	text-align: left;
 	transition: opacity 0.2s ease;
@@ -3785,6 +3855,11 @@ img.daas-graphic.fade-in {
 		padding-right: 3rem;
 	}
 
+	.status-section {
+		padding-left: 3rem;
+		padding-right: 3rem;
+	}
+
 	.tldr h2.card-title,
 	.tldr h3.card-title {
 		font-size: 33px;
@@ -4055,6 +4130,11 @@ img.daas-graphic.fade-in {
 		margin-top: 10rem;
 	}
 
+	.status-section {
+		padding-left: 2rem;
+		padding-right: 2rem;
+	}
+
 	.tldr h2.card-title,
 	.tldr h3.card-title,
 	h2.card-title {
@@ -4240,6 +4320,11 @@ img.daas-graphic.fade-in {
 	/* TL;DR + CARDS */
 	.tldr,
 	.cards {
+		padding-left: 2rem;
+		padding-right: 2rem;
+	}
+
+	.status-section {
 		padding-left: 2rem;
 		padding-right: 2rem;
 	}
@@ -4599,6 +4684,10 @@ img.daas-graphic.fade-in {
 	.tldr,
 	.cards {
 		padding: 1.5rem;
+	}
+
+	.status-section {
+		padding: 0.25rem 1.5rem 1.5rem;
 	}
 
 	.tldr h2.card-title,
