@@ -1,4 +1,5 @@
 .DS_Store
 server.py
+package.json
 /docs
 todo.txt
