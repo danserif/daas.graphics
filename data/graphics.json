@@ -474,6 +474,38 @@
       "columns": 3,
       "width": 1628,
       "height": 992
+    },
+    {
+      "filename": "k-pure-pakati.png",
+      "number": "K-14",
+      "description": "Pure Pākati (Specimen)",
+      "columns": 2,
+      "width": 1072,
+      "height": 1652
+    },
+    {
+      "filename": "k-licence-agreement.png",
+      "number": "K-15",
+      "description": "Desktop Font Licence Agreement",
+      "columns": 2,
+      "width": 1072,
+      "height": 724
+    },
+    {
+      "filename": "k-geograph.png",
+      "number": "K-16",
+      "description": "Geograph (Specimen)",
+      "columns": 3,
+      "width": 1628,
+      "height": 1192
+    },
+    {
+      "filename": "k-menu.jpg",
+      "number": "K-17",
+      "description": "Menu",
+      "columns": 3,
+      "width": 1628,
+      "height": 1028
     }
   ]
 }
