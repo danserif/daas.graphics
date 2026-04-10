@@ -61,7 +61,7 @@
 			description:
 				"For startups and businesses needing to refine existing design work, or to create unique branding from scratch.",
 			image: "/images/plans/d-03.png",
-			status: "Fully Booked",
+			status: "Limited availability",
 			pricePrefix: "Starting at",
 			priceAmount: "$7,000",
 			priceSuffix: "(USD) P/W",
@@ -184,13 +184,13 @@
 		var ctaWrap = refs.ctaWrap;
 		if (plan.ctaHref) {
 			ctaWrap.innerHTML =
-			'<a class="plan-panel-cta" href="' +
-			escapeHtml(plan.ctaHref) +
-			'" onclick="if(typeof fathom!==\'undefined\'&&fathom.trackEvent)fathom.trackEvent(\'CTA\',0);"><span class="accent opacity-50">' +
-			escapeHtml(plan.ctaIcon) +
-			" </span><span>" +
-			escapeHtml(plan.ctaLabel) +
-			'</span> <span class="accent opacity-50">→</span></a>';
+				'<a class="plan-panel-cta" href="' +
+				escapeHtml(plan.ctaHref) +
+				'" onclick="if(typeof fathom!==\'undefined\'&&fathom.trackEvent)fathom.trackEvent(\'CTA\',0);"><span class="accent opacity-50">' +
+				escapeHtml(plan.ctaIcon) +
+				" </span><span>" +
+				escapeHtml(plan.ctaLabel) +
+				'</span> <span class="accent opacity-50">→</span></a>';
 		} else {
 			ctaWrap.innerHTML =
 				'<span class="plan-panel-cta plan-panel-cta--text">' +
@@ -216,7 +216,10 @@
 			requestAnimationFrame(startPixelation);
 		}
 		if (typeof img.decode === "function") {
-			img.decode().then(schedulePixelation).catch(function () {});
+			img
+				.decode()
+				.then(schedulePixelation)
+				.catch(function () {});
 		} else if (img.complete && img.naturalWidth) {
 			schedulePixelation();
 		} else {
@@ -431,8 +434,8 @@
 			var link = e.target.closest(".pricing-plan-link");
 			if (!link) return;
 			e.preventDefault();
-		var planId = link.getAttribute("data-plan");
-		if (planId) openPricingPanel(planId, refs);
+			var planId = link.getAttribute("data-plan");
+			if (planId) openPricingPanel(planId, refs);
 		});
 		refs.closeBtn.addEventListener("click", function () {
 			closePricingPanel(refs);
@@ -443,13 +446,13 @@
 		document.addEventListener("keydown", function (e) {
 			if (e.key === "Escape" && overlay.classList.contains("is-plan-open")) closePricingPanel(refs);
 		});
-	refs.tabs.forEach(function (tab) {
-		tab.addEventListener("click", function () {
-			var planId = tab.getAttribute("data-plan");
-			if (typeof fathom !== "undefined" && fathom.trackEvent) fathom.trackEvent(planId, 0);
-			renderPricingPanel(planId, refs);
+		refs.tabs.forEach(function (tab) {
+			tab.addEventListener("click", function () {
+				var planId = tab.getAttribute("data-plan");
+				if (typeof fathom !== "undefined" && fathom.trackEvent) fathom.trackEvent(planId, 0);
+				renderPricingPanel(planId, refs);
+			});
 		});
-	});
 	}
 
 	if (document.readyState === "loading") {
