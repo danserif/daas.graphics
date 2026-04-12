@@ -237,6 +237,15 @@ code {
 	color: var(--color-accent);
 }
 
+/* Selected state for accent colour toggles */
+:root:not(.light-mode) .dark-mode-toggle {
+	opacity: 0.5;
+}
+
+:root.light-mode .light-mode-toggle {
+	opacity: 0.5;
+}
+
 .divider {
 	width: 100%;
 	height: 0;
