@@ -352,6 +352,7 @@
 			document.body.style.overflow = "hidden";
 		}
 		renderPricingPanel(planId, refs);
+		setHashForPlan(planId);
 		if (refs.scrollEl) refs.scrollEl.offsetHeight;
 		requestAnimationFrame(function () {
 			overlay.classList.add("is-plan-open");
@@ -360,6 +361,30 @@
 			}
 		});
 		refs.closeBtn.focus();
+	}
+
+	var DEFAULT_PLAN = "D-01";
+
+	function parsePlanFromHash() {
+		var hash = window.location.hash;
+		if (!hash) return null;
+		var match = hash.match(/^#plan=(D-0[1-4])$/);
+		if (match) return match[1];
+		if (hash === "#pricing") return DEFAULT_PLAN;
+		return null;
+	}
+
+	function setHashForPlan(planId) {
+		var newHash = "#plan=" + planId;
+		if (window.location.hash !== newHash) {
+			history.replaceState(null, "", newHash);
+		}
+	}
+
+	function clearPlanHash() {
+		if (/^#(pricing|plan=)/.test(window.location.hash)) {
+			history.replaceState(null, "", window.location.pathname + window.location.search);
+		}
 	}
 
 	var PANEL_TRANSITION_MS = 300;
@@ -378,6 +403,7 @@
 		}
 		overlay.classList.remove("is-plan-open");
 		overlay.style.background = "";
+		clearPlanHash();
 		if (!refs._openedFromNav) {
 			overlay.classList.remove("is-open");
 		} else {
@@ -451,7 +477,22 @@
 				var planId = tab.getAttribute("data-plan");
 				if (typeof fathom !== "undefined" && fathom.trackEvent) fathom.trackEvent(planId, 0);
 				renderPricingPanel(planId, refs);
+				setHashForPlan(planId);
 			});
+		});
+
+		var hashPlan = parsePlanFromHash();
+		if (hashPlan) openPricingPanel(hashPlan, refs);
+
+		window.addEventListener("hashchange", function () {
+			var planId = parsePlanFromHash();
+			if (planId) {
+				if (!overlay.classList.contains("is-plan-open")) {
+					openPricingPanel(planId, refs);
+				} else {
+					renderPricingPanel(planId, refs);
+				}
+			}
 		});
 	}
 
