@@ -3478,15 +3478,19 @@ a.plan-panel-cta:hover {
 }
 
 .marquee-track {
-	display: inline-flex;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
 	align-items: center;
+	width: max-content;
 	white-space: nowrap;
-	will-change: transform;
 	animation: marquee-scroll 90s linear infinite;
 }
 
 .marquee ul {
-	display: inline-flex;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
 	flex-shrink: 0;
 	align-items: center;
 	gap: 1.5rem;
@@ -3498,6 +3502,7 @@ a.plan-panel-cta:hover {
 }
 
 .marquee li {
+	flex-shrink: 0;
 	font-family: "Departure Mono", monospace;
 	font-size: 11px;
 	line-height: 22px;
@@ -3519,11 +3524,11 @@ a.plan-panel-cta:hover {
 
 @keyframes marquee-scroll {
 	0% {
-		transform: translateX(0);
+		transform: translate3d(0, 0, 0);
 	}
 
 	100% {
-		transform: translateX(-50%);
+		transform: translate3d(-50%, 0, 0);
 	}
 }
 
@@ -3582,8 +3587,8 @@ a.plan-panel-cta:hover {
 }
 
 .logos-marquee-section .marquee ul {
-	gap: 6rem;
-	margin-right: 6rem;
+	gap: 5rem;
+	margin-right: 5rem;
 }
 
 .logos-marquee-section .marquee li {
@@ -3606,6 +3611,12 @@ a.plan-panel-cta:hover {
 
 .logo-svg:hover {
 	opacity: 1;
+}
+
+/* Narrower logos shorten the translated strip (~8k px GPU layer limits in some browsers). */
+.logos-marquee-section .logo-svg {
+	max-width: 170px;
+	flex-shrink: 0;
 }
 
 :root.light-mode .logo-svg {
@@ -4956,6 +4967,10 @@ img.daas-graphic.fade-in {
 
 	.logo-svg {
 		max-height: 50px;
+		max-width: 160px;
+	}
+
+	.logos-marquee-section .logo-svg {
 		max-width: 160px;
 	}
 
