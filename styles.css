@@ -361,10 +361,11 @@ code {
 	pointer-events: none;
 }
 
-/* HEADER SECTION — stack above <main> so fixed chrome / panels aren’t covered by page layers */
+/* HEADER SECTION — stack above <main> so fixed chrome / panels aren’t covered by page layers.
+   Must stay above .work-samples .filter-bar open state (z-index 530). Nav overlay (#nav-overlay) stays higher. */
 .header {
 	position: relative;
-	z-index: 502;
+	z-index: 560;
 	display: flex;
 	gap: var(--gap-flex);
 	max-width: var(--max-width);
@@ -1127,7 +1128,7 @@ h1.header-label {
 	position: static;
 }
 
-.header .header-fixed-bar > .divider {
+.header .header-fixed-bar>.divider {
 	margin: 1.25rem 0 0;
 	/* Match filter bar / content dashed rules — .header .divider uses subtler --opacity-15 */
 	border-top-color: var(--color-border);
@@ -1334,14 +1335,16 @@ h1.header-label {
 	pointer-events: auto;
 }
 
-/* Mute colourful page (e.g. work gallery) behind the backdrop when #work is in view */
-:root.nav-overlay-page-grayscale-over-work body>*:not(#nav-overlay) {
+/* Mute colourful page (e.g. work gallery) behind the backdrop when #work is in view.
+   Exclude #top (site header): filter establishes a containing block for fixed descendants on WebKit,
+   which can invert header vs gallery order; chrome stays full-colour which reads fine over the backdrop. */
+:root.nav-overlay-page-grayscale-over-work body>*:not(#nav-overlay):not(#top) {
 	filter: grayscale(1);
 	transition: filter 0.25s ease;
 }
 
 @media (prefers-reduced-motion: reduce) {
-	:root.nav-overlay-page-grayscale-over-work body>*:not(#nav-overlay) {
+	:root.nav-overlay-page-grayscale-over-work body>*:not(#nav-overlay):not(#top) {
 		transition: none;
 	}
 }

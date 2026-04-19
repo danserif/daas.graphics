@@ -1753,13 +1753,19 @@ initAfterLoading();
 		return f && f.classList.contains("is-visible");
 	}
 
+	/** Menu / pricing both use #nav-overlay; `is-open` is set whenever either surface is showing. */
+	function navOverlayOpen() {
+		var nav = document.getElementById("nav-overlay");
+		return nav && nav.classList.contains("is-open");
+	}
+
 	function show(fromIdle) {
 		if (isVisible()) return;
 		if (overWorkClassClearTimer) {
 			clearTimeout(overWorkClassClearTimer);
 			overWorkClassClearTimer = null;
 		}
-		if (fromIdle && faceOverlayOpen()) {
+		if (fromIdle && (faceOverlayOpen() || navOverlayOpen())) {
 			startTimer();
 			return;
 		}
