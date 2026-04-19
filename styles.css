@@ -2815,6 +2815,11 @@ a.plan-panel-cta:hover {
 	gap: 0.5em 0.75em;
 }
 
+/* Slash: token as color only—no .opacity-25 multiply on bar’s --opacity-50 foreground */
+.filter-bar .filter-bar-slash {
+	color: var(--opacity-25);
+}
+
 .work-content .filter-bar {
 	margin-bottom: 0;
 	padding-top: 20px;

@@ -421,7 +421,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 		function addSlashLi(ul) {
 			const li = document.createElement("li");
-			li.className = "opacity-50";
+			li.className = "filter-bar-slash";
 			li.setAttribute("aria-hidden", "true");
 			li.textContent = "/";
 			ul.appendChild(li);
@@ -641,6 +641,13 @@ document.addEventListener("DOMContentLoaded", function () {
 			return fixed.offsetHeight;
 		}
 		return 0;
+	}
+
+	/** Raw band height can sit a hair below visual header edge; sticky top uses this so JS scroll math matches CSS */
+	function getFilterBarSnapTopForStickyPx() {
+		const raw = getGraphicsFilterSnapTopPx();
+		if (!window.matchMedia(FILTER_BAR_MOBILE_MQL).matches) return raw;
+		return Math.max(0, raw - 3);
 	}
 
 	// Full-width section title (graphics.json: type "title")
@@ -913,56 +920,74 @@ document.addEventListener("DOMContentLoaded", function () {
 
 			function scrollGridIntoViewAfterFilterTap() {
 				if (!filterChangeScrollEnabled) return;
-				requestAnimationFrame(function () {
-					requestAnimationFrame(function () {
-						const gapPx = 16;
-						const filterEl =
-							section.querySelector(".filter-bar") || workContent.querySelector(".filter-bar");
 
-						let anchor = null;
-						if (sectionType === "graphics") {
-							if (activeGraphicsProject) {
-								const ttl = grid.querySelectorAll(".work-grid-title");
-								for (let ti = 0; ti < ttl.length; ti++) {
-									if (ttl[ti].getAttribute("data-project") === activeGraphicsProject) {
-										anchor = ttl[ti];
-										break;
-									}
+				function measureAndScrollByFilterGeometry() {
+					const mobileScroll = window.matchMedia(FILTER_BAR_MOBILE_MQL).matches;
+					const gapPx = mobileScroll ? 12 : 16;
+					const titleBelowFilterPad = mobileScroll ? 10 : 14;
+					const minWantAnchorTopPx = mobileScroll ? 56 : 72;
+					const filterEl =
+						section.querySelector(".filter-bar") || workContent.querySelector(".filter-bar");
+					if (!filterEl) return;
+
+					/* After dropdown selection the trigger label height can change (wrap, sup hidden); flush layout before rects */
+					void filterEl.offsetHeight;
+
+					let anchor = null;
+					if (sectionType === "graphics") {
+						if (activeGraphicsProject) {
+							const ttl = grid.querySelectorAll(".work-grid-title");
+							for (let ti = 0; ti < ttl.length; ti++) {
+								if (ttl[ti].getAttribute("data-project") === activeGraphicsProject) {
+									anchor = ttl[ti];
+									break;
 								}
-							} else {
-								anchor = grid.querySelector(".work-grid-title");
-							}
-						}
-						if (!anchor) {
-							anchor = section.querySelector(".disclaimer") || grid;
-						}
-
-						const titleBelowFilterPad = 14;
-						let wantAnchorTop;
-						if (anchor.classList && anchor.classList.contains("work-grid-title") && filterEl) {
-							const fr = filterEl.getBoundingClientRect();
-							wantAnchorTop = fr.bottom + gapPx + titleBelowFilterPad;
-							if (wantAnchorTop < gapPx + 48) {
-								const snap =
-									parseFloat(getComputedStyle(section).getPropertyValue("--filter-bar-snap-top")) ||
-									0;
-								wantAnchorTop =
-									snap +
-									Math.max(fr.height, filterEl.offsetHeight || 52) +
-									gapPx +
-									titleBelowFilterPad;
 							}
 						} else {
-							wantAnchorTop = getGraphicsFilterSnapTopPx() + gapPx + 48;
+							anchor = grid.querySelector(".work-grid-title");
 						}
-						wantAnchorTop = Math.max(wantAnchorTop, 72);
+					}
+					if (!anchor) {
+						anchor = section.querySelector(".disclaimer") || grid;
+					}
 
-						const anchorTop = anchor.getBoundingClientRect().top;
-						const delta = anchorTop - wantAnchorTop;
-						if (Math.abs(delta) < 4) return;
-						window.scrollBy({ top: delta, behavior: "smooth" });
+					let wantAnchorTop;
+					if (anchor.classList && anchor.classList.contains("work-grid-title") && filterEl) {
+						const fr = filterEl.getBoundingClientRect();
+						wantAnchorTop = fr.bottom + gapPx + titleBelowFilterPad;
+						if (wantAnchorTop < gapPx + 48) {
+							const snap =
+								parseFloat(getComputedStyle(section).getPropertyValue("--filter-bar-snap-top")) ||
+								0;
+							wantAnchorTop =
+								snap +
+								Math.max(fr.height, filterEl.offsetHeight || 52) +
+								gapPx +
+								titleBelowFilterPad;
+						}
+					} else {
+						wantAnchorTop = getFilterBarSnapTopForStickyPx() + gapPx + 48;
+					}
+					wantAnchorTop = Math.max(wantAnchorTop, minWantAnchorTopPx);
+
+					const anchorTop = anchor.getBoundingClientRect().top;
+					const delta = anchorTop - wantAnchorTop;
+					if (Math.abs(delta) < 4) return;
+					window.scrollBy({ top: delta, behavior: "smooth" });
+				}
+
+				/* Mobile: extra frame so sticky bar + dropdown label finish reflow before measuring */
+				if (window.matchMedia(FILTER_BAR_MOBILE_MQL).matches) {
+					requestAnimationFrame(function () {
+						requestAnimationFrame(function () {
+							requestAnimationFrame(measureAndScrollByFilterGeometry);
+						});
 					});
-				});
+				} else {
+					requestAnimationFrame(function () {
+						requestAnimationFrame(measureAndScrollByFilterGeometry);
+					});
+				}
 			}
 
 			const response = await fetch(jsonPath);
@@ -1017,12 +1042,15 @@ document.addEventListener("DOMContentLoaded", function () {
 					graphicsNoResultsMsg.style.display = "none";
 
 					function gfxSyncFilterSnapTop() {
-						section.style.setProperty("--filter-bar-snap-top", getGraphicsFilterSnapTopPx() + "px");
+						section.style.setProperty(
+							"--filter-bar-snap-top",
+							getFilterBarSnapTopForStickyPx() + "px",
+						);
 					}
 					function gfxCheckFilterStuck() {
 						gfxSyncFilterSnapTop();
 						const rect = filterBar.getBoundingClientRect();
-						const stickyTop = getGraphicsFilterSnapTopPx();
+						const stickyTop = getFilterBarSnapTopForStickyPx();
 						const line = stickyTop + 1;
 						const stickHyst = 16;
 						const wasStuck = filterBar.classList.contains("is-stuck");
