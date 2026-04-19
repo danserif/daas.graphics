@@ -555,11 +555,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
 		const desktopWrap = document.createElement("nav");
 		desktopWrap.className = "filter-bar-desktop";
-		desktopWrap.setAttribute("aria-label", "Project filters");
+		desktopWrap.setAttribute("aria-label", "Example filters");
 
 		const projectsUl = document.createElement("ul");
 		projectsUl.className = "filter-bar-list";
-		addListLabel(projectsUl, "Projects:");
+		addListLabel(projectsUl, "Examples:");
 		addProjectBtn(projectsUl, "All", "all");
 		for (let i = 0; i < projectNames.length; i++) {
 			addSlashLi(projectsUl);
@@ -579,7 +579,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 		const mobileLabel = document.createElement("span");
 		mobileLabel.className = "filter-bar-mobile-label opacity-50";
-		mobileLabel.textContent = "Projects:";
+		mobileLabel.textContent = "Examples:";
 		mobileBar.appendChild(mobileLabel);
 
 		const projOptions = [{ label: "All", value: "all" }];
@@ -626,7 +626,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	function getGraphicsFilterSnapTopPx() {
 		if (window.matchMedia(FILTER_BAR_MOBILE_MQL).matches) {
-			const v = getComputedStyle(document.documentElement).getPropertyValue("--header-sticky-band-height").trim();
+			const v = getComputedStyle(document.documentElement)
+				.getPropertyValue("--header-sticky-band-height")
+				.trim();
 			if (v) {
 				const n = parseFloat(v);
 				if (!Number.isNaN(n)) return n;
@@ -991,16 +993,20 @@ document.addEventListener("DOMContentLoaded", function () {
 					}
 				}
 
-				filterBar = buildGraphicsProjectFilterBar(projectNames, projectImageCounts, function (proj) {
-					activeGraphicsProject = proj;
-					applyGraphicsProjectFilter();
-					updateLoadMoreStatus();
-					void expandGraphicsFilterToVisible().then(function () {
+				filterBar = buildGraphicsProjectFilterBar(
+					projectNames,
+					projectImageCounts,
+					function (proj) {
+						activeGraphicsProject = proj;
 						applyGraphicsProjectFilter();
 						updateLoadMoreStatus();
-						scrollGridIntoViewAfterFilterTap();
-					});
-				});
+						void expandGraphicsFilterToVisible().then(function () {
+							applyGraphicsProjectFilter();
+							updateLoadMoreStatus();
+							scrollGridIntoViewAfterFilterTap();
+						});
+					},
+				);
 
 				if (filterBar) {
 					workContent.appendChild(filterBar);
@@ -1180,11 +1186,13 @@ document.addEventListener("DOMContentLoaded", function () {
 			applyGraphicsProjectFilter = function () {
 				if (sectionType !== "graphics") return;
 				const proj = activeGraphicsProject;
-				grid.querySelectorAll(".work-item, .work-grid-title, .work-grid-divider").forEach(function (el) {
-					const dp = el.getAttribute("data-project");
-					const visible = !proj || dp === proj;
-					el.style.display = visible ? "" : "none";
-				});
+				grid
+					.querySelectorAll(".work-item, .work-grid-title, .work-grid-divider")
+					.forEach(function (el) {
+						const dp = el.getAttribute("data-project");
+						const visible = !proj || dp === proj;
+						el.style.display = visible ? "" : "none";
+					});
 				if (proj) {
 					const ch = grid.children;
 					for (let ti = ch.length - 1; ti >= 0; ti--) {
