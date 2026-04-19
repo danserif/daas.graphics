@@ -3058,8 +3058,9 @@ a.plan-panel-cta:hover {
 	}
 
 	.filter-dropdown-list {
-		font-size: 12px;
-		line-height: 24px;
+		text-transform: none;
+		font-size: 16.5px;
+		line-height: 27.5px;
 		top: 100%;
 		left: calc(-1 * var(--work-pad-x, 60px));
 		right: calc(-1 * var(--work-pad-x, 60px));
