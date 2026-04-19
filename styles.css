@@ -52,6 +52,7 @@
 	--gap-row-cards: 80px;
 	--gap-row-footer: 80px;
 	--max-width: 2880px;
+	--header-links-gap: 1em;
 	/* SVG COLOR VARIABLES */
 	--fill-0: #ffffff;
 }
@@ -360,8 +361,10 @@ code {
 	pointer-events: none;
 }
 
-/* HEADER SECTION */
+/* HEADER SECTION — stack above <main> so fixed chrome / panels aren’t covered by page layers */
 .header {
+	position: relative;
+	z-index: 502;
 	display: flex;
 	gap: var(--gap-flex);
 	max-width: var(--max-width);
@@ -1124,8 +1127,10 @@ h1.header-label {
 	position: static;
 }
 
-.header .header-fixed-bar>.divider {
+.header .header-fixed-bar > .divider {
 	margin: 1.25rem 0 0;
+	/* Match filter bar / content dashed rules — .header .divider uses subtler --opacity-15 */
+	border-top-color: var(--color-border);
 }
 
 @media only screen and (max-width: 2660px) {
@@ -2683,6 +2688,7 @@ a.plan-panel-cta:hover {
 
 /* WORK SECTION */
 .work-samples {
+	--work-pad-x: 60px;
 	display: flex;
 	flex-direction: column;
 	gap: var(--gap-section);
@@ -2692,6 +2698,24 @@ a.plan-panel-cta:hover {
 	margin-top: 240px;
 	width: 100%;
 	box-sizing: border-box;
+}
+
+@media only screen and (max-width: 2660px) {
+	.work-samples {
+		--work-pad-x: 3rem;
+	}
+}
+
+@media only screen and (max-width: 1640px) {
+	.work-samples {
+		--work-pad-x: 2rem;
+	}
+}
+
+@media only screen and (max-width: 1080px) {
+	.work-samples {
+		--work-pad-x: 1.5rem;
+	}
 }
 
 .work-samples:last-of-type {
@@ -2723,8 +2747,299 @@ a.plan-panel-cta:hover {
 	max-width: 100%;
 }
 
+.work-content .work-grid {
+	position: relative;
+	z-index: 0;
+}
+
+/* Graphics gallery — project filter (aligned with dan.newman.is /designer) */
+.filter-bar {
+	position: relative;
+	background-color: var(--color-bg);
+	font-family: "Departure Mono", monospace;
+	font-size: 11px;
+	line-height: 18px;
+	color: var(--opacity-50);
+	text-transform: uppercase;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 0;
+	padding: 8px 0 12px;
+	border-bottom: 1px dashed var(--color-border);
+	transition: padding-top 0.2s ease, padding-bottom 0.2s ease;
+	overflow: visible;
+}
+
+.filter-bar-desktop {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: var(--header-links-gap);
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.filter-bar-active-meta {
+	margin-left: auto;
+	flex: 0 0 auto;
+	white-space: nowrap;
+	align-self: baseline;
+}
+
+.filter-bar-mobile .filter-bar-active-meta {
+	margin-left: auto;
+}
+
+.filter-bar .filter-bar-portfolio-meta a {
+	color: inherit;
+}
+
+.filter-bar-active-meta.filter-bar-portfolio-meta {
+	white-space: normal;
+}
+
+@media only screen and (max-width: 1640px) {
+	.filter-bar-portfolio-meta {
+		display: none;
+	}
+}
+
+.filter-bar-list {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	gap: 0.5em 0.75em;
+}
+
+.work-content .filter-bar {
+	margin-bottom: 0;
+	padding-top: 20px;
+}
+
+.work-content .filter-bar~.work-grid {
+	margin-top: 0;
+	padding-top: calc(var(--gap-section) * 2);
+}
+
+/* Sticky filter + bleed: desktop only (mobile keeps in-flow bar; JS never applies .is-stuck there) */
+@media only screen and (min-width: 1081px) {
+
+	/*
+	 * Vertical padding matches .is-stuck so row height does not jump.
+	 * Horizontal: in-flow bar sits inside .work-samples (already pad-x); do not add --work-pad-x here or copy double-insets.
+	 * When .is-stuck, the bar spans the header band and needs --work-pad-x on the element for alignment.
+	 */
+	.work-samples .work-content .filter-bar {
+		padding: 20px 0 24px;
+	}
+
+	.work-samples .filter-bar:has(.filter-dropdown.is-open) {
+		z-index: 530;
+	}
+
+	/* Same horizontal band as .header-fixed-bar (viewport-centered, max-width cap), not the work column width */
+	.work-samples .work-content .filter-bar.is-stuck {
+		position: sticky;
+		top: var(--filter-bar-snap-top, 0px);
+		z-index: 40;
+		background-color: var(--color-bg);
+		box-sizing: border-box;
+		width: min(100vw, var(--max-width));
+		margin-left: calc((100% - min(100vw, var(--max-width))) / 2);
+		margin-right: calc((100% - min(100vw, var(--max-width))) / 2);
+		padding: 20px var(--work-pad-x) 24px;
+		border-bottom: none;
+	}
+
+	.work-samples .filter-bar.is-stuck::after {
+		content: "";
+		position: absolute;
+		left: var(--work-pad-x);
+		right: var(--work-pad-x);
+		bottom: 0;
+		height: 0;
+		border-bottom: 1px dashed var(--color-border);
+		pointer-events: none;
+		z-index: 1;
+	}
+
+	.work-samples .filter-bar.is-stuck .filter-bar-desktop .filter-dropdown-list {
+		left: 0;
+		right: 0;
+		margin-left: 0;
+		margin-right: 0;
+		max-width: none;
+	}
+}
+
+@media only screen and (max-width: 1640px) {
+	.work-samples .work-content .filter-bar {
+		padding: 18px 0 22px;
+	}
+
+	.work-samples .work-content .filter-bar.is-stuck {
+		padding: 18px var(--work-pad-x) 22px;
+	}
+}
+
+.filter-bar button {
+	background: none;
+	border: none;
+	padding: 0;
+	font: inherit;
+	text-transform: inherit;
+	color: var(--opacity-50);
+	cursor: pointer;
+	transition: opacity 0.2s ease;
+}
+
+.filter-bar button.is-active {
+	color: var(--opacity-75);
+}
+
+.no-results {
+	font-family: "Departure Mono", monospace;
+	font-size: 12px;
+	line-height: 1.5;
+	padding: 6rem 0;
+	min-height: 40vh;
+}
+
+.filter-bar-mobile {
+	display: none;
+}
+
+.filter-dropdown {
+	position: relative;
+}
+
+.filter-dropdown-trigger {
+	background: none;
+	border: none;
+	padding: 0;
+	font: inherit;
+	color: var(--opacity-50);
+	cursor: pointer;
+	transition: color 0.2s ease;
+}
+
+.filter-dropdown.has-selection .filter-dropdown-trigger,
+.filter-dropdown.is-open .filter-dropdown-trigger {
+	color: var(--opacity-75);
+}
+
+.filter-dropdown-list {
+	display: none;
+	position: absolute;
+	top: calc(100% + 8px);
+	left: 0;
+	z-index: 600;
+	background-color: var(--color-bg);
+	border: 1px dashed var(--color-border);
+	padding: 16px 24px;
+	min-width: 160px;
+}
+
+.filter-dropdown.is-open .filter-dropdown-list {
+	display: block;
+}
+
+.filter-bar-desktop .filter-dropdown-list {
+	left: auto;
+	right: 0;
+	max-width: min(360px, calc(100vw - 2 * var(--work-pad-x, 60px) - 16px));
+	box-sizing: border-box;
+}
+
+.filter-dropdown-option {
+	display: block;
+	width: 100%;
+	background: none;
+	border: none;
+	padding: 6px 16px;
+	font: inherit;
+	color: var(--opacity-50);
+	cursor: pointer;
+	text-align: left;
+	transition: color 0.2s ease;
+}
+
+.filter-dropdown-option.is-active {
+	color: var(--opacity-75);
+}
+
+.filter-dropdown-option:hover {
+	color: var(--opacity-75);
+}
+
+.filter-bar button:hover {
+	opacity: 0.75;
+}
+
+.filter-bar sup {
+	font-size: 0.8em;
+	font-variant-numeric: tabular-nums;
+}
+
+@media only screen and (max-width: 1080px) {
+	.filter-bar {
+		padding-bottom: 22px;
+	}
+
+	.work-samples .filter-bar:has(.filter-dropdown.is-open) {
+		z-index: 530;
+	}
+
+	.filter-bar-desktop {
+		display: none;
+	}
+
+	.work-content .filter-bar~.work-grid {
+		margin-top: 0;
+		padding-top: calc(var(--gap-section) * 1.5);
+	}
+
+	.filter-bar-mobile {
+		display: flex;
+		align-items: baseline;
+		flex-wrap: wrap;
+		gap: 0.5em 0.85em;
+		width: 100%;
+	}
+
+	.filter-bar-mobile-label {
+		flex-shrink: 0;
+	}
+
+	.filter-dropdown {
+		position: static;
+	}
+
+	.filter-dropdown-list {
+		font-size: 12px;
+		line-height: 24px;
+		top: 100%;
+		left: calc(-1 * var(--work-pad-x, 60px));
+		right: calc(-1 * var(--work-pad-x, 60px));
+		min-width: 0;
+		border: none;
+		border-bottom: 1px dashed var(--color-border);
+		margin: 0 var(--work-pad-x, 60px);
+		padding: 0 0 24px 0;
+	}
+}
+
 .disclaimer {
 	padding-bottom: 3rem;
+}
+
+/* Graphics / Work: extra space above filter + grid (Lab keeps base .disclaimer padding) */
+#work .disclaimer {
+	padding-bottom: calc(3rem + var(--gap-section) * 3);
 }
 
 .disclaimer .card-text {

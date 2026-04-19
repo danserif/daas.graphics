@@ -8,6 +8,9 @@ document.addEventListener("DOMContentLoaded", function () {
 	// Set to true to skip loading graphics.json and experiments.json
 	const DISABLE_JSON_LOADING = false;
 
+	/* Keep in sync with filter bar CSS (mobile vs desktop filter layout). */
+	const FILTER_BAR_MOBILE_MQL = "(max-width: 1080px)";
+
 	// Theme-aware images: tracks light variants that 404'd so we don't retry them
 	const lightImageMissing = new Set();
 
@@ -337,10 +340,314 @@ document.addEventListener("DOMContentLoaded", function () {
 		paragraph.appendChild(slash);
 	}
 
+	function assignWorkProjects(items) {
+		let proj = null;
+		for (let i = 0; i < items.length; i++) {
+			const it = items[i];
+			if (it.type === "title" && it.name) {
+				proj = it.name;
+			}
+			it.project = proj;
+		}
+	}
+
+	function createGraphicsPortfolioMeta() {
+		const wrap = document.createElement("span");
+		wrap.className = "filter-bar-active-meta filter-bar-portfolio-meta";
+
+		const prefix = document.createElement("span");
+		prefix.className = "opacity-50";
+		prefix.textContent = "Status: ";
+		wrap.appendChild(prefix);
+
+		const lead = document.createElement("span");
+		lead.className = "opacity-75";
+		lead.textContent = "Limited Availability ";
+		wrap.appendChild(lead);
+
+		const waitlist = document.createElement("span");
+		waitlist.className = "opacity-50";
+		waitlist.textContent = "(Waitlist)";
+		wrap.appendChild(waitlist);
+
+		return wrap;
+	}
+
+	function graphicsProjectListLabel(canonicalName) {
+		if (!canonicalName) return "";
+		return canonicalName.replace(/,\s*Inc\.\s*$/i, "").trim();
+	}
+
+	function buildGraphicsProjectFilterBar(projectNames, projectImageCounts, onProjectChange) {
+		if (!projectNames || projectNames.length <= 1) return null;
+
+		const bar = document.createElement("div");
+		bar.className = "filter-bar";
+
+		let activeProject = null;
+
+		function fireFilter() {
+			onProjectChange(activeProject);
+		}
+
+		function updateActiveStates() {
+			bar.querySelectorAll("[data-filter-project]").forEach(function (btn) {
+				const val = btn.getAttribute("data-filter-project");
+				btn.classList.toggle("is-active", val === (activeProject || "all"));
+			});
+		}
+
+		function appendParenStyledTextPlain(text, parent, parenClass) {
+			const parts = text.split(/(\([^)]*\))/);
+			for (let i = 0; i < parts.length; i++) {
+				if (!parts[i]) continue;
+				const span = document.createElement("span");
+				if (parts[i].startsWith("(") && parts[i].endsWith(")")) {
+					span.className = parenClass;
+				}
+				span.textContent = parts[i];
+				parent.appendChild(span);
+			}
+		}
+
+		function addListLabel(ul, text) {
+			const li = document.createElement("li");
+			const span = document.createElement("span");
+			span.className = "opacity-50";
+			span.textContent = text;
+			li.appendChild(span);
+			ul.appendChild(li);
+		}
+
+		function addSlashLi(ul) {
+			const li = document.createElement("li");
+			li.className = "opacity-50";
+			li.setAttribute("aria-hidden", "true");
+			li.textContent = "/";
+			ul.appendChild(li);
+		}
+
+		function appendProjectFilterLabel(parent, displayLabel, imageCount) {
+			appendParenStyledTextPlain(displayLabel, parent, "opacity-25");
+			if (typeof imageCount === "number") {
+				const supEl = document.createElement("sup");
+				supEl.className = "opacity-50";
+				supEl.textContent = "(" + imageCount + ")";
+				parent.appendChild(supEl);
+			}
+		}
+
+		function addProjectBtn(ul, label, value, imageCount) {
+			const li = document.createElement("li");
+			const btn = document.createElement("button");
+			btn.type = "button";
+			btn.setAttribute("data-filter-project", value);
+			if (value === "all") {
+				appendParenStyledTextPlain(label, btn, "opacity-25");
+			} else {
+				appendProjectFilterLabel(btn, label, imageCount);
+			}
+			btn.addEventListener("click", function () {
+				activeProject = value === "all" ? null : value;
+				updateActiveStates();
+				fireFilter();
+			});
+			li.appendChild(btn);
+			ul.appendChild(li);
+		}
+
+		function buildDropdown(label, options, getActive, setActive) {
+			const wrapper = document.createElement("div");
+			wrapper.className = "filter-dropdown";
+
+			const trigger = document.createElement("button");
+			trigger.type = "button";
+			trigger.className = "filter-dropdown-trigger";
+
+			const triggerLabel = document.createElement("span");
+			triggerLabel.textContent = label;
+			trigger.appendChild(triggerLabel);
+
+			const chevron = document.createElement("span");
+			chevron.className = "opacity-25";
+			chevron.textContent = " ▾";
+			trigger.appendChild(chevron);
+
+			const list = document.createElement("div");
+			list.className = "filter-dropdown-list";
+
+			function updateTriggerLabel() {
+				const active = getActive();
+				const defaultVal = options.length > 0 ? options[0].value : null;
+				triggerLabel.replaceChildren();
+				if (active && active !== defaultVal) {
+					let match = null;
+					for (let mi = 0; mi < options.length; mi++) {
+						if (options[mi].value === active) {
+							match = options[mi];
+							break;
+						}
+					}
+					if (match) {
+						const tl = match.shortLabel || match.label;
+						if (typeof match.imageCount === "number") {
+							appendProjectFilterLabel(triggerLabel, tl, match.imageCount);
+						} else {
+							appendParenStyledTextPlain(tl, triggerLabel, "opacity-25");
+						}
+					} else {
+						triggerLabel.textContent = active;
+					}
+					wrapper.classList.add("has-selection");
+				} else {
+					triggerLabel.textContent = label;
+					wrapper.classList.remove("has-selection");
+				}
+			}
+
+			function buildList() {
+				list.innerHTML = "";
+				const active = getActive();
+				for (let i = 0; i < options.length; i++) {
+					const opt = document.createElement("button");
+					opt.type = "button";
+					opt.className = "filter-dropdown-option";
+					opt.setAttribute("data-value", options[i].value);
+					if (typeof options[i].imageCount === "number" && options[i].styledLabel) {
+						appendProjectFilterLabel(opt, options[i].styledLabel, options[i].imageCount);
+					} else if (options[i].styledLabel) {
+						appendParenStyledTextPlain(options[i].styledLabel, opt, "opacity-25");
+					} else {
+						opt.textContent = options[i].label;
+					}
+					if (options[i].value === active) opt.classList.add("is-active");
+					(function (val) {
+						opt.addEventListener("click", function (e) {
+							e.stopPropagation();
+							setActive(val);
+							updateActiveStates();
+							fireFilter();
+							updateTriggerLabel();
+							wrapper.classList.remove("is-open");
+						});
+					})(options[i].value);
+					list.appendChild(opt);
+				}
+			}
+
+			trigger.addEventListener("click", function (e) {
+				e.stopPropagation();
+				const wasOpen = wrapper.classList.contains("is-open");
+				bar.querySelectorAll(".filter-dropdown.is-open").forEach(function (d) {
+					d.classList.remove("is-open");
+				});
+				if (!wasOpen) {
+					buildList();
+					wrapper.classList.add("is-open");
+				}
+			});
+
+			wrapper.appendChild(trigger);
+			wrapper.appendChild(list);
+			updateTriggerLabel();
+			return wrapper;
+		}
+
+		const desktopWrap = document.createElement("nav");
+		desktopWrap.className = "filter-bar-desktop";
+		desktopWrap.setAttribute("aria-label", "Project filters");
+
+		const projectsUl = document.createElement("ul");
+		projectsUl.className = "filter-bar-list";
+		addListLabel(projectsUl, "Projects:");
+		addProjectBtn(projectsUl, "All", "all");
+		for (let i = 0; i < projectNames.length; i++) {
+			addSlashLi(projectsUl);
+			addProjectBtn(
+				projectsUl,
+				graphicsProjectListLabel(projectNames[i]),
+				projectNames[i],
+				projectImageCounts[projectNames[i]],
+			);
+		}
+		desktopWrap.appendChild(projectsUl);
+		desktopWrap.appendChild(createGraphicsPortfolioMeta());
+		bar.appendChild(desktopWrap);
+
+		const mobileBar = document.createElement("div");
+		mobileBar.className = "filter-bar-mobile";
+
+		const mobileLabel = document.createElement("span");
+		mobileLabel.className = "filter-bar-mobile-label opacity-50";
+		mobileLabel.textContent = "Projects:";
+		mobileBar.appendChild(mobileLabel);
+
+		const projOptions = [{ label: "All", value: "all" }];
+		for (let ci = 0; ci < projectNames.length; ci++) {
+			const display = graphicsProjectListLabel(projectNames[ci]);
+			projOptions.push({
+				label: display,
+				styledLabel: display,
+				shortLabel: display.replace(/\s*\([^)]*\)/, ""),
+				value: projectNames[ci],
+				imageCount: projectImageCounts[projectNames[ci]],
+			});
+		}
+
+		mobileBar.appendChild(
+			buildDropdown(
+				"All",
+				projOptions,
+				function () {
+					return activeProject || "all";
+				},
+				function (val) {
+					activeProject = val === "all" ? null : val;
+				},
+			),
+		);
+		mobileBar.appendChild(createGraphicsPortfolioMeta());
+
+		document.addEventListener("click", function () {
+			bar.querySelectorAll(".filter-dropdown.is-open").forEach(function (d) {
+				d.classList.remove("is-open");
+			});
+		});
+
+		bar.appendChild(mobileBar);
+
+		updateActiveStates();
+
+		bar._fireInitialFilter = function () {
+			fireFilter();
+		};
+		return bar;
+	}
+
+	function getGraphicsFilterSnapTopPx() {
+		if (window.matchMedia(FILTER_BAR_MOBILE_MQL).matches) {
+			const v = getComputedStyle(document.documentElement).getPropertyValue("--header-sticky-band-height").trim();
+			if (v) {
+				const n = parseFloat(v);
+				if (!Number.isNaN(n)) return n;
+			}
+			const band = document.querySelector(".header-sticky-band");
+			return band ? band.offsetHeight : 0;
+		}
+		const fixed = document.querySelector(".header-fixed-bar");
+		if (fixed && fixed.classList.contains("is-visible")) {
+			return fixed.offsetHeight;
+		}
+		return 0;
+	}
+
 	// Full-width section title (graphics.json: type "title")
 	function renderGraphicsTitleItem(item, container) {
 		const wrap = document.createElement("div");
 		wrap.className = "work-grid-title";
+		if (item.project) {
+			wrap.setAttribute("data-project", item.project);
+		}
 
 		const line = document.createElement("p");
 		line.className = "work-text work-title-line";
@@ -392,6 +699,9 @@ document.addEventListener("DOMContentLoaded", function () {
 			const hr = document.createElement("hr");
 			hr.className = "divider work-grid-divider";
 			hr.setAttribute("aria-hidden", "true");
+			if (item.project) {
+				hr.setAttribute("data-project", item.project);
+			}
 			container.appendChild(hr);
 			return;
 		}
@@ -406,6 +716,9 @@ document.addEventListener("DOMContentLoaded", function () {
 		// Allow 1, 2, 3, or 4 columns, default to 1
 		const columns = item.columns && [1, 2, 3, 4].includes(item.columns) ? item.columns : 1;
 		workItem.setAttribute("data-columns", columns);
+		if (item.project) {
+			workItem.setAttribute("data-project", item.project);
+		}
 
 		const graphicsLabel = item.number != null && item.number !== "" ? String(item.number) : "";
 
@@ -561,17 +874,12 @@ document.addEventListener("DOMContentLoaded", function () {
 			workContent.appendChild(disclaimer);
 		}
 
-		// Create grid container
 		const grid = document.createElement("div");
 		grid.className = "work-grid";
-		workContent.appendChild(grid);
 
-		// Divider between grid and load-more / image count row (hidden until first batch paints)
 		const divider = document.createElement("hr");
 		divider.className = "divider hidden";
-		workContent.appendChild(divider);
 
-		// Load more control + live image count (items with filename only)
 		const loadMoreRow = document.createElement("div");
 		loadMoreRow.className = "load-more-row";
 
@@ -592,15 +900,164 @@ document.addEventListener("DOMContentLoaded", function () {
 		loadMoreRow.appendChild(loadMoreSep);
 		loadMoreRow.appendChild(loadMoreStatus);
 		loadMoreSep.classList.add("hidden");
-		workContent.appendChild(loadMoreRow);
 
 		let allItems = [];
 		let displayedCount = 0;
 
 		try {
+			let activeGraphicsProject = null;
+			let filterChangeScrollEnabled = false;
+			let expandGraphicsFilterToVisible = async function () {};
+
+			function scrollGridIntoViewAfterFilterTap() {
+				if (!filterChangeScrollEnabled) return;
+				requestAnimationFrame(function () {
+					requestAnimationFrame(function () {
+						const gapPx = 16;
+						const filterEl =
+							section.querySelector(".filter-bar") || workContent.querySelector(".filter-bar");
+
+						let anchor = null;
+						if (sectionType === "graphics") {
+							if (activeGraphicsProject) {
+								const ttl = grid.querySelectorAll(".work-grid-title");
+								for (let ti = 0; ti < ttl.length; ti++) {
+									if (ttl[ti].getAttribute("data-project") === activeGraphicsProject) {
+										anchor = ttl[ti];
+										break;
+									}
+								}
+							} else {
+								anchor = grid.querySelector(".work-grid-title");
+							}
+						}
+						if (!anchor) {
+							anchor = section.querySelector(".disclaimer") || grid;
+						}
+
+						const titleBelowFilterPad = 14;
+						let wantAnchorTop;
+						if (anchor.classList && anchor.classList.contains("work-grid-title") && filterEl) {
+							const fr = filterEl.getBoundingClientRect();
+							wantAnchorTop = fr.bottom + gapPx + titleBelowFilterPad;
+							if (wantAnchorTop < gapPx + 48) {
+								const snap =
+									parseFloat(getComputedStyle(section).getPropertyValue("--filter-bar-snap-top")) ||
+									0;
+								wantAnchorTop =
+									snap +
+									Math.max(fr.height, filterEl.offsetHeight || 52) +
+									gapPx +
+									titleBelowFilterPad;
+							}
+						} else {
+							wantAnchorTop = getGraphicsFilterSnapTopPx() + gapPx + 48;
+						}
+						wantAnchorTop = Math.max(wantAnchorTop, 72);
+
+						const anchorTop = anchor.getBoundingClientRect().top;
+						const delta = anchorTop - wantAnchorTop;
+						if (Math.abs(delta) < 4) return;
+						window.scrollBy({ top: delta, behavior: "smooth" });
+					});
+				});
+			}
+
 			const response = await fetch(jsonPath);
 			const data = await response.json();
 			allItems = data.items || [];
+
+			let filterBar = null;
+			let graphicsNoResultsMsg = null;
+			let applyGraphicsProjectFilter = function () {};
+
+			if (sectionType === "graphics") {
+				assignWorkProjects(allItems);
+
+				const projectImageCounts = {};
+				for (let ii = 0; ii < allItems.length; ii++) {
+					const row = allItems[ii];
+					if (!row.filename || !row.project) continue;
+					const pnKey = row.project;
+					projectImageCounts[pnKey] = (projectImageCounts[pnKey] || 0) + 1;
+				}
+				const projectNames = [];
+				const projectSeen = new Set();
+				for (let pi = 0; pi < allItems.length; pi++) {
+					const pn = allItems[pi].project;
+					if (pn && !projectSeen.has(pn)) {
+						projectSeen.add(pn);
+						projectNames.push(pn);
+					}
+				}
+
+				filterBar = buildGraphicsProjectFilterBar(projectNames, projectImageCounts, function (proj) {
+					activeGraphicsProject = proj;
+					applyGraphicsProjectFilter();
+					updateLoadMoreStatus();
+					void expandGraphicsFilterToVisible().then(function () {
+						applyGraphicsProjectFilter();
+						updateLoadMoreStatus();
+						scrollGridIntoViewAfterFilterTap();
+					});
+				});
+
+				if (filterBar) {
+					workContent.appendChild(filterBar);
+
+					graphicsNoResultsMsg = document.createElement("p");
+					graphicsNoResultsMsg.className = "no-results opacity-50";
+					graphicsNoResultsMsg.textContent = "No work matches the selected project.";
+					graphicsNoResultsMsg.style.display = "none";
+
+					function gfxSyncFilterSnapTop() {
+						section.style.setProperty("--filter-bar-snap-top", getGraphicsFilterSnapTopPx() + "px");
+					}
+					gfxSyncFilterSnapTop();
+
+					const gfxStickyBarMql = window.matchMedia("(min-width: 1081px)");
+					function gfxCheckFilterStuck() {
+						if (!gfxStickyBarMql.matches) {
+							filterBar.classList.remove("is-stuck");
+							section.style.removeProperty("--filter-bar-snap-top");
+							return;
+						}
+						gfxSyncFilterSnapTop();
+						const rect = filterBar.getBoundingClientRect();
+						const stickyTop = getGraphicsFilterSnapTopPx();
+						const line = stickyTop + 1;
+						const stickHyst = 16;
+						const wasStuck = filterBar.classList.contains("is-stuck");
+						const stuck = wasStuck ? rect.top <= line + stickHyst : rect.top <= line;
+						filterBar.classList.toggle("is-stuck", stuck);
+					}
+					let gfxFilterStuckRaf = null;
+					function gfxScheduleFilterStuckCheck() {
+						if (gfxFilterStuckRaf != null) return;
+						gfxFilterStuckRaf = requestAnimationFrame(function () {
+							gfxFilterStuckRaf = null;
+							gfxCheckFilterStuck();
+						});
+					}
+					window.addEventListener("scroll", gfxScheduleFilterStuckCheck, { passive: true });
+					gfxStickyBarMql.addEventListener("change", function () {
+						gfxCheckFilterStuck();
+					});
+					function gfxOnResizeLayout() {
+						gfxSyncFilterSnapTop();
+						gfxScheduleFilterStuckCheck();
+					}
+					window.addEventListener("resize", gfxOnResizeLayout);
+					gfxCheckFilterStuck();
+				}
+			}
+
+			workContent.appendChild(grid);
+			if (graphicsNoResultsMsg) {
+				workContent.appendChild(graphicsNoResultsMsg);
+			}
+			workContent.appendChild(divider);
+			workContent.appendChild(loadMoreRow);
 
 			const workImageBasePath = sectionType === "graphics" ? "/images/work/" : "/images/lab/";
 			let workImageBytesByIndex = null;
@@ -626,6 +1083,47 @@ document.addEventListener("DOMContentLoaded", function () {
 				return n;
 			}
 
+			function itemMatchesGraphicsProject(item, proj) {
+				return !proj || item.project === proj;
+			}
+
+			function isGraphicsProjectFilterActive() {
+				return Boolean(activeGraphicsProject);
+			}
+
+			function countGraphicsImagesMatchingInRange(items, proj, displayedItemCount) {
+				let n = 0;
+				const end = Math.min(displayedItemCount, items.length);
+				for (let i = 0; i < end; i++) {
+					if (!items[i].filename) continue;
+					if (!itemMatchesGraphicsProject(items[i], proj)) continue;
+					n++;
+				}
+				return n;
+			}
+
+			function countGraphicsImagesMatchingTotal(items, proj) {
+				return countGraphicsImagesMatchingInRange(items, proj, items.length);
+			}
+
+			function remainingMatchingFilenameItemsExist() {
+				for (let i = displayedCount; i < allItems.length; i++) {
+					const item = allItems[i];
+					if (!item.filename) continue;
+					if (sectionType === "graphics" && isGraphicsProjectFilterActive()) {
+						if (!itemMatchesGraphicsProject(item, activeGraphicsProject)) continue;
+					}
+					return true;
+				}
+				return false;
+			}
+
+			function syncLoadMoreButtonVisibility() {
+				const fullyLoaded = displayedCount >= allItems.length;
+				const noMoreMatchingImages = !remainingMatchingFilenameItemsExist();
+				loadMoreBtn.classList.toggle("hidden", fullyLoaded || noMoreMatchingImages);
+			}
+
 			function sumBytesForDisplayedImages() {
 				if (!workImageBytesByIndex) {
 					return null;
@@ -634,8 +1132,9 @@ document.addEventListener("DOMContentLoaded", function () {
 				let any = false;
 				const end = Math.min(displayedCount, allItems.length);
 				for (let i = 0; i < end; i++) {
-					if (!allItems[i].filename) {
-						continue;
+					if (!allItems[i].filename) continue;
+					if (sectionType === "graphics" && isGraphicsProjectFilterActive()) {
+						if (!itemMatchesGraphicsProject(allItems[i], activeGraphicsProject)) continue;
 					}
 					const b = workImageBytesByIndex[i];
 					if (b != null) {
@@ -647,9 +1146,24 @@ document.addEventListener("DOMContentLoaded", function () {
 			}
 
 			function updateLoadMoreStatus() {
-				const total = countWorkImages(allItems);
-				const shown = countWorkImagesShown(allItems, displayedCount);
-				const label = total === 1 ? "Image" : "Images";
+				const singularLabel = "Image";
+				const pluralLabel = "Images";
+				let total;
+				let shown;
+				let label;
+				if (sectionType === "graphics" && isGraphicsProjectFilterActive()) {
+					shown = countGraphicsImagesMatchingInRange(
+						allItems,
+						activeGraphicsProject,
+						displayedCount,
+					);
+					total = countGraphicsImagesMatchingTotal(allItems, activeGraphicsProject);
+					label = total === 1 ? "filtered " + singularLabel : "filtered " + pluralLabel;
+				} else {
+					total = countWorkImages(allItems);
+					shown = countWorkImagesShown(allItems, displayedCount);
+					label = total === 1 ? singularLabel : pluralLabel;
+				}
 				const sizeStr = formatCompactDataSize(sumBytesForDisplayedImages());
 				loadMoreStatus.replaceChildren();
 				loadMoreStatus.appendChild(document.createTextNode(shown + " of " + total + " " + label));
@@ -659,8 +1173,32 @@ document.addEventListener("DOMContentLoaded", function () {
 					sizeWrap.textContent = " (" + sizeStr + ")";
 					loadMoreStatus.appendChild(sizeWrap);
 				}
+				syncLoadMoreButtonVisibility();
 				loadMoreSep.classList.toggle("hidden", loadMoreBtn.classList.contains("hidden"));
 			}
+
+			applyGraphicsProjectFilter = function () {
+				if (sectionType !== "graphics") return;
+				const proj = activeGraphicsProject;
+				grid.querySelectorAll(".work-item, .work-grid-title, .work-grid-divider").forEach(function (el) {
+					const dp = el.getAttribute("data-project");
+					const visible = !proj || dp === proj;
+					el.style.display = visible ? "" : "none";
+				});
+				if (proj) {
+					const ch = grid.children;
+					for (let ti = ch.length - 1; ti >= 0; ti--) {
+						const node = ch[ti];
+						if (node.style.display === "none") continue;
+						if (!node.classList.contains("work-grid-divider")) break;
+						node.style.display = "none";
+					}
+				}
+				if (graphicsNoResultsMsg) {
+					const noneInDataset = proj && countGraphicsImagesMatchingTotal(allItems, proj) === 0;
+					graphicsNoResultsMsg.style.display = noneInDataset ? "block" : "none";
+				}
+			};
 
 			void (async function fetchWorkImageByteSizesByIndex() {
 				workImageBytesByIndex = new Array(allItems.length);
@@ -788,7 +1326,6 @@ document.addEventListener("DOMContentLoaded", function () {
 				const batchCount = adjustBatchCountForTrailingDividers(remainingItems, rawBatchCount);
 
 				if (batchCount === 0) {
-					loadMoreBtn.classList.add("hidden");
 					updateLoadMoreStatus();
 					return;
 				}
@@ -800,20 +1337,44 @@ document.addEventListener("DOMContentLoaded", function () {
 				}
 				displayedCount += batch.length;
 
-				// Setup lazy loading for new images
 				setupLazyLoading();
 
 				if (displayedCount >= allItems.length) {
 					loadMoreBtn.classList.add("hidden");
 				}
 				updateLoadMoreStatus();
+				if (sectionType === "graphics") {
+					applyGraphicsProjectFilter();
+				}
+
+				if (displayedCount < allItems.length && !remainingMatchingFilenameItemsExist()) {
+					await displayNextBatch();
+				}
 			}
+
+			expandGraphicsFilterToVisible = async function () {
+				if (sectionType !== "graphics" || !activeGraphicsProject) return;
+				const proj = activeGraphicsProject;
+				if (countGraphicsImagesMatchingTotal(allItems, proj) === 0) return;
+
+				while (displayedCount < allItems.length) {
+					let visibleMatching = 0;
+					grid.querySelectorAll(".work-item").forEach(function (el) {
+						if (el.getAttribute("data-project") !== proj) return;
+						if (el.style.display === "none") return;
+						visibleMatching++;
+					});
+					if (visibleMatching > 0) break;
+					const before = displayedCount;
+					await displayNextBatch();
+					if (displayedCount === before) break;
+				}
+			};
 
 			loadMoreBtn.addEventListener("click", function () {
 				displayNextBatch();
 			});
 
-			// Display first batch (limited for experiments/graphics)
 			displayedCount = 0;
 			const firstBatch = allItems.slice(0, initialDisplayCount);
 			(async function () {
@@ -822,7 +1383,6 @@ document.addEventListener("DOMContentLoaded", function () {
 				}
 				displayedCount = firstBatch.length;
 
-				// Setup lazy loading for new images
 				setupLazyLoading();
 
 				if (displayedCount >= allItems.length) {
@@ -830,6 +1390,14 @@ document.addEventListener("DOMContentLoaded", function () {
 				}
 				divider.classList.remove("hidden");
 				updateLoadMoreStatus();
+				if (filterBar && filterBar._fireInitialFilter) {
+					filterBar._fireInitialFilter();
+				}
+				filterChangeScrollEnabled = true;
+
+				while (displayedCount < allItems.length && !remainingMatchingFilenameItemsExist()) {
+					await displayNextBatch();
+				}
 			})().catch(function (error) {
 				console.error("Error displaying batch:", error);
 			});
