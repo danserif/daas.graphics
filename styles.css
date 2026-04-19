@@ -2825,7 +2825,7 @@ a.plan-panel-cta:hover {
 	padding-top: calc(var(--gap-section) * 2);
 }
 
-/* Sticky filter + bleed: desktop only (mobile keeps in-flow bar; JS never applies .is-stuck there) */
+/* Sticky filter: desktop breaks out to header band; mobile stays in column, sticks under fixed .header-sticky-band */
 @media only screen and (min-width: 1081px) {
 
 	/*
@@ -2990,8 +2990,41 @@ a.plan-panel-cta:hover {
 		padding-bottom: 22px;
 	}
 
+	/* Below .header-sticky-band (z-index 500); --filter-bar-snap-top set on #work (gallery.js) */
+	.work-samples .work-content .filter-bar.is-stuck {
+		position: sticky;
+		top: var(--filter-bar-snap-top, 0px);
+		z-index: 490;
+		background-color: var(--color-bg);
+		box-sizing: border-box;
+		width: auto;
+		max-width: 100%;
+		margin-left: 0;
+		margin-right: 0;
+		padding: 16px 0;
+		border-bottom: none;
+	}
+
+	.work-samples .filter-bar.is-stuck::after {
+		content: "";
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		height: 0;
+		border-bottom: 1px dashed var(--color-border);
+		pointer-events: none;
+		z-index: 1;
+	}
+
 	.work-samples .filter-bar:has(.filter-dropdown.is-open) {
 		z-index: 530;
+		border-bottom: none;
+	}
+
+	/* Avoid double dashed rule with sticky ::after while the menu is open */
+	.work-samples .filter-bar.is-stuck:has(.filter-dropdown.is-open)::after {
+		display: none;
 	}
 
 	.filter-bar-desktop {
@@ -3019,6 +3052,11 @@ a.plan-panel-cta:hover {
 		position: static;
 	}
 
+	/* Collapsed trigger: omit image-count superscript when a project is selected (not All) */
+	.filter-bar-mobile .filter-dropdown.has-selection .filter-dropdown-trigger sup {
+		display: none;
+	}
+
 	.filter-dropdown-list {
 		font-size: 12px;
 		line-height: 24px;
@@ -3030,6 +3068,11 @@ a.plan-panel-cta:hover {
 		border-bottom: 1px dashed var(--color-border);
 		margin: 0 var(--work-pad-x, 60px);
 		padding: 0 0 24px 0;
+	}
+
+	/* Open state: avoid stacked dashed rules under the trigger + list tail */
+	.filter-dropdown.is-open .filter-dropdown-list {
+		border-bottom: none;
 	}
 }
 

@@ -1019,15 +1019,7 @@ document.addEventListener("DOMContentLoaded", function () {
 					function gfxSyncFilterSnapTop() {
 						section.style.setProperty("--filter-bar-snap-top", getGraphicsFilterSnapTopPx() + "px");
 					}
-					gfxSyncFilterSnapTop();
-
-					const gfxStickyBarMql = window.matchMedia("(min-width: 1081px)");
 					function gfxCheckFilterStuck() {
-						if (!gfxStickyBarMql.matches) {
-							filterBar.classList.remove("is-stuck");
-							section.style.removeProperty("--filter-bar-snap-top");
-							return;
-						}
 						gfxSyncFilterSnapTop();
 						const rect = filterBar.getBoundingClientRect();
 						const stickyTop = getGraphicsFilterSnapTopPx();
@@ -1046,9 +1038,6 @@ document.addEventListener("DOMContentLoaded", function () {
 						});
 					}
 					window.addEventListener("scroll", gfxScheduleFilterStuckCheck, { passive: true });
-					gfxStickyBarMql.addEventListener("change", function () {
-						gfxCheckFilterStuck();
-					});
 					function gfxOnResizeLayout() {
 						gfxSyncFilterSnapTop();
 						gfxScheduleFilterStuckCheck();
