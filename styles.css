@@ -3846,20 +3846,16 @@ a.plan-panel-cta:hover {
 
 /* Footer text marquee only (no logos): edge fade via mask — avoids stacking issues on the track. */
 .footer .marquee {
-	-webkit-mask-image: linear-gradient(
-		to right,
-		transparent,
-		#000 80px,
-		#000 calc(100% - 80px),
-		transparent
-	);
-	mask-image: linear-gradient(
-		to right,
-		transparent,
-		#000 80px,
-		#000 calc(100% - 80px),
-		transparent
-	);
+	-webkit-mask-image: linear-gradient(to right,
+			transparent,
+			#000 80px,
+			#000 calc(100% - 80px),
+			transparent);
+	mask-image: linear-gradient(to right,
+			transparent,
+			#000 80px,
+			#000 calc(100% - 80px),
+			transparent);
 	mask-repeat: no-repeat;
 	mask-size: 100% 100%;
 }
@@ -5397,20 +5393,16 @@ img.daas-graphic.fade-in {
 	}
 
 	.footer .marquee {
-		-webkit-mask-image: linear-gradient(
-			to right,
-			transparent,
-			#000 20px,
-			#000 calc(100% - 20px),
-			transparent
-		);
-		mask-image: linear-gradient(
-			to right,
-			transparent,
-			#000 20px,
-			#000 calc(100% - 20px),
-			transparent
-		);
+		-webkit-mask-image: linear-gradient(to right,
+				transparent,
+				#000 20px,
+				#000 calc(100% - 20px),
+				transparent);
+		mask-image: linear-gradient(to right,
+				transparent,
+				#000 20px,
+				#000 calc(100% - 20px),
+				transparent);
 	}
 
 	.footer-columns-wrapper {
