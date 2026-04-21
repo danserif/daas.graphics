@@ -367,7 +367,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 		const waitlist = document.createElement("span");
 		waitlist.className = "opacity-50";
-		waitlist.textContent = "(Waitlist)";
+		waitlist.textContent = "";
 		wrap.appendChild(waitlist);
 
 		return wrap;
