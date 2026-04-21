@@ -771,6 +771,79 @@
       "columns": 3,
       "width": 1628,
       "height": 1028
+    },
+    {
+      "divider": true
+    },
+    {
+      "type": "title",
+      "name": "Koordinates",
+      "date": "(2015-2017)",
+      "description": "Website, branding, illustrations, swag, marketing, product, and design system for a geospatial data platform."
+    },
+    {
+      "filename": "kx-cards.jpg",
+      "number": "KX-01",
+      "description": "Business Cards",
+      "columns": 3,
+      "width": 1628,
+      "height": 1264
+    },
+    {
+      "filename": "kx-homepage.png",
+      "number": "KX-02",
+      "description": "Homepage",
+      "columns": 2,
+      "width": 1072,
+      "height": 756
+    },
+    {
+      "filename": "kx-conservation-data.png",
+      "number": "KX-03",
+      "description": "New Zealand Department of Conservation (Geospatial Data)",
+      "columns": 3,
+      "width": 1628,
+      "height": 1116
+    },
+    {
+      "filename": "kx-pricing.png",
+      "number": "KX-04",
+      "description": "Pricing",
+      "columns": 2,
+      "width": 1072,
+      "height": 756
+    },
+    {
+      "filename": "kx-export.png",
+      "number": "KX-05",
+      "description": "Export Options (UI)",
+      "columns": 2,
+      "width": 1072,
+      "height": 756
+    },
+    {
+      "filename": "kx-help.png",
+      "number": "KX-05",
+      "description": "Help (Documentation)",
+      "columns": 3,
+      "width": 1628,
+      "height": 1072
+    },
+    {
+      "filename": "kx-offices.png",
+      "number": "KX-06",
+      "description": "Offices (Map Component)",
+      "columns": 2,
+      "width": 1072,
+      "height": 560
+    },
+    {
+      "filename": "kx-posters.jpg",
+      "number": "KX-07",
+      "description": "Posters (WLG / AKL)",
+      "columns": 3,
+      "width": 1628,
+      "height": 1288
     }
   ]
 }
