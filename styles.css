@@ -3844,6 +3844,26 @@ a.plan-panel-cta:hover {
 	border-bottom: 1px dashed var(--color-border);
 }
 
+/* Footer text marquee only (no logos): edge fade via mask — avoids stacking issues on the track. */
+.footer .marquee {
+	-webkit-mask-image: linear-gradient(
+		to right,
+		transparent,
+		#000 80px,
+		#000 calc(100% - 80px),
+		transparent
+	);
+	mask-image: linear-gradient(
+		to right,
+		transparent,
+		#000 80px,
+		#000 calc(100% - 80px),
+		transparent
+	);
+	mask-repeat: no-repeat;
+	mask-size: 100% 100%;
+}
+
 .marquee-track {
 	display: flex;
 	flex-direction: row;
@@ -3895,29 +3915,9 @@ a.plan-panel-cta:hover {
 	}
 
 	100% {
-		transform: translate3d(-50%, 0, 0);
+		/* Pixel loop from JS (--marquee-loop) keeps the seam exact; 50% fallback matches two equal strips. */
+		transform: translate3d(calc(-1 * (var(--marquee-loop, 50%))), 0, 0);
 	}
-}
-
-.marquee::before,
-.marquee::after {
-	content: "";
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	width: 80px;
-	pointer-events: none;
-	z-index: 1;
-}
-
-.marquee::before {
-	left: 0;
-	background: linear-gradient(to right, var(--color-bg) 0%, transparent 100%);
-}
-
-.marquee::after {
-	right: 0;
-	background: linear-gradient(to left, var(--color-bg) 0%, transparent 100%);
 }
 
 /* LOGOS MARQUEE SECTION */
@@ -3941,6 +3941,28 @@ a.plan-panel-cta:hover {
 	padding: 0;
 }
 
+/* Side fades sit above the track (Clients marquee only). */
+.logos-marquee-section .marquee::before,
+.logos-marquee-section .marquee::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 80px;
+	pointer-events: none;
+	z-index: 2;
+}
+
+.logos-marquee-section .marquee::before {
+	left: 0;
+	background: linear-gradient(to right, var(--color-bg) 0%, transparent 100%);
+}
+
+.logos-marquee-section .marquee::after {
+	right: 0;
+	background: linear-gradient(to left, var(--color-bg) 0%, transparent 100%);
+}
+
 .logos-marquee-section .divider {
 	margin: 8px 0;
 }
@@ -3950,7 +3972,10 @@ a.plan-panel-cta:hover {
 }
 
 .logos-marquee-section .marquee-track {
-	opacity: 0.50;
+	/* Opacity on the animated layer caused missing paints on very wide tracks in some browsers. */
+	opacity: 1;
+	position: relative;
+	z-index: 0;
 }
 
 .logos-marquee-section .marquee ul {
@@ -3963,6 +3988,8 @@ a.plan-panel-cta:hover {
 	align-items: center;
 	justify-content: center;
 	height: 60px;
+	/* Keeps light-mode `filter: invert()` paint inside the cell so overflow:hidden on .marquee does not clip SVG edges. */
+	isolation: isolate;
 }
 
 .logo-svg {
@@ -3984,6 +4011,7 @@ a.plan-panel-cta:hover {
 .logos-marquee-section .logo-svg {
 	max-width: 170px;
 	flex-shrink: 0;
+	opacity: 0.38;
 }
 
 :root.light-mode .logo-svg {
@@ -5363,10 +5391,26 @@ img.daas-graphic.fade-in {
 		margin-top: 0;
 	}
 
-	.marquee::before,
-	.marquee::after {
-		display: block;
-		width: 20px;
+	.logos-marquee-section .marquee::before,
+	.logos-marquee-section .marquee::after {
+		width: 24px;
+	}
+
+	.footer .marquee {
+		-webkit-mask-image: linear-gradient(
+			to right,
+			transparent,
+			#000 20px,
+			#000 calc(100% - 20px),
+			transparent
+		);
+		mask-image: linear-gradient(
+			to right,
+			transparent,
+			#000 20px,
+			#000 calc(100% - 20px),
+			transparent
+		);
 	}
 
 	.footer-columns-wrapper {
