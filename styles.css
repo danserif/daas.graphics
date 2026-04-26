@@ -3596,11 +3596,7 @@ a.plan-panel-cta:hover {
 	opacity: 1;
 }
 
-#work .work-image {
-	filter: grayscale(0%);
-}
-
-/* #work .work-image,
+#work .work-image,
 #lab .work-image {
 	filter: grayscale(1);
 }
@@ -3610,7 +3606,7 @@ a.plan-panel-cta:hover {
 #lab .work-item:hover .work-image,
 #lab .work-item:focus-within .work-image {
 	filter: grayscale(0%);
-} */
+}
 
 .light-mode .work-image-frame {
 	background-color: #F5F5F5;
