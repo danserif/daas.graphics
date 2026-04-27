@@ -6,7 +6,8 @@
       "description": "DaaS (Face)",
       "columns": 1,
       "width": 1032,
-      "height": 1032
+      "height": 1032,
+      "shared": false
     },
     {
       "filename": "d-gfx.png",
@@ -14,7 +15,8 @@
       "description": "D.OS (GFX)",
       "columns": 2,
       "width": 1072,
-      "height": 672
+      "height": 672,
+      "shared": false
     },
     {
       "filename": "operating-system.png",
@@ -22,7 +24,8 @@
       "description": "~ $ DAAS_GRAPHICS",
       "columns": 2,
       "width": 1072,
-      "height": 1660
+      "height": 1660,
+      "shared": false
     },
     {
       "filename": "danserif-bookmarks.png",
@@ -32,7 +35,8 @@
       "width": 1622,
       "height": 940,
       "link": "https://danserif.com/bookmarks",
-      "linkDisplay": "https://danserif.com"
+      "linkDisplay": "https://danserif.com",
+      "shared": false
     },
     {
       "filename": "daas-globe-ext.png",
@@ -40,7 +44,8 @@
       "description": "DaaS (Globe)",
       "columns": 2,
       "width": 1072,
-      "height": 624
+      "height": 624,
+      "shared": false
     },
     {
       "filename": "dandisk.png",
@@ -48,7 +53,8 @@
       "description": "DANDISK (ASCII)",
       "columns": 2,
       "width": 1072,
-      "height": 1072
+      "height": 1072,
+      "shared": false
     },
     {
       "filename": "dandroids-ui.jpg",
@@ -56,7 +62,8 @@
       "description": "DANDRØIDS (UI)",
       "columns": 4,
       "width": 2184,
-      "height": 2184
+      "height": 2184,
+      "shared": false
     },
     {
       "filename": "dd-mark.png",
@@ -64,7 +71,8 @@
       "description": "ø̈ (Mark)",
       "columns": 1,
       "width": 1032,
-      "height": 1032
+      "height": 1032,
+      "shared": false
     },
     {
       "filename": "daas-stickers.png",
@@ -72,7 +80,8 @@
       "description": "DaaS (Stickers)",
       "columns": 3,
       "width": 1628,
-      "height": 796
+      "height": 796,
+      "shared": false
     },
     {
       "filename": "daas-globe.png",
@@ -80,7 +89,8 @@
       "description": "DaaS (Globe)",
       "columns": 1,
       "width": 1032,
-      "height": 1032
+      "height": 1032,
+      "shared": false
     },
     {
       "filename": "daas-poster.jpg",
@@ -88,7 +98,8 @@
       "description": "DaaS (Poster)",
       "columns": 3,
       "width": 1628,
-      "height": 1628
+      "height": 1628,
+      "shared": false
     },
     {
       "filename": "departure-mono.png",
@@ -97,7 +108,8 @@
       "columns": 4,
       "width": 2184,
       "height": 992,
-      "link": "https://departuremono.com"
+      "link": "https://departuremono.com",
+      "shared": false
     },
     {
       "filename": "acdc.png",
@@ -105,7 +117,8 @@
       "description": "DaaS (AC/DC)",
       "columns": 2,
       "width": 1608,
-      "height": 774
+      "height": 774,
+      "shared": false
     }
   ]
 }

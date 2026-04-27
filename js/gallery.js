@@ -14,9 +14,9 @@ document.addEventListener("DOMContentLoaded", function () {
 	// Theme-aware images: tracks light variants that 404'd so we don't retry them
 	const lightImageMissing = new Set();
 
-	function getThemedSrc(basePath, filename) {
+	function getThemedSrc(basePath, filename, shared) {
 		const isLight = document.documentElement.classList.contains("light-mode");
-		if (isLight && !lightImageMissing.has(basePath + filename)) {
+		if (isLight && !shared && !lightImageMissing.has(basePath + filename)) {
 			return basePath + "light/" + filename;
 		}
 		return basePath + "dark/" + filename;
@@ -29,7 +29,8 @@ document.addEventListener("DOMContentLoaded", function () {
 			.forEach(function (img) {
 				var basePath = img.dataset.basePath;
 				var filename = img.dataset.filename;
-				var newSrc = getThemedSrc(basePath, filename);
+				var shared = img.dataset.shared === "true";
+				var newSrc = getThemedSrc(basePath, filename, shared);
 
 				if (img.dataset.src) {
 					img.dataset.src = newSrc;
@@ -185,7 +186,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	// Create an image element with theme-aware src (dark default, optional light variant)
 	// basePath: e.g. "/images/work/", filename: e.g. "project.jpg"
 	// dims: optional { width, height } from JSON; otherwise awaits dark/ probe before paint.
-	async function createWorkImage(basePath, filename, altText, dims) {
+	async function createWorkImage(basePath, filename, altText, dims, shared) {
 		let aspectRatio = aspectRatioFromJsonDimensions(dims);
 		if (aspectRatio == null) {
 			aspectRatio = await probeWorkImageAspectRatio(basePath, filename);
@@ -198,7 +199,8 @@ document.addEventListener("DOMContentLoaded", function () {
 		img.className = "work-image";
 		img.dataset.basePath = basePath;
 		img.dataset.filename = filename;
-		img.dataset.src = getThemedSrc(basePath, filename);
+		img.dataset.shared = shared ? "true" : "false";
+		img.dataset.src = getThemedSrc(basePath, filename, shared);
 		img.alt = altText || "";
 		img.loading = "lazy";
 
@@ -213,9 +215,10 @@ document.addEventListener("DOMContentLoaded", function () {
 		img.addEventListener("error", function () {
 			var bp = this.dataset.basePath;
 			var fn = this.dataset.filename;
+			var shared = this.dataset.shared === "true";
 			if (!bp || !fn) return;
 			var darkSrc = bp + "dark/" + fn;
-			if (this.src && !this.src.endsWith(darkSrc)) {
+			if (!shared && this.src && !this.src.endsWith(darkSrc)) {
 				lightImageMissing.add(bp + fn);
 				this.src = darkSrc;
 			}
@@ -820,7 +823,13 @@ document.addEventListener("DOMContentLoaded", function () {
 			} else {
 				altText = item.filename;
 			}
-			const frame = await createWorkImage("/images/work/", item.filename, altText, item);
+			const frame = await createWorkImage(
+				"/images/work/",
+				item.filename,
+				altText,
+				item,
+				item.shared === true,
+			);
 			workItem.appendChild(frame);
 		}
 
@@ -891,7 +900,13 @@ document.addEventListener("DOMContentLoaded", function () {
 				altText = item.filename;
 			}
 
-			const frame = await createWorkImage("/images/lab/", item.filename, altText, item);
+			const frame = await createWorkImage(
+				"/images/lab/",
+				item.filename,
+				altText,
+				item,
+				item.shared === true,
+			);
 			workItem.appendChild(frame);
 		}
 
