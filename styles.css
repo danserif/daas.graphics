@@ -238,13 +238,43 @@ code {
 	color: var(--color-accent);
 }
 
-/* Selected state for accent colour toggles */
-:root:not(.light-mode) .dark-mode-toggle {
+/* Selected state for accent colour toggles (inverted to opposite option) */
+:root:not(.light-mode) .light-mode-toggle {
 	opacity: 0.5;
 }
 
-:root.light-mode .light-mode-toggle {
+:root.light-mode .dark-mode-toggle {
 	opacity: 0.5;
+}
+
+.dark-mode-toggle:hover,
+.light-mode-toggle:hover {
+	opacity: 0.75;
+}
+
+/* Graphics / Work filter: Color On / Off — same pattern as Mode Dark / Light */
+#work:not(.work-images-full-color) .graphics-color-toggle--on {
+	opacity: 0.5;
+}
+
+#work.work-images-full-color .graphics-color-toggle--off {
+	opacity: 0.5;
+}
+
+/* `#work` beats `.filter-bar …:hover`; dimmed On/Off must use matching specificity */
+#work:not(.work-images-full-color) .filter-bar .graphics-color-toggle--on:hover,
+#work.work-images-full-color .filter-bar .graphics-color-toggle--off:hover {
+	opacity: 0.75;
+}
+
+.filter-bar .graphics-color-toggle {
+	color: inherit;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.filter-bar .graphics-color-toggle:hover {
+	opacity: 0.75;
 }
 
 .divider {
@@ -431,6 +461,11 @@ h1.header-label {
 
 .header-label a:hover {
 	opacity: 0.5;
+}
+
+.header-label a.dark-mode-toggle:hover,
+.header-label a.light-mode-toggle:hover {
+	opacity: 0.75;
 }
 
 /* HERO SECTION */
@@ -2800,10 +2835,14 @@ a.plan-panel-cta:hover {
 
 .filter-bar-active-meta.filter-bar-portfolio-meta {
 	white-space: normal;
+	/* Same inline formatting context as .header-label (mono meta lines) */
+	display: inline-block;
 }
 
 @media only screen and (max-width: 1640px) {
-	.filter-bar-portfolio-meta {
+
+	/* Must match `.filter-bar-active-meta.filter-bar-portfolio-meta` specificity or `display: inline-block` wins */
+	.filter-bar-active-meta.filter-bar-portfolio-meta {
 		display: none;
 	}
 }
@@ -3596,15 +3635,16 @@ a.plan-panel-cta:hover {
 	opacity: 1;
 }
 
-#work .work-image,
-#lab .work-image {
+#work:not(.work-images-full-color) .work-image {
 	filter: grayscale(1);
 }
 
-#work .work-item:hover .work-image,
-#work .work-item:focus-within .work-image,
-#lab .work-item:hover .work-image,
-#lab .work-item:focus-within .work-image {
+#work:not(.work-images-full-color) .work-item:hover .work-image,
+#work:not(.work-images-full-color) .work-item:focus-within .work-image {
+	filter: grayscale(0%);
+}
+
+#work.work-images-full-color .work-image {
 	filter: grayscale(0%);
 }
 
@@ -3825,6 +3865,11 @@ a.plan-panel-cta:hover {
 
 .footer-content a:hover {
 	opacity: 0.5;
+}
+
+.footer-content a.dark-mode-toggle:hover,
+.footer-content a.light-mode-toggle:hover {
+	opacity: 0.75;
 }
 
 /* MARQUEE */

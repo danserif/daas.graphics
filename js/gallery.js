@@ -91,12 +91,25 @@ document.addEventListener("DOMContentLoaded", function () {
 			const parts = segment.split(/(\([^)]*\))/);
 			parts.forEach(function (part) {
 				if (!part) return;
-				const span = document.createElement("span");
-				if (part.startsWith("(") && part.endsWith(")")) {
-					span.className = "opacity-50";
-				}
-				span.textContent = part;
-				parent.appendChild(span);
+				const isMuted = part.startsWith("(") && part.endsWith(")");
+				const strikeParts = part.split(/(~~.+?~~)/);
+
+				strikeParts.forEach(function (strikePart) {
+					if (!strikePart) return;
+					const isStrikethrough =
+						strikePart.startsWith("~~") &&
+						strikePart.endsWith("~~") &&
+						strikePart.length > 4;
+
+					const el = document.createElement(isStrikethrough ? "s" : "span");
+					if (isMuted) {
+						el.className = "opacity-50";
+					}
+					el.textContent = isStrikethrough
+						? strikePart.slice(2, -2)
+						: strikePart;
+					parent.appendChild(el);
+				});
 			});
 		});
 	}
@@ -333,11 +346,21 @@ document.addEventListener("DOMContentLoaded", function () {
 		return p;
 	}
 
-	function appendWorkSlashDivider(paragraph) {
+	/* Matches sticky header: space + .meta-separator padding + // + padding + space (see index.html around Mode / //) */
+	function appendWorkSlashDivider(paragraph, opts) {
+		const trailingSpace = !opts || opts.trailingSpace !== false;
+		const leadingSpace = !opts || opts.leadingSpace !== false;
+		const useMetaSeparator = !opts || opts.metaSeparator !== false;
+		if (leadingSpace) {
+			paragraph.appendChild(document.createTextNode(" "));
+		}
 		const slash = document.createElement("span");
-		slash.className = "opacity-25";
-		slash.textContent = " //";
+		slash.className = useMetaSeparator ? "opacity-50 meta-separator" : "opacity-50";
+		slash.textContent = "//";
 		paragraph.appendChild(slash);
+		if (trailingSpace) {
+			paragraph.appendChild(document.createTextNode(" "));
+		}
 	}
 
 	function assignWorkProjects(items) {
@@ -351,24 +374,89 @@ document.addEventListener("DOMContentLoaded", function () {
 		}
 	}
 
+	function getWorkFullColor() {
+		const work = document.getElementById("work");
+		return !!(work && work.classList.contains("work-images-full-color"));
+	}
+
+	function setWorkFullColor(enabled) {
+		const work = document.getElementById("work");
+		if (work) {
+			work.classList.toggle("work-images-full-color", enabled);
+		}
+		document.querySelectorAll("[data-work-color-toggle]").forEach(function (el) {
+			const isOn = el.getAttribute("data-work-color-toggle") === "on";
+			const selected = isOn === enabled;
+			el.setAttribute("aria-current", selected ? "true" : "false");
+		});
+	}
+
+	function syncWorkColorControlsFromSection() {
+		setWorkFullColor(getWorkFullColor());
+	}
+
 	function createGraphicsPortfolioMeta() {
 		const wrap = document.createElement("span");
 		wrap.className = "filter-bar-active-meta filter-bar-portfolio-meta";
 
+		const colorLabel = document.createElement("span");
+		colorLabel.className = "opacity-50";
+		colorLabel.textContent = "T: ";
+		wrap.appendChild(colorLabel);
+
+		const bracketOpen = document.createElement("span");
+		bracketOpen.className = "opacity-50";
+		bracketOpen.textContent = "[";
+		wrap.appendChild(bracketOpen);
+
+		const onLink = document.createElement("a");
+		onLink.href = "#";
+		onLink.className = "graphics-color-toggle graphics-color-toggle--on";
+		onLink.setAttribute("data-work-color-toggle", "on");
+		onLink.textContent = "Color";
+		onLink.addEventListener("click", function (e) {
+			e.preventDefault();
+			setWorkFullColor(true);
+		});
+		wrap.appendChild(onLink);
+
+		wrap.appendChild(document.createTextNode(" "));
+		const colorSlash = document.createElement("span");
+		colorSlash.className = "opacity-50";
+		colorSlash.setAttribute("aria-hidden", "true");
+		colorSlash.textContent = "/";
+		wrap.appendChild(colorSlash);
+		wrap.appendChild(document.createTextNode(" "));
+
+		const offLink = document.createElement("a");
+		offLink.href = "#";
+		offLink.className = "graphics-color-toggle graphics-color-toggle--off";
+		offLink.setAttribute("data-work-color-toggle", "off");
+		offLink.textContent = "Grayscale";
+		offLink.addEventListener("click", function (e) {
+			e.preventDefault();
+			setWorkFullColor(false);
+		});
+		wrap.appendChild(offLink);
+
+		const bracketClose = document.createElement("span");
+		bracketClose.className = "opacity-50";
+		bracketClose.textContent = "]";
+		wrap.appendChild(bracketClose);
+
+		appendWorkSlashDivider(wrap);
+
 		const prefix = document.createElement("span");
 		prefix.className = "opacity-50";
-		prefix.textContent = "Status: ";
+		prefix.textContent = "S: ";
 		wrap.appendChild(prefix);
 
 		const lead = document.createElement("span");
 		lead.className = "opacity-75";
-		lead.textContent = "Limited Availability ";
+		lead.textContent = "Limited Avalibilty";
 		wrap.appendChild(lead);
 
-		const waitlist = document.createElement("span");
-		waitlist.className = "opacity-50";
-		waitlist.textContent = "";
-		wrap.appendChild(waitlist);
+		syncWorkColorControlsFromSection();
 
 		return wrap;
 	}
@@ -408,15 +496,6 @@ document.addEventListener("DOMContentLoaded", function () {
 				span.textContent = parts[i];
 				parent.appendChild(span);
 			}
-		}
-
-		function addListLabel(ul, text) {
-			const li = document.createElement("li");
-			const span = document.createElement("span");
-			span.className = "opacity-50";
-			span.textContent = text;
-			li.appendChild(span);
-			ul.appendChild(li);
 		}
 
 		function addSlashLi(ul) {
@@ -559,7 +638,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 		const projectsUl = document.createElement("ul");
 		projectsUl.className = "filter-bar-list";
-		addListLabel(projectsUl, "Examples:");
 		addProjectBtn(projectsUl, "All", "all");
 		for (let i = 0; i < projectNames.length; i++) {
 			addSlashLi(projectsUl);
@@ -680,7 +758,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 		if (item.description) {
 			if (line.childNodes.length > 0) {
-				appendWorkSlashDivider(line);
+				appendWorkSlashDivider(line, { trailingSpace: false, metaSeparator: false });
 			}
 			const descSpan = document.createElement("span");
 			descSpan.className = "work-description";
