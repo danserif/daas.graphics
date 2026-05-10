@@ -3175,6 +3175,7 @@ a.plan-panel-cta:hover {
 .quotes-content {
 	display: flex;
 	gap: var(--gap-flex);
+	row-gap: 7rem;
 	width: 100%;
 	flex-wrap: wrap;
 }
@@ -3182,7 +3183,7 @@ a.plan-panel-cta:hover {
 .quote {
 	display: flex;
 	gap: var(--gap-flex);
-	flex: 1 1 calc(33.333% - var(--gap-flex) * 2 / 3);
+	flex: 0 1 calc(33.333% - var(--gap-flex) * 2 / 3);
 	min-width: 300px;
 }
 
@@ -4375,7 +4376,7 @@ img.daas-graphic.fade-in {
 	}
 
 	.quote {
-		flex: 1 1 calc(33.333% - var(--gap-flex) * 2 / 3);
+		flex: 0 1 calc(33.333% - var(--gap-flex) * 2 / 3);
 		flex-direction: column;
 	}
 
