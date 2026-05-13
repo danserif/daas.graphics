@@ -604,43 +604,49 @@ function startAnimations() {
 		document.body.style.backgroundColor = isLight ? "#ffffff" : "#000000";
 	}
 
+	function applyColorMode(isLight) {
+		if (isLight) {
+			if (typeof fathom !== "undefined" && fathom.trackEvent) fathom.trackEvent("Light", 0);
+			root.classList.add("light-mode");
+			localStorage.setItem("colorMode", "light");
+		} else {
+			if (typeof fathom !== "undefined" && fathom.trackEvent) fathom.trackEvent("Dark", 0);
+			root.classList.remove("light-mode");
+			localStorage.setItem("colorMode", "dark");
+		}
+		updateAccentColorValue();
+		syncThemeColorMeta();
+		pushSafariTint();
+		if (typeof window.updateNavOverlayBackground === "function") {
+			window.updateNavOverlayBackground();
+		}
+		if (typeof window.updateGalleryTheme === "function") {
+			window.updateGalleryTheme();
+		}
+		if (typeof window.triggerLoadingScreen === "function") {
+			window.triggerLoadingScreen();
+		}
+	}
+
 	// Light/Dark Mode Toggle - Event delegation
 	document.addEventListener("click", function (e) {
 		if (e.target.classList.contains("dark-mode-toggle")) {
 			e.preventDefault();
-			if (typeof fathom !== "undefined" && fathom.trackEvent) fathom.trackEvent("Dark", 0);
-			root.classList.remove("light-mode");
-			localStorage.setItem("colorMode", "dark");
-			updateAccentColorValue();
-			syncThemeColorMeta();
-			pushSafariTint();
-			if (typeof window.updateNavOverlayBackground === "function") {
-				window.updateNavOverlayBackground();
-			}
-			if (typeof window.updateGalleryTheme === "function") {
-				window.updateGalleryTheme();
-			}
-			if (typeof window.triggerLoadingScreen === "function") {
-				window.triggerLoadingScreen();
-			}
+			applyColorMode(false);
 		} else if (e.target.classList.contains("light-mode-toggle")) {
 			e.preventDefault();
-			if (typeof fathom !== "undefined" && fathom.trackEvent) fathom.trackEvent("Light", 0);
-			root.classList.add("light-mode");
-			localStorage.setItem("colorMode", "light");
-			updateAccentColorValue();
-			syncThemeColorMeta();
-			pushSafariTint();
-			if (typeof window.updateNavOverlayBackground === "function") {
-				window.updateNavOverlayBackground();
-			}
-			if (typeof window.updateGalleryTheme === "function") {
-				window.updateGalleryTheme();
-			}
-			if (typeof window.triggerLoadingScreen === "function") {
-				window.triggerLoadingScreen();
-			}
+			applyColorMode(true);
 		}
+	});
+
+	// M: cycle light / dark (dan.newman.is-style; ignored in form fields).
+	document.addEventListener("keydown", function (e) {
+		if ((e.key !== "m" && e.key !== "M") || e.repeat || e.ctrlKey || e.metaKey || e.altKey) {
+			return;
+		}
+		if (!colorKeyboardTargetOk()) return;
+		e.preventDefault();
+		applyColorMode(!root.classList.contains("light-mode"));
 	});
 
 	// Typewriter effect for header labels (use cached list if preloaded)
@@ -1735,6 +1741,16 @@ initAfterLoading();
 	observer.observe(target);
 })();
 
+// Keyboard shortcuts (same guard as dan.newman.is: skip when typing in a field).
+function colorKeyboardTargetOk() {
+	var el = document.activeElement;
+	if (!el || el === document.body) return true;
+	var tag = el.tagName && el.tagName.toLowerCase();
+	if (tag === "input" || tag === "textarea" || tag === "select") return false;
+	if (el.isContentEditable) return false;
+	return true;
+}
+
 // "D" overlay — full-viewport accent letter; click / Escape / any interaction dismisses.
 // Also appears automatically after a period of inactivity (idle timer).
 (function initDOverlay() {
@@ -1867,6 +1883,18 @@ initAfterLoading();
 		if (e.key === "Escape" && isVisible()) {
 			hide();
 			startTimer();
+			return;
+		}
+		if (
+			(e.key === "d" || e.key === "D") &&
+			!e.repeat &&
+			!e.ctrlKey &&
+			!e.metaKey &&
+			!e.altKey &&
+			colorKeyboardTargetOk()
+		) {
+			e.preventDefault();
+			window.toggleDOverlay();
 		}
 	});
 
@@ -2035,7 +2063,21 @@ initAfterLoading();
 	});
 
 	document.addEventListener("keydown", function (e) {
-		if (e.key === "Escape" && isVisible()) hide();
+		if (e.key === "Escape" && isVisible()) {
+			hide();
+			return;
+		}
+		if (
+			(e.key === "f" || e.key === "F") &&
+			!e.repeat &&
+			!e.ctrlKey &&
+			!e.metaKey &&
+			!e.altKey &&
+			colorKeyboardTargetOk()
+		) {
+			e.preventDefault();
+			window.toggleFaceOverlay();
+		}
 	});
 
 	window.toggleFaceOverlay = function () {
