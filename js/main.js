@@ -1859,25 +1859,35 @@ function colorKeyboardTargetOk() {
 		startTimer();
 	}
 
+	var MOUSEMOVE_THROTTLE_MS = 200;
+	var lastMousemoveActivity = 0;
+
+	function onMousemoveActivity() {
+		var now = Date.now();
+		if (now - lastMousemoveActivity < MOUSEMOVE_THROTTLE_MS) return;
+		lastMousemoveActivity = now;
+		onActivity();
+	}
+
 	document.addEventListener("visibilitychange", function () {
 		if (!document.hidden && !isVisible() && Date.now() - lastActivity >= IDLE_MS) {
 			show(true);
 		}
 	});
 
-	var activityEvents = ["mousemove", "mousedown", "keydown", "scroll", "touchstart"];
-	activityEvents.forEach(function (evt) {
+	["mousedown", "keydown", "scroll", "touchstart"].forEach(function (evt) {
 		document.addEventListener(evt, onActivity, { passive: true });
 	});
+	document.addEventListener("mousemove", onMousemoveActivity, { passive: true });
 
 	window.addEventListener("scroll", updateDOverlayOverWork, { passive: true });
 	window.addEventListener("resize", updateDOverlayOverWork, { passive: true });
 
 	document.addEventListener("click", function (e) {
-		if (e.target.closest(".d-overlay.is-visible")) {
-			hide();
-			startTimer();
-		}
+		if (!isVisible()) return;
+		if (e.target.closest(".d-overlay-trigger")) return;
+		hide();
+		startTimer();
 	});
 	document.addEventListener("keydown", function (e) {
 		if (e.key === "Escape" && isVisible()) {
