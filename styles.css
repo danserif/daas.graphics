@@ -1281,6 +1281,68 @@ h1.header-label {
 	}
 }
 
+/* MAP OVERLAY — triggered from the "Made in …" header label (desktop only) */
+.map-overlay-trigger {
+	background: none;
+	border: none;
+	color: inherit;
+	font: inherit;
+	padding: 0;
+	margin: 0;
+	text-transform: inherit;
+	text-align: inherit;
+	cursor: default;
+}
+
+@media only screen and (min-width: 1081px) {
+	.map-overlay-trigger {
+		cursor: pointer;
+	}
+
+	.map-overlay-trigger:hover {
+		opacity: 0.5;
+	}
+}
+
+.map-overlay {
+	position: fixed;
+	inset: 0;
+	z-index: 99999;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: var(--color-bg);
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	cursor: pointer;
+	transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+
+.map-overlay.is-visible {
+	opacity: 1;
+	visibility: visible;
+	pointer-events: auto;
+}
+
+.map-overlay-map {
+	margin: 0;
+	padding: 0;
+	/* ~70 cols × 23 rows — scale to largest size that fits the viewport */
+	font-size: min(calc((100vw - 80px) / 70), calc((100vh - 80px) / 26.5));
+	line-height: 1.15;
+	color: var(--opacity-50);
+	white-space: pre;
+	user-select: none;
+	-webkit-user-select: none;
+}
+
+@media only screen and (max-width: 1080px) {
+	.map-overlay {
+		display: none;
+	}
+}
+
 /* FACE OVERLAY — triggered from the fixed-bar "(^_^)/~" button */
 .face-overlay-trigger {
 	background: none;
@@ -3652,6 +3714,91 @@ a.plan-panel-cta:hover {
 .light-mode .work-image-frame {
 	background-color: #F5F5F5;
 	border-color: #DDDDDD;
+}
+
+/* Lab script widgets (experiments.json type: "script") */
+.work-image-frame.work-script-frame {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #000000;
+	border-color: #1D1D1D;
+}
+
+.light-mode .work-image-frame.work-script-frame {
+	background-color: #ffffff;
+	border-color: #DDDDDD;
+}
+
+.work-widget {
+	width: 68%;
+	aspect-ratio: 1;
+	flex-shrink: 0;
+	opacity: 0;
+	transition: opacity 0.9s ease-out;
+}
+
+.work-image-frame.is-loaded .work-widget {
+	opacity: 1;
+}
+
+.lab-clock-svg {
+	width: 100%;
+	height: 100%;
+	display: block;
+}
+
+.lab-clock .lab-clock-marker {
+	stroke: var(--color-text);
+	stroke-width: 0.8;
+	opacity: 0.75;
+}
+
+.lab-clock .lab-clock-marker-hour {
+	stroke-width: 0.8;
+}
+
+.lab-clock .lab-clock-numeral {
+	fill: var(--color-text);
+	font-family: "Untitled Sans", sans-serif;
+	font-size: 12px;
+	text-anchor: middle;
+	dominant-baseline: central;
+}
+
+.lab-clock .lab-clock-logo {
+	fill: var(--color-text);
+}
+
+.lab-clock .lab-clock-tz {
+	fill: var(--color-text);
+	font-family: "Departure Mono", monospace;
+	font-size: 5px;
+	text-anchor: middle;
+	dominant-baseline: hanging;
+	opacity: 0.75;
+}
+
+.lab-clock .lab-clock-hand-hour {
+	stroke: var(--color-text);
+	stroke-width: 3.5;
+	stroke-linecap: round;
+}
+
+.lab-clock .lab-clock-hand-minute {
+	stroke: var(--color-text);
+	stroke-width: 2.5;
+	stroke-linecap: round;
+}
+
+.lab-clock .lab-clock-hand-second {
+	stroke: var(--color-accent);
+	stroke-width: 1.2;
+	stroke-linecap: round;
+}
+
+.lab-clock .lab-clock-cap {
+	fill: var(--color-accent);
 }
 
 /* ENSURE IMAGE LINKS DISPLAY PROPERLY (ONLY DIRECT CHILD LINKS WRAPPING IMAGES) */

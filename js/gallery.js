@@ -227,6 +227,91 @@ document.addEventListener("DOMContentLoaded", function () {
 		frame.appendChild(img);
 		return frame;
 	}
+	// Experiments/Lab script widgets (type: "script" in experiments.json)
+	const LAB_SCRIPT_BASE_PATH = "/js/lab/";
+	const labScriptsLoaded = {};
+
+	function isExperimentScriptItem(item) {
+		return item && item.type === "script" && item.filename;
+	}
+
+	function getLabScriptName(filename) {
+		return filename.replace(/\.js$/i, "");
+	}
+
+	function loadLabScript(filename) {
+		const src = LAB_SCRIPT_BASE_PATH + filename;
+		if (labScriptsLoaded[src]) {
+			return labScriptsLoaded[src];
+		}
+		labScriptsLoaded[src] = new Promise(function (resolve, reject) {
+			const script = document.createElement("script");
+			script.src = src;
+			script.onload = function () {
+				resolve();
+			};
+			script.onerror = function () {
+				reject(new Error("Failed to load " + src));
+			};
+			document.head.appendChild(script);
+		});
+		return labScriptsLoaded[src];
+	}
+
+	function loadAndInitLabScript(filename, mountEl) {
+		if (mountEl.dataset.labInitialized === "true") {
+			return Promise.resolve();
+		}
+		const name = getLabScriptName(filename);
+		return loadLabScript(filename).then(function () {
+			const widgets = window.LabWidgets;
+			if (!widgets || typeof widgets[name] !== "function") {
+				throw new Error("LabWidgets." + name + " not found");
+			}
+			widgets[name](mountEl);
+			mountEl.dataset.labInitialized = "true";
+		});
+	}
+
+	function createWorkWidget(item) {
+		const aspectRatio = aspectRatioFromJsonDimensions(item);
+
+		const frame = document.createElement("div");
+		frame.className = "work-image-frame work-script-frame";
+
+		const widget = document.createElement("div");
+		widget.className = "work-widget";
+		widget.dataset.labScript = getLabScriptName(item.filename);
+
+		if (aspectRatio != null) {
+			frame.style.aspectRatio = String(aspectRatio);
+		}
+
+		frame.appendChild(widget);
+
+		const widgetObserver = new IntersectionObserver(
+			function (entries, observer) {
+				entries.forEach(function (entry) {
+					if (entry.isIntersecting) {
+						loadAndInitLabScript(item.filename, widget)
+							.then(function () {
+								frame.classList.add("is-loaded");
+							})
+							.catch(function (err) {
+								console.warn(err);
+							});
+						observer.unobserve(entry.target);
+					}
+				});
+			},
+			{
+				rootMargin: "50px",
+			},
+		);
+
+		widgetObserver.observe(widget);
+		return frame;
+	}
 
 	// Build the "meta" caption line as a <p class="work-text"> with spans inside
 	// leftTextClass is e.g. "work-client" or "work-number"
@@ -900,13 +985,15 @@ document.addEventListener("DOMContentLoaded", function () {
 				altText = item.filename;
 			}
 
-			const frame = await createWorkImage(
-				"/images/lab/",
-				item.filename,
-				altText,
-				item,
-				item.shared === true,
-			);
+			const frame = isExperimentScriptItem(item)
+				? createWorkWidget(item)
+				: await createWorkImage(
+						"/images/lab/",
+						item.filename,
+						altText,
+						item,
+						item.shared === true,
+					);
 			workItem.appendChild(frame);
 		}
 
@@ -925,14 +1012,25 @@ document.addEventListener("DOMContentLoaded", function () {
 		}
 
 		if (item.filename) {
-			const displayName = pathFilename;
-			const displayPath = "/images/lab/";
-			const sizeUrl = "/images/lab/dark/" + item.filename;
-			buildWorkFilenameLine(displayPath, displayName, sizeUrl).then(function (filenameEl) {
-				caption.appendChild(filenameEl);
-				const linkEl = buildWorkLinkLine(item.link, item.linkDisplay);
-				if (linkEl) caption.appendChild(linkEl);
-			});
+			if (isExperimentScriptItem(item)) {
+				const displayName = item.filename;
+				const displayPath = LAB_SCRIPT_BASE_PATH;
+				const sizeUrl = LAB_SCRIPT_BASE_PATH + item.filename;
+				buildWorkFilenameLine(displayPath, displayName, sizeUrl).then(function (filenameEl) {
+					caption.appendChild(filenameEl);
+					const linkEl = buildWorkLinkLine(item.link, item.linkDisplay);
+					if (linkEl) caption.appendChild(linkEl);
+				});
+			} else {
+				const displayName = pathFilename;
+				const displayPath = "/images/lab/";
+				const sizeUrl = "/images/lab/dark/" + item.filename;
+				buildWorkFilenameLine(displayPath, displayName, sizeUrl).then(function (filenameEl) {
+					caption.appendChild(filenameEl);
+					const linkEl = buildWorkLinkLine(item.link, item.linkDisplay);
+					if (linkEl) caption.appendChild(linkEl);
+				});
+			}
 		}
 
 		workItem.appendChild(caption);
@@ -1327,7 +1425,10 @@ document.addEventListener("DOMContentLoaded", function () {
 						continue;
 					}
 					const idx = i;
-					const url = workImageBasePath + "dark/" + allItems[i].filename;
+					let url = workImageBasePath + "dark/" + allItems[i].filename;
+					if (sectionType === "experiments" && allItems[i].type === "script") {
+						url = LAB_SCRIPT_BASE_PATH + allItems[i].filename;
+					}
 					tasks.push(
 						getFileSizeBytes(url).then(function (bytes) {
 							workImageBytesByIndex[idx] = bytes;
