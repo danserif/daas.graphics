@@ -65,11 +65,28 @@ document.addEventListener("DOMContentLoaded", function () {
 		});
 	}
 
-	// Append text to a parent element, wrapping any "(...)" segments in a span with opacity-50,
+	// Append text to a parent element, wrapping any "(...)" segments in a span (class from optional third arg; default opacity-50),
+	// optional fourth arg sets class on non-parenthetical segments (avoids nesting opacity-* on the parent).
 	// and "<Name/>"-style tokens so only "<" and "/>" use opacity-50 (inner name stays full opacity).
-	function appendBracketStyledText(text, parent) {
+	function appendBracketStyledText(text, parent, parenClass, defaultClass) {
 		if (!text) return;
+		const parenOpacityClass = parenClass || "opacity-50";
 		const tagParts = text.split(/(<[^/]+\/>)/);
+
+		function appendParentheticalText(segmentText, target) {
+			const parts = segmentText.split(/(\([^)]*\))/);
+			parts.forEach(function (part) {
+				if (!part) return;
+				const span = document.createElement("span");
+				if (part.startsWith("(") && part.endsWith(")")) {
+					span.className = parenOpacityClass;
+				} else if (defaultClass) {
+					span.className = defaultClass;
+				}
+				span.textContent = part;
+				target.appendChild(span);
+			});
+		}
 
 		tagParts.forEach(function (segment) {
 			if (!segment) return;
@@ -89,28 +106,17 @@ document.addEventListener("DOMContentLoaded", function () {
 				return;
 			}
 
-			const parts = segment.split(/(\([^)]*\))/);
-			parts.forEach(function (part) {
-				if (!part) return;
-				const isMuted = part.startsWith("(") && part.endsWith(")");
-				const strikeParts = part.split(/(~~.+?~~)/);
-
-				strikeParts.forEach(function (strikePart) {
-					if (!strikePart) return;
-					const isStrikethrough =
-						strikePart.startsWith("~~") &&
-						strikePart.endsWith("~~") &&
-						strikePart.length > 4;
-
-					const el = document.createElement(isStrikethrough ? "s" : "span");
-					if (isMuted) {
-						el.className = "opacity-50";
-					}
-					el.textContent = isStrikethrough
-						? strikePart.slice(2, -2)
-						: strikePart;
-					parent.appendChild(el);
-				});
+			const strikeParts = segment.split(/(~~.+?~~)/);
+			strikeParts.forEach(function (strikePart) {
+				if (!strikePart) return;
+				const strikeMatch = strikePart.match(/^~~(.+?)~~$/);
+				if (strikeMatch) {
+					const deleted = document.createElement("s");
+					appendParentheticalText(strikeMatch[1], deleted);
+					parent.appendChild(deleted);
+					return;
+				}
+				appendParentheticalText(strikePart, parent);
 			});
 		});
 	}
@@ -816,6 +822,110 @@ document.addEventListener("DOMContentLoaded", function () {
 		return Math.max(0, raw - 3);
 	}
 
+	const WORK_CREDITS_FIELD_ORDER = [
+		["client", "Client"],
+		["creativeDirection", "Creative Direction"],
+		["design", "Design"],
+		["development", "Development"],
+		["research", "Research"],
+		["content", "Content"],
+		["collaborators", "Collaborators"],
+	];
+
+	const WORK_DETAILS_FIELD_ORDER = [
+		["formats", "Formats"],
+		["fonts", "Fonts"],
+	];
+
+	function formatWorkCreditsValue(val) {
+		if (val == null || val === "") return "";
+		if (Array.isArray(val)) {
+			return val
+				.map(function (x) {
+					return x == null ? "" : String(x);
+				})
+				.filter(Boolean)
+				.join(", ");
+		}
+		return String(val);
+	}
+
+	function appendWorkCreditsRow(container, label, rawVal) {
+		const text = formatWorkCreditsValue(rawVal);
+		if (!text) return;
+
+		const p = document.createElement("p");
+		p.className = "work-info-line";
+
+		const lab = document.createElement("span");
+		lab.className = "opacity-25";
+		lab.textContent = label + ": ";
+
+		const valSpan = document.createElement("span");
+		appendBracketStyledText(text, valSpan, "opacity-25", "opacity-50");
+
+		p.appendChild(lab);
+		p.appendChild(valSpan);
+		container.appendChild(p);
+	}
+
+	// Project credits + optional details (graphics: type "info") — typography matches .work-filename lines
+	function renderGraphicsCreditsItem(item, container) {
+		const creditsObj = item.credits && typeof item.credits === "object" ? item.credits : {};
+		const detailsObj = item.details && typeof item.details === "object" ? item.details : {};
+
+		let anyCredits = false;
+		for (let i = 0; i < WORK_CREDITS_FIELD_ORDER.length; i++) {
+			const key = WORK_CREDITS_FIELD_ORDER[i][0];
+			if (formatWorkCreditsValue(creditsObj[key])) {
+				anyCredits = true;
+				break;
+			}
+		}
+		let anyDetails = false;
+		for (let j = 0; j < WORK_DETAILS_FIELD_ORDER.length; j++) {
+			const dkey = WORK_DETAILS_FIELD_ORDER[j][0];
+			if (formatWorkCreditsValue(detailsObj[dkey])) {
+				anyDetails = true;
+				break;
+			}
+		}
+
+		if (!anyCredits && !anyDetails) return;
+
+		const wrap = document.createElement("div");
+		wrap.className = "work-info-block";
+		if (item.project) {
+			wrap.setAttribute("data-project", item.project);
+		}
+
+		const creditsBlock = document.createElement("div");
+		creditsBlock.className = "work-info-credits";
+		for (let c = 0; c < WORK_CREDITS_FIELD_ORDER.length; c++) {
+			const pair = WORK_CREDITS_FIELD_ORDER[c];
+			appendWorkCreditsRow(creditsBlock, pair[1], creditsObj[pair[0]]);
+		}
+		if (creditsBlock.childNodes.length > 0) {
+			wrap.appendChild(creditsBlock);
+		}
+
+		if (anyDetails) {
+			const detailsBlock = document.createElement("div");
+			detailsBlock.className = "work-info-details";
+			for (let d = 0; d < WORK_DETAILS_FIELD_ORDER.length; d++) {
+				const dpair = WORK_DETAILS_FIELD_ORDER[d];
+				appendWorkCreditsRow(detailsBlock, dpair[1], detailsObj[dpair[0]]);
+			}
+			if (detailsBlock.childNodes.length > 0) {
+				wrap.appendChild(detailsBlock);
+			}
+		}
+
+		if (wrap.childNodes.length > 0) {
+			container.appendChild(wrap);
+		}
+	}
+
 	// Full-width section title (graphics.json: type "title")
 	function renderGraphicsTitleItem(item, container) {
 		const wrap = document.createElement("div");
@@ -883,6 +993,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
 		if (item.type === "title") {
 			renderGraphicsTitleItem(item, container);
+			return;
+		}
+
+		if (item.type === "info") {
+			renderGraphicsCreditsItem(item, container);
 			return;
 		}
 
@@ -1395,7 +1510,7 @@ document.addEventListener("DOMContentLoaded", function () {
 				if (sectionType !== "graphics") return;
 				const proj = activeGraphicsProject;
 				grid
-					.querySelectorAll(".work-item, .work-grid-title, .work-grid-divider")
+					.querySelectorAll(".work-item, .work-grid-title, .work-info-block, .work-grid-divider")
 					.forEach(function (el) {
 						const dp = el.getAttribute("data-project");
 						const visible = !proj || dp === proj;
@@ -1453,7 +1568,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 				for (let i = 0; i < items.length; i++) {
 					const item = items[i];
-					if (sectionType === "graphics" && (item.divider || item.type === "title")) {
+					if (sectionType === "graphics" && (item.divider || item.type === "title" || item.type === "info")) {
 						count++;
 						continue;
 					}
@@ -1478,7 +1593,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 				for (let i = 0; i < items.length; i++) {
 					const item = items[i];
-					if (sectionType === "graphics" && (item.divider || item.type === "title")) {
+					if (sectionType === "graphics" && (item.divider || item.type === "title" || item.type === "info")) {
 						count++;
 						continue;
 					}

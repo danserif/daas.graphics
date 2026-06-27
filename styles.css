@@ -3676,6 +3676,45 @@ a.plan-panel-cta:hover {
 	text-transform: uppercase;
 }
 
+.work-info-block {
+	grid-column: 1 / -1;
+	justify-self: start;
+	width: 100%;
+	max-width: 640px;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	margin-top: 3rem;
+	margin-bottom: 1rem;
+}
+
+.work-info-credits,
+.work-info-details {
+	display: flex;
+	flex-direction: column;
+}
+
+.work-info-details {
+	gap: 4px;
+}
+
+/* Match 16px between credits and details: extra space after first credit row (e.g. Client) */
+.work-info-credits {
+	gap: 0;
+}
+
+.work-info-credits>.work-info-line+.work-info-line {
+	margin-top: 4px;
+}
+
+.work-info-credits>.work-info-line:first-child+.work-info-line {
+	margin-top: 16px;
+}
+
+.work-info-credits+.work-info-details {
+	margin-top: 16px;
+}
+
 /* Placeholder + border stay visible while the img fades in (img opacity does not affect the frame) */
 .work-image-frame {
 	width: 100%;
@@ -3816,7 +3855,8 @@ a.plan-panel-cta:hover {
 .work-client,
 .work-number,
 .work-description,
-.work-filename {
+.work-filename,
+.work-info-line {
 	font-family: "Departure Mono", monospace;
 	font-size: 11px;
 	line-height: 1.5;
@@ -3858,9 +3898,9 @@ a.plan-panel-cta:hover {
 	display: inline;
 }
 
-.work-filename {
+.work-filename,
+.work-info-line {
 	color: var(--color-text);
-	margin-top: 4px;
 	margin: 0;
 }
 
