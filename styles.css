@@ -423,12 +423,16 @@ code {
 	min-height: 16px;
 	text-transform: uppercase;
 	color: var(--opacity-50);
-	visibility: hidden;
+	/* opacity — not visibility — so Safari can track :hover on child links */
+	opacity: 0;
+	pointer-events: none;
 	display: inline-block;
 }
 
-.header-label.typewriter-active {
-	visibility: visible;
+.header-label.typewriter-active,
+.header-label.typewriter-done {
+	opacity: 1;
+	pointer-events: auto;
 }
 
 /* Inline separators (//, [$], grouped meta): horizontal rhythm in mono UI lines */
@@ -553,12 +557,14 @@ h1.header-label {
 	display: flex;
 	align-items: center;
 	white-space: nowrap;
-	will-change: transform;
 	animation: scroll-horizontal 40s linear infinite;
 	user-select: none;
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
+	/* Decorative scroll — must not participate in hit-testing (Safari treats the
+	   max-content + transform layer as a viewport-wide blocker over time). */
+	pointer-events: none;
 }
 
 .hero-ascii {
@@ -1146,7 +1152,8 @@ h1.header-label {
 .header-fixed-bar-inner .header-label {
 	margin: 0;
 	min-height: 0;
-	visibility: visible;
+	opacity: 1;
+	pointer-events: auto;
 }
 
 .header-fixed-bar-right {
@@ -1221,7 +1228,7 @@ h1.header-label {
 .d-overlay {
 	position: fixed;
 	inset: 0;
-	z-index: 99999;
+	z-index: -1;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -1236,7 +1243,7 @@ h1.header-label {
 .d-overlay.is-visible {
 	opacity: 1;
 	visibility: visible;
-	pointer-events: auto;
+	z-index: 99999;
 }
 
 .d-overlay-letter {
@@ -1244,6 +1251,7 @@ h1.header-label {
 	line-height: 1;
 	color: var(--color-accent);
 	user-select: none;
+	pointer-events: none;
 }
 
 /* Over #work imagery, accent can clash — use theme text (white / black) */
@@ -1307,7 +1315,7 @@ h1.header-label {
 .map-overlay {
 	position: fixed;
 	inset: 0;
-	z-index: 99999;
+	z-index: -1;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -1322,7 +1330,8 @@ h1.header-label {
 .map-overlay.is-visible {
 	opacity: 1;
 	visibility: visible;
-	pointer-events: auto;
+	z-index: 99999;
+	/* pointer-events stay none — map is visual-only; dismiss via click/Escape in JS */
 }
 
 .map-overlay-map {
@@ -1361,7 +1370,7 @@ h1.header-label {
 .face-overlay {
 	position: fixed;
 	inset: 0;
-	z-index: 99999;
+	z-index: -1;
 	overflow: hidden;
 	background: transparent;
 	opacity: 0;
@@ -1374,7 +1383,8 @@ h1.header-label {
 .face-overlay.is-visible {
 	opacity: 1;
 	visibility: visible;
-	pointer-events: auto;
+	z-index: 99999;
+	/* pointer-events stay none — only .face-overlay-icon captures clicks */
 }
 
 .face-overlay .face-overlay-icon {
@@ -2853,6 +2863,25 @@ a.plan-panel-cta:hover {
 }
 
 /* Graphics gallery — project filter (aligned with dan.newman.is /designer) */
+.filter-bar-backdrop {
+	display: none;
+	position: absolute;
+	inset: 0;
+	background-color: var(--color-bg);
+	pointer-events: none;
+	z-index: 0;
+}
+
+.filter-bar.is-stuck .filter-bar-backdrop {
+	display: block;
+	top: -1px;
+}
+
+.filter-bar.is-stuck > :not(.filter-bar-backdrop) {
+	position: relative;
+	z-index: 1;
+}
+
 .filter-bar {
 	position: relative;
 	background-color: var(--color-bg);
@@ -2954,26 +2983,29 @@ a.plan-panel-cta:hover {
 	.work-samples .work-content .filter-bar.is-stuck {
 		position: sticky;
 		top: var(--filter-bar-snap-top, 0px);
-		z-index: 40;
-		background-color: var(--color-bg);
+		z-index: 499;
+		background-color: transparent;
 		box-sizing: border-box;
 		width: min(100vw, var(--max-width));
 		margin-left: calc((100% - min(100vw, var(--max-width))) / 2);
 		margin-right: calc((100% - min(100vw, var(--max-width))) / 2);
 		padding: 20px var(--work-pad-x) 24px;
 		border-bottom: none;
+		isolation: isolate;
 	}
 
-	.work-samples .filter-bar.is-stuck::after {
-		content: "";
-		position: absolute;
-		left: var(--work-pad-x);
-		right: var(--work-pad-x);
-		bottom: 0;
-		height: 0;
-		border-bottom: 1px dashed var(--color-border);
-		pointer-events: none;
-		z-index: 1;
+	.work-samples .filter-bar.is-stuck .filter-bar-backdrop {
+		background-color: var(--color-bg);
+		background-image: repeating-linear-gradient(
+			to right,
+			var(--color-border) 0,
+			var(--color-border) 4px,
+			var(--color-bg) 4px,
+			var(--color-bg) 8px
+		);
+		background-size: calc(100% - 2 * var(--work-pad-x)) 1px;
+		background-position: center bottom;
+		background-repeat: no-repeat;
 	}
 
 	.work-samples .filter-bar.is-stuck .filter-bar-desktop .filter-dropdown-list {
@@ -3104,7 +3136,7 @@ a.plan-panel-cta:hover {
 		position: sticky;
 		top: var(--filter-bar-snap-top, 0px);
 		z-index: 490;
-		background-color: var(--color-bg);
+		background-color: transparent;
 		box-sizing: border-box;
 		width: auto;
 		max-width: 100%;
@@ -3112,18 +3144,21 @@ a.plan-panel-cta:hover {
 		margin-right: 0;
 		padding: 16px 0;
 		border-bottom: none;
+		isolation: isolate;
 	}
 
-	.work-samples .filter-bar.is-stuck::after {
-		content: "";
-		position: absolute;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		height: 0;
-		border-bottom: 1px dashed var(--color-border);
-		pointer-events: none;
-		z-index: 1;
+	.work-samples .filter-bar.is-stuck .filter-bar-backdrop {
+		background-color: var(--color-bg);
+		background-image: repeating-linear-gradient(
+			to right,
+			var(--color-border) 0,
+			var(--color-border) 4px,
+			var(--color-bg) 4px,
+			var(--color-bg) 8px
+		);
+		background-size: 100% 1px;
+		background-position: center bottom;
+		background-repeat: no-repeat;
 	}
 
 	.work-samples .filter-bar:has(.filter-dropdown.is-open) {
@@ -3131,9 +3166,9 @@ a.plan-panel-cta:hover {
 		border-bottom: none;
 	}
 
-	/* Avoid double dashed rule with sticky ::after while the menu is open */
-	.work-samples .filter-bar.is-stuck:has(.filter-dropdown.is-open)::after {
-		display: none;
+	/* Avoid double dashed rule with sticky backdrop while the menu is open */
+	.work-samples .filter-bar.is-stuck:has(.filter-dropdown.is-open) .filter-bar-backdrop {
+		background-image: none;
 	}
 
 	.filter-bar-desktop {
@@ -3741,7 +3776,7 @@ a.plan-panel-cta:hover {
 	filter: grayscale(1);
 }
 
-#work:not(.work-images-full-color) .work-item:hover .work-image,
+#work:not(.work-images-full-color) .work-image-frame:hover .work-image,
 #work:not(.work-images-full-color) .work-item:focus-within .work-image {
 	filter: grayscale(0%);
 }
@@ -4097,6 +4132,8 @@ a.plan-panel-cta:hover {
 	width: max-content;
 	white-space: nowrap;
 	animation: marquee-scroll 90s linear infinite;
+	/* Animated max-content strip — same Safari hit-test issue as .hero-title */
+	pointer-events: none;
 }
 
 .marquee ul {
@@ -4226,6 +4263,7 @@ a.plan-panel-cta:hover {
 	object-fit: contain;
 	opacity: 0.75;
 	transition: opacity 0.3s ease;
+	pointer-events: auto;
 }
 
 .logo-svg:hover {

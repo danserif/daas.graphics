@@ -400,6 +400,43 @@ setTimeout(function () {
 	setInterval(updateClocks, 1000);
 }, 100);
 
+// Safari loses :hover after innerHTML mutations (typewriter, clock ticks). Nudge hit-testing
+// at the current pointer position so hover styles recover without a full mouse-out/in cycle.
+(function initSafariHoverFix() {
+	if (!/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) return;
+
+	var lastPointer = { x: -1, y: -1 };
+	var nudgeScheduled = false;
+
+	document.addEventListener(
+		"mousemove",
+		function (e) {
+			lastPointer.x = e.clientX;
+			lastPointer.y = e.clientY;
+		},
+		{ passive: true },
+	);
+
+	window.nudgeSafariHover = function () {
+		if (lastPointer.x < 0 || nudgeScheduled) return;
+		nudgeScheduled = true;
+		requestAnimationFrame(function () {
+			nudgeScheduled = false;
+			var el = document.elementFromPoint(lastPointer.x, lastPointer.y);
+			if (!el) return;
+			el.dispatchEvent(
+				new MouseEvent("mousemove", {
+					bubbles: true,
+					cancelable: true,
+					clientX: lastPointer.x,
+					clientY: lastPointer.y,
+					view: window,
+				}),
+			);
+		});
+	};
+})();
+
 // ============================================
 // DOM READY INITIALIZATION
 // ============================================
@@ -489,6 +526,7 @@ function startAsciiCharAnimations() {
 		const stepDuration = duration / steps;
 		let currentStep = 0;
 		const animate = setInterval(function () {
+			if (document.hidden) return;
 			if (currentStep < steps) {
 				const randomChar = chars[Math.floor(Math.random() * chars.length)];
 				char.textContent = randomChar;
@@ -545,11 +583,8 @@ window.__preloadDuringLoading = function () {
 		cachedHeaderLabels.forEach(function (label) {
 			const layoutParent = getHeaderLabelLayoutParent(label);
 			if (!layoutParent) return;
-			const previousVisibility = label.style.visibility;
-			label.style.visibility = "visible";
 			const h = label.offsetHeight;
 			if (h > localSharedMinHeight) localSharedMinHeight = h;
-			label.style.visibility = previousVisibility;
 		});
 		if (localSharedMinHeight > 0) {
 			headerSharedMinHeight = localSharedMinHeight;
@@ -660,11 +695,8 @@ function startAnimations() {
 		headerLabels.forEach(function (label) {
 			const layoutParent = getHeaderLabelLayoutParent(label);
 			if (!layoutParent) return;
-			const previousVisibility = label.style.visibility;
-			label.style.visibility = "visible";
 			const h = label.offsetHeight;
 			if (h > sharedMinHeight) sharedMinHeight = h;
-			label.style.visibility = previousVisibility;
 		});
 		if (sharedMinHeight > 0) {
 			headerSharedMinHeight = sharedMinHeight;
@@ -755,8 +787,11 @@ function startAnimations() {
 
 		function tick(now) {
 			if (htmlIndex >= originalHTML.length) {
-				element.style.visibility = "visible";
 				element.classList.remove("typewriter-active");
+				element.classList.add("typewriter-done");
+				if (typeof window.nudgeSafariHover === "function") {
+					window.nudgeSafariHover();
+				}
 				if (typeof onComplete === "function") {
 					onComplete();
 				}
@@ -799,7 +834,7 @@ function startAnimations() {
 		// If we type the full HTML, we spend real time animating hidden text.
 		// Instead, build a viewport-appropriate snapshot so visible text appears immediately.
 		const clone = label.cloneNode(true);
-		clone.classList.remove("typewriter-active");
+		clone.classList.remove("typewriter-active", "typewriter-done");
 		if (IS_MOBILE_VIEWPORT) {
 			clone.querySelectorAll(".desktop-only").forEach(function (el) {
 				el.remove();
@@ -2056,10 +2091,12 @@ function colorKeyboardTargetOk() {
 		}, FACE_OVERLAY_FADE_MS);
 	}
 
-	overlay.addEventListener("click", function (e) {
+	document.addEventListener("click", function (e) {
+		if (!isVisible()) return;
+		if (e.target.closest(".face-overlay-trigger")) return;
+
 		var iconEl = e.target.closest(".face-overlay-icon");
 		if (iconEl && typeof window.createConfetti === "function") {
-			e.stopPropagation();
 			for (var i = 0; i < 5; i++) {
 				(function (el, delay) {
 					setTimeout(function () {

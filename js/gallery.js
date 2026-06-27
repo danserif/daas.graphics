@@ -566,6 +566,11 @@ document.addEventListener("DOMContentLoaded", function () {
 		const bar = document.createElement("div");
 		bar.className = "filter-bar";
 
+		const backdrop = document.createElement("div");
+		backdrop.className = "filter-bar-backdrop";
+		backdrop.setAttribute("aria-hidden", "true");
+		bar.appendChild(backdrop);
+
 		let activeProject = null;
 
 		function fireFilter() {

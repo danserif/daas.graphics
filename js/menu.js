@@ -31,6 +31,9 @@
 
 	window.syncNavBackdropGrayscaleForWork = syncNavBackdropGrayscaleForWork;
 
+	syncNavBackdropGrayscaleForWork();
+	window.addEventListener("loadingComplete", syncNavBackdropGrayscaleForWork);
+
 	function initNavOverlay() {
 		var overlay = document.querySelector("[data-nav-overlay]");
 		var root = document.documentElement;
