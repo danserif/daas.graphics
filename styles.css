@@ -1289,69 +1289,6 @@ h1.header-label {
 	}
 }
 
-/* MAP OVERLAY — triggered from the "Made in …" header label (desktop only) */
-.map-overlay-trigger {
-	background: none;
-	border: none;
-	color: inherit;
-	font: inherit;
-	padding: 0;
-	margin: 0;
-	text-transform: inherit;
-	text-align: inherit;
-	cursor: default;
-}
-
-@media only screen and (min-width: 1081px) {
-	.map-overlay-trigger {
-		cursor: pointer;
-	}
-
-	.map-overlay-trigger:hover {
-		opacity: 0.5;
-	}
-}
-
-.map-overlay {
-	position: fixed;
-	inset: 0;
-	z-index: -1;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background: var(--color-bg);
-	opacity: 0;
-	visibility: hidden;
-	pointer-events: none;
-	cursor: pointer;
-	transition: opacity 0.35s ease, visibility 0.35s ease;
-}
-
-.map-overlay.is-visible {
-	opacity: 1;
-	visibility: visible;
-	z-index: 99999;
-	/* pointer-events stay none — map is visual-only; dismiss via click/Escape in JS */
-}
-
-.map-overlay-map {
-	margin: 0;
-	padding: 0;
-	/* ~70 cols × 23 rows — scale to largest size that fits the viewport */
-	font-size: min(calc((100vw - 80px) / 70), calc((100vh - 80px) / 26.5));
-	line-height: 1.15;
-	color: var(--opacity-50);
-	white-space: pre;
-	user-select: none;
-	-webkit-user-select: none;
-}
-
-@media only screen and (max-width: 1080px) {
-	.map-overlay {
-		display: none;
-	}
-}
-
 /* FACE OVERLAY — triggered from the fixed-bar "(^_^)/~" button */
 .face-overlay-trigger {
 	background: none;
