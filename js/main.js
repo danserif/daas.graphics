@@ -1086,6 +1086,9 @@ function startAnimations() {
 		iconClone.style.zIndex = "10000";
 		iconClone.style.pointerEvents = "none";
 		iconClone.style.willChange = "transform, opacity";
+		// Clones inherit `.daas-icon`'s `transition: opacity/transform`, which fights the
+		// per-frame rAF writes below and causes the spray to stutter/flicker. Let JS own it.
+		iconClone.style.transition = "none";
 
 		// For hero icons, append to body so animation can extend beyond the hero container
 		// while still allowing section-specific color styling via an extra class.
