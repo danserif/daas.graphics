@@ -1358,6 +1358,7 @@ document.addEventListener("DOMContentLoaded", function () {
 							getFilterBarSnapTopForStickyPx() + "px",
 						);
 					}
+					let gfxFilterStuckInitialized = false;
 					function gfxCheckFilterStuck() {
 						gfxSyncFilterSnapTop();
 						const rect = filterBar.getBoundingClientRect();
@@ -1366,7 +1367,34 @@ document.addEventListener("DOMContentLoaded", function () {
 						const stickHyst = 16;
 						const wasStuck = filterBar.classList.contains("is-stuck");
 						const stuck = wasStuck ? rect.top <= line + stickHyst : rect.top <= line;
-						filterBar.classList.toggle("is-stuck", stuck);
+						if (stuck === wasStuck) {
+							gfxFilterStuckInitialized = true;
+							return;
+						}
+
+						/*
+						 * Desktop width breakout is masked by fading in after the snap:
+						 * opacity 0 + is-stuck (layout jumps while invisible) → fade to 1.
+						 * Skip on mobile (no breakout), reduced motion, and first paint.
+						 */
+						const canFadeMask =
+							gfxFilterStuckInitialized &&
+							stuck &&
+							!window.matchMedia(FILTER_BAR_MOBILE_MQL).matches &&
+							!window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+						if (canFadeMask) {
+							filterBar.classList.add("is-stuck", "is-stick-fade");
+							requestAnimationFrame(function () {
+								requestAnimationFrame(function () {
+									filterBar.classList.remove("is-stick-fade");
+								});
+							});
+						} else {
+							filterBar.classList.remove("is-stick-fade");
+							filterBar.classList.toggle("is-stuck", stuck);
+						}
+						gfxFilterStuckInitialized = true;
 					}
 					let gfxFilterStuckRaf = null;
 					function gfxScheduleFilterStuckCheck() {

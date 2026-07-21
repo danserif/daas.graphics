@@ -2833,8 +2833,28 @@ a.plan-panel-cta:hover {
 	gap: 0;
 	padding: 8px 0 12px;
 	border-bottom: 1px dashed var(--color-border);
-	transition: padding-top 0.2s ease, padding-bottom 0.2s ease;
+	opacity: 1;
+	transition:
+		padding-top 0.2s ease,
+		padding-bottom 0.2s ease,
+		opacity 0.22s ease;
 	overflow: visible;
+}
+
+/* Applied for one frame while layout snaps to header band, then removed to fade in */
+.filter-bar.is-stick-fade {
+	opacity: 0;
+	transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.filter-bar {
+		transition: padding-top 0.2s ease, padding-bottom 0.2s ease;
+	}
+
+	.filter-bar.is-stick-fade {
+		opacity: 1;
+	}
 }
 
 .filter-bar-desktop {
