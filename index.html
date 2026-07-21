@@ -28,7 +28,11 @@
 		(function () {
 			try {
 				var savedMode = localStorage.getItem("colorMode");
-				if (savedMode === "light") document.documentElement.classList.add("light-mode");
+				var isLight =
+					savedMode === "light" ||
+					(savedMode !== "dark" &&
+						window.matchMedia("(prefers-color-scheme: light)").matches);
+				if (isLight) document.documentElement.classList.add("light-mode");
 			} catch (e) { }
 		})();
 	</script>

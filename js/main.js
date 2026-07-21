@@ -314,11 +314,25 @@
 // ============================================
 
 // Light/Dark Mode - Apply immediately to prevent flash
+// Prefer saved choice; otherwise follow the OS prefers-color-scheme.
 (function () {
 	const root = document.documentElement;
-	const savedMode = localStorage.getItem("colorMode") || "dark";
-	if (savedMode === "light") {
+	let isLight = false;
+	try {
+		const savedMode = localStorage.getItem("colorMode");
+		if (savedMode === "light") {
+			isLight = true;
+		} else if (
+			savedMode !== "dark" &&
+			window.matchMedia("(prefers-color-scheme: light)").matches
+		) {
+			isLight = true;
+		}
+	} catch (e) { }
+	if (isLight) {
 		root.classList.add("light-mode");
+	} else {
+		root.classList.remove("light-mode");
 	}
 })();
 
@@ -639,15 +653,17 @@ function startAnimations() {
 		document.body.style.backgroundColor = isLight ? "#ffffff" : "#000000";
 	}
 
-	function applyColorMode(isLight) {
+	function applyColorMode(isLight, options) {
+		var persist = !options || options.persist !== false;
+		var track = !options || options.track !== false;
 		if (isLight) {
-			if (typeof fathom !== "undefined" && fathom.trackEvent) fathom.trackEvent("Light", 0);
+			if (track && typeof fathom !== "undefined" && fathom.trackEvent) fathom.trackEvent("Light", 0);
 			root.classList.add("light-mode");
-			localStorage.setItem("colorMode", "light");
+			if (persist) localStorage.setItem("colorMode", "light");
 		} else {
-			if (typeof fathom !== "undefined" && fathom.trackEvent) fathom.trackEvent("Dark", 0);
+			if (track && typeof fathom !== "undefined" && fathom.trackEvent) fathom.trackEvent("Dark", 0);
 			root.classList.remove("light-mode");
-			localStorage.setItem("colorMode", "dark");
+			if (persist) localStorage.setItem("colorMode", "dark");
 		}
 		updateAccentColorValue();
 		syncThemeColorMeta();
@@ -658,9 +674,30 @@ function startAnimations() {
 		if (typeof window.updateGalleryTheme === "function") {
 			window.updateGalleryTheme();
 		}
-		if (typeof window.triggerLoadingScreen === "function") {
+		// Loading flash only for explicit user toggles, not OS preference changes.
+		if (persist && typeof window.triggerLoadingScreen === "function") {
 			window.triggerLoadingScreen();
 		}
+	}
+
+	// Keep chrome in sync when mode came from OS preference (no toggle yet).
+	syncThemeColorMeta();
+	pushSafariTint();
+
+	// Follow OS theme only until the user picks Dark / Light (then localStorage wins).
+	var colorSchemeMq = window.matchMedia("(prefers-color-scheme: light)");
+	function onSystemColorSchemeChange(e) {
+		try {
+			if (localStorage.getItem("colorMode")) return;
+		} catch (err) {
+			return;
+		}
+		applyColorMode(e.matches, { persist: false, track: false });
+	}
+	if (typeof colorSchemeMq.addEventListener === "function") {
+		colorSchemeMq.addEventListener("change", onSystemColorSchemeChange);
+	} else if (typeof colorSchemeMq.addListener === "function") {
+		colorSchemeMq.addListener(onSystemColorSchemeChange);
 	}
 
 	// Light/Dark Mode Toggle - Event delegation
