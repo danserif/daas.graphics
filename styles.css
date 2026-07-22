@@ -4079,11 +4079,6 @@ html.gallery-lightbox-open body {
 		--gallery-lightbox-pad-bottom: 96px;
 	}
 
-	.gallery-lightbox-project,
-	.gallery-lightbox-close {
-		top: 20px;
-	}
-
 	.gallery-lightbox-project {
 		/* Leave room for Close; 50vw was too tight for name + years */
 		max-width: calc(100% - 2 * var(--gallery-lightbox-pad-x) - 5.5rem);
