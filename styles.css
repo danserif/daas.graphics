@@ -3999,6 +3999,21 @@ html.gallery-lightbox-open body {
 	background: transparent;
 	cursor: pointer;
 	z-index: 1;
+	outline: none;
+	box-shadow: none;
+	-webkit-appearance: none;
+	appearance: none;
+	-webkit-tap-highlight-color: transparent;
+	touch-action: manipulation;
+	user-select: none;
+}
+
+.gallery-lightbox-hit:focus,
+.gallery-lightbox-hit:focus-visible,
+.gallery-lightbox-hit:active {
+	outline: none;
+	box-shadow: none;
+	background: transparent;
 }
 
 .gallery-lightbox-hit--prev {
