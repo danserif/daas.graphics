@@ -3757,6 +3757,7 @@ a.plan-panel-cta:hover {
 
 /* Lab script widgets (experiments.json type: "script") */
 .work-image-frame.work-script-frame {
+	position: relative;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -3782,9 +3783,23 @@ a.plan-panel-cta:hover {
 	transition: opacity 0.2s ease;
 }
 
-.work-image-frame.work-script-frame:hover .work-widget,
-.work-image-frame.is-loaded:hover .work-widget {
-	opacity: 0.50;
+/* Dim via overlay so SVG strokes don't re-raster and shift on hover */
+.work-image-frame.work-script-frame::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background-color: #000000;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.2s ease;
+}
+
+.light-mode .work-image-frame.work-script-frame::after {
+	background-color: #ffffff;
+}
+
+.work-image-frame.work-script-frame:hover::after {
+	opacity: 0.5;
 }
 
 /* ==========================================================================
@@ -3795,6 +3810,7 @@ a.plan-panel-cta:hover {
 	--gallery-lightbox-pad-x: 60px;
 	--gallery-lightbox-label-size: 11px;
 	--gallery-lightbox-label-line: 1.5;
+	--gallery-lightbox-stack-gap: 4px;
 	--gallery-lightbox-pad-top: 72px;
 	--gallery-lightbox-pad-bottom: 88px;
 	position: fixed;
@@ -3961,8 +3977,9 @@ html.gallery-lightbox-open body {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: min(72vh, 900px, 100%);
-	max-width: min(100%, 1400px);
+	width: min(72vh, 900px);
+	max-width: 100%;
+	max-height: min(72vh, 900px);
 	aspect-ratio: 1;
 	box-sizing: border-box;
 	background-color: #000000;
@@ -4044,7 +4061,7 @@ html.gallery-lightbox-open body {
 
 .gallery-lightbox-meta .work-caption {
 	margin-bottom: 0;
-	gap: 4px;
+	gap: var(--gallery-lightbox-stack-gap);
 }
 
 .gallery-lightbox-count {
@@ -4059,7 +4076,7 @@ html.gallery-lightbox-open body {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-end;
-	gap: 4px;
+	gap: var(--gallery-lightbox-stack-gap);
 }
 
 .gallery-lightbox-count-nav {
@@ -4106,7 +4123,8 @@ html.gallery-lightbox-open body {
 	}
 
 	.gallery-lightbox-widget {
-		width: min(58vh, 100%);
+		width: min(58vh, 900px);
+		max-width: 100%;
 	}
 
 	.gallery-lightbox-meta {
@@ -4118,6 +4136,7 @@ html.gallery-lightbox-open body {
 	.gallery-lightbox {
 		--gallery-lightbox-label-size: 12px;
 		--gallery-lightbox-label-line: 20px;
+		--gallery-lightbox-stack-gap: 2px;
 	}
 }
 

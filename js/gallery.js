@@ -1247,7 +1247,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		img.alt = "";
 
 		var widgetMount = document.createElement("div");
-		widgetMount.className = "gallery-lightbox-widget work-widget";
+		widgetMount.className = "gallery-lightbox-widget";
 		widgetMount.hidden = true;
 
 		var hitPrev = document.createElement("button");
