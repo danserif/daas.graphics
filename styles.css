@@ -3714,6 +3714,7 @@ a.plan-panel-cta:hover {
 	background-color: #080808;
 	border: 1px solid #1D1D1D;
 	overflow: hidden;
+	cursor: pointer;
 }
 
 .work-image {
@@ -3727,6 +3728,7 @@ a.plan-panel-cta:hover {
 
 .work-image.is-loaded {
 	opacity: 1;
+	transition: filter 0.3s ease, opacity 0.2s ease;
 }
 
 #work:not(.work-images-full-color) .work-image {
@@ -3736,6 +3738,12 @@ a.plan-panel-cta:hover {
 #work:not(.work-images-full-color) .work-image-frame:hover .work-image,
 #work:not(.work-images-full-color) .work-item:focus-within .work-image {
 	filter: grayscale(0%);
+}
+
+/* Full-color work + lab: dim on hover as lightbox affordance */
+#work.work-images-full-color .work-image-frame:hover .work-image.is-loaded,
+#lab .work-image-frame:hover .work-image.is-loaded {
+	opacity: 0.50;
 }
 
 #work.work-images-full-color .work-image {
@@ -3771,6 +3779,347 @@ a.plan-panel-cta:hover {
 
 .work-image-frame.is-loaded .work-widget {
 	opacity: 1;
+	transition: opacity 0.2s ease;
+}
+
+.work-image-frame.work-script-frame:hover .work-widget,
+.work-image-frame.is-loaded:hover .work-widget {
+	opacity: 0.50;
+}
+
+/* ==========================================================================
+   GALLERY LIGHTBOX — fullscreen viewer (work + lab)
+   ========================================================================== */
+
+.gallery-lightbox {
+	--gallery-lightbox-pad-x: 60px;
+	--gallery-lightbox-label-size: 11px;
+	--gallery-lightbox-label-line: 1.5;
+	--gallery-lightbox-pad-top: 72px;
+	--gallery-lightbox-pad-bottom: 88px;
+	position: fixed;
+	inset: 0;
+	z-index: 99985;
+	display: block;
+	padding: 0;
+	box-sizing: border-box;
+	background: var(--color-bg);
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.gallery-lightbox.is-open {
+	opacity: 1;
+	visibility: visible;
+	pointer-events: auto;
+}
+
+.gallery-lightbox[hidden] {
+	display: none;
+}
+
+.gallery-lightbox.is-open[hidden] {
+	display: block;
+}
+
+html.gallery-lightbox-open,
+html.gallery-lightbox-open body {
+	overflow: hidden;
+}
+
+/* Avoid opacity multiply on nested caption/count spans (match site color tokens) */
+.gallery-lightbox .opacity-15 {
+	color: var(--opacity-15);
+	opacity: 1;
+}
+
+.gallery-lightbox .opacity-25 {
+	color: var(--opacity-25);
+	opacity: 1;
+}
+
+.gallery-lightbox .opacity-50 {
+	color: var(--opacity-50);
+	opacity: 1;
+}
+
+.gallery-lightbox .opacity-75 {
+	color: var(--opacity-75);
+	opacity: 1;
+}
+
+.gallery-lightbox-project {
+	position: absolute;
+	top: 26px;
+	left: var(--gallery-lightbox-pad-x);
+	margin: 0;
+	font-size: var(--gallery-lightbox-label-size);
+	line-height: var(--gallery-lightbox-label-line);
+	color: var(--color-text);
+	max-width: min(50vw, 420px);
+	pointer-events: none;
+}
+
+.gallery-lightbox-project.is-empty {
+	display: none;
+}
+
+.gallery-lightbox-project-link {
+	pointer-events: auto;
+	color: inherit;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.gallery-lightbox-project-link:hover {
+	opacity: 0.7;
+}
+
+.gallery-lightbox-project-name {
+	text-transform: uppercase;
+}
+
+.gallery-lightbox-close {
+	position: absolute;
+	top: 26px;
+	right: var(--gallery-lightbox-pad-x);
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	font-family: "Departure Mono", monospace;
+	font-size: var(--gallery-lightbox-label-size);
+	line-height: var(--gallery-lightbox-label-line);
+	color: var(--opacity-75);
+	cursor: pointer;
+	outline: none;
+	box-shadow: none;
+	-webkit-tap-highlight-color: transparent;
+}
+
+.gallery-lightbox-close:hover {
+	color: var(--color-text);
+}
+
+.gallery-lightbox-close:focus,
+.gallery-lightbox-close:focus-visible,
+.gallery-lightbox-close:active {
+	outline: none;
+	box-shadow: none;
+	border: 0;
+}
+
+.gallery-lightbox-stage {
+	position: absolute;
+	top: var(--gallery-lightbox-pad-top);
+	right: var(--gallery-lightbox-pad-x);
+	bottom: var(--gallery-lightbox-pad-bottom);
+	left: var(--gallery-lightbox-pad-x);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	max-width: none;
+	width: auto;
+	height: auto;
+}
+
+.gallery-lightbox-figure {
+	position: relative;
+	display: inline-block;
+	max-width: 100%;
+	line-height: 0;
+}
+
+.gallery-lightbox-image {
+	display: block;
+	max-width: min(100%, 1400px);
+	max-height: min(72vh, 900px);
+	width: auto;
+	height: auto;
+	object-fit: contain;
+	box-sizing: border-box;
+	background-color: #080808;
+	border: 1px solid #1d1d1d;
+	user-select: none;
+	-webkit-user-drag: none;
+	pointer-events: none;
+}
+
+.gallery-lightbox-image[hidden],
+.gallery-lightbox-widget[hidden] {
+	display: none !important;
+}
+
+.light-mode .gallery-lightbox-image {
+	background-color: #f5f5f5;
+	border-color: #dddddd;
+}
+
+.gallery-lightbox-widget {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: min(72vh, 900px, 100%);
+	max-width: min(100%, 1400px);
+	aspect-ratio: 1;
+	box-sizing: border-box;
+	background-color: #000000;
+	border: 1px solid #1d1d1d;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.2s ease;
+}
+
+.gallery-lightbox-widget.is-ready {
+	opacity: 1;
+}
+
+.gallery-lightbox-widget .lab-clock-svg,
+.gallery-lightbox-widget > * {
+	width: 68%;
+	height: auto;
+	aspect-ratio: 1;
+}
+
+.light-mode .gallery-lightbox-widget {
+	background-color: #ffffff;
+	border-color: #dddddd;
+}
+
+.gallery-lightbox-hit {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 50%;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	cursor: pointer;
+	z-index: 1;
+}
+
+.gallery-lightbox-hit--prev {
+	left: 0;
+	cursor: w-resize;
+}
+
+.gallery-lightbox-hit--next {
+	right: 0;
+	cursor: e-resize;
+}
+
+.gallery-lightbox-meta {
+	position: absolute;
+	left: var(--gallery-lightbox-pad-x);
+	bottom: 24px;
+	max-width: min(55vw, 520px);
+	pointer-events: none;
+}
+
+.gallery-lightbox-meta .work-caption,
+.gallery-lightbox-meta .work-number,
+.gallery-lightbox-meta .work-description,
+.gallery-lightbox-meta .work-filename {
+	font-size: var(--gallery-lightbox-label-size);
+	line-height: var(--gallery-lightbox-label-line);
+}
+
+.gallery-lightbox-meta .work-caption {
+	margin-bottom: 0;
+}
+
+.gallery-lightbox-count {
+	position: absolute;
+	right: var(--gallery-lightbox-pad-x);
+	bottom: 24px;
+	margin: 0;
+	font-family: "Departure Mono", monospace;
+	font-size: var(--gallery-lightbox-label-size);
+	line-height: var(--gallery-lightbox-label-line);
+	pointer-events: none;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 0;
+}
+
+.gallery-lightbox-count-nav {
+	pointer-events: auto;
+}
+
+.gallery-lightbox-count-arrow {
+	color: var(--color-text);
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.gallery-lightbox-count-arrow:hover {
+	opacity: 0.7;
+}
+
+@media only screen and (max-width: 2660px) {
+	.gallery-lightbox {
+		--gallery-lightbox-pad-x: 3rem;
+	}
+}
+
+@media only screen and (max-width: 1640px) {
+	.gallery-lightbox {
+		--gallery-lightbox-pad-x: 2rem;
+	}
+}
+
+@media only screen and (max-width: 1080px) {
+	.gallery-lightbox {
+		--gallery-lightbox-pad-x: 1.5rem;
+		--gallery-lightbox-pad-top: 64px;
+		--gallery-lightbox-pad-bottom: 96px;
+	}
+
+	.gallery-lightbox-project,
+	.gallery-lightbox-close {
+		top: 20px;
+	}
+
+	.gallery-lightbox-project {
+		/* Leave room for Close; 50vw was too tight for name + years */
+		max-width: calc(100% - 2 * var(--gallery-lightbox-pad-x) - 5.5rem);
+	}
+
+	.gallery-lightbox-image,
+	.gallery-lightbox-widget {
+		max-height: 58vh;
+	}
+
+	.gallery-lightbox-widget {
+		width: min(58vh, 100%);
+	}
+
+	.gallery-lightbox-meta {
+		max-width: calc(100% - 5rem);
+	}
+}
+
+@media only screen and (min-width: 2661px) {
+	.gallery-lightbox {
+		--gallery-lightbox-label-size: 12px;
+		--gallery-lightbox-label-line: 20px;
+	}
+}
+
+@media only screen and (max-width: 640px) {
+	.gallery-lightbox-count {
+		display: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.gallery-lightbox {
+		transition: none;
+	}
 }
 
 .lab-clock-svg {

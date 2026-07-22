@@ -168,5 +168,6 @@ LabWidgets.clock = function (mountEl) {
 			cancelAnimationFrame(clockRAF);
 			clockRAF = null;
 		}
+		mountEl.dataset.clockRunning = "false";
 	};
 };

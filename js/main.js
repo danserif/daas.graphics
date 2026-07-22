@@ -675,7 +675,12 @@ function startAnimations() {
 			window.updateGalleryTheme();
 		}
 		// Loading flash only for explicit user toggles, not OS preference changes.
-		if (persist && typeof window.triggerLoadingScreen === "function") {
+		// Skip while the gallery lightbox is open — just swap theme under the overlay.
+		if (
+			persist &&
+			typeof window.triggerLoadingScreen === "function" &&
+			!root.classList.contains("gallery-lightbox-open")
+		) {
 			window.triggerLoadingScreen();
 		}
 	}
