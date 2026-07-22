@@ -1359,6 +1359,7 @@ document.addEventListener("DOMContentLoaded", function () {
 						);
 					}
 					let gfxFilterStuckInitialized = false;
+					let gfxStickFadeToken = 0;
 					function gfxCheckFilterStuck() {
 						gfxSyncFilterSnapTop();
 						const rect = filterBar.getBoundingClientRect();
@@ -1373,20 +1374,22 @@ document.addEventListener("DOMContentLoaded", function () {
 						}
 
 						/*
-						 * Desktop width breakout is masked by fading in after the snap:
-						 * opacity 0 + is-stuck (layout jumps while invisible) → fade to 1.
+						 * Desktop width breakout/collapse is masked both ways:
+						 * opacity 0 → toggle is-stuck (layout jumps while invisible) → fade to 1.
 						 * Skip on mobile (no breakout), reduced motion, and first paint.
 						 */
 						const canFadeMask =
 							gfxFilterStuckInitialized &&
-							stuck &&
 							!window.matchMedia(FILTER_BAR_MOBILE_MQL).matches &&
 							!window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 						if (canFadeMask) {
-							filterBar.classList.add("is-stuck", "is-stick-fade");
+							const token = ++gfxStickFadeToken;
+							filterBar.classList.add("is-stick-fade");
+							filterBar.classList.toggle("is-stuck", stuck);
 							requestAnimationFrame(function () {
 								requestAnimationFrame(function () {
+									if (token !== gfxStickFadeToken) return;
 									filterBar.classList.remove("is-stick-fade");
 								});
 							});

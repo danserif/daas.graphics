@@ -2841,7 +2841,7 @@ a.plan-panel-cta:hover {
 	overflow: visible;
 }
 
-/* Applied for one frame while layout snaps to header band, then removed to fade in */
+/* Instant hide while layout snaps (stick or unstick); remove to fade back in */
 .filter-bar.is-stick-fade {
 	opacity: 0;
 	transition: none;
