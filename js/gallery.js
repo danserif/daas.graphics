@@ -17,6 +17,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	/** Ambient lightbox colours keyed by src. */
 	var lightboxColorCache = Object.create(null);
+	var ambientDesktopMql = window.matchMedia(FILTER_BAR_MOBILE_MQL);
+
+	function ambientBackgroundAllowed() {
+		/* Mobile keeps the normal light/dark page background. */
+		return !ambientDesktopMql.matches;
+	}
 
 	function clampByte(n) {
 		return Math.max(0, Math.min(255, Math.round(n)));
@@ -1516,7 +1522,12 @@ document.addEventListener("DOMContentLoaded", function () {
 			state.ambientToken += 1;
 			var token = state.ambientToken;
 
-			if (!state.matchImageBackground || !entry || isExperimentScriptItem(entry)) {
+			if (
+				!state.matchImageBackground ||
+				!entry ||
+				isExperimentScriptItem(entry) ||
+				!ambientBackgroundAllowed()
+			) {
 				clearAmbientBackground();
 				return;
 			}
@@ -1904,6 +1915,17 @@ document.addEventListener("DOMContentLoaded", function () {
 			if (!entry || isExperimentScriptItem(entry)) return;
 			img.src = entrySrc(entry);
 			syncAmbientBackground(entry);
+		}
+
+		function onAmbientViewportChange() {
+			if (!state.open) return;
+			syncAmbientBackground(state.entries[state.index]);
+		}
+
+		if (typeof ambientDesktopMql.addEventListener === "function") {
+			ambientDesktopMql.addEventListener("change", onAmbientViewportChange);
+		} else if (typeof ambientDesktopMql.addListener === "function") {
+			ambientDesktopMql.addListener(onAmbientViewportChange);
 		}
 
 		function step(delta) {
