@@ -178,6 +178,30 @@ document.addEventListener("DOMContentLoaded", function () {
 		return null;
 	}
 
+	function findGridPreviewScriptFrame(filename) {
+		if (!filename) return null;
+		var nodes = document.querySelectorAll(".work-script-frame[data-filename]");
+		for (var i = 0; i < nodes.length; i++) {
+			if (nodes[i].dataset.filename === filename) return nodes[i];
+		}
+		return null;
+	}
+
+	/** Solid plate colour for script widgets (no bitmap to sample). */
+	function sampleElementBackground(el) {
+		if (!el) return null;
+		var rgb = parseCssColor(getComputedStyle(el).backgroundColor);
+		if (!rgb) return null;
+		return rgbToHex(rgb.r, rgb.g, rgb.b);
+	}
+
+	function scriptAmbientCacheKey(filename) {
+		var theme = document.documentElement.classList.contains("light-mode")
+			? "light"
+			: "dark";
+		return "script:" + filename + ":" + theme;
+	}
+
 	function getThemedSrc(basePath, filename, shared) {
 		const isLight = document.documentElement.classList.contains("light-mode");
 		if (isLight && !shared && !lightImageMissing.has(basePath + filename)) {
@@ -1522,12 +1546,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			state.ambientToken += 1;
 			var token = state.ambientToken;
 
-			if (
-				!state.matchImageBackground ||
-				!entry ||
-				isExperimentScriptItem(entry) ||
-				!ambientBackgroundAllowed()
-			) {
+			if (!state.matchImageBackground || !entry || !ambientBackgroundAllowed()) {
 				clearAmbientBackground();
 				return;
 			}
@@ -1538,29 +1557,52 @@ document.addEventListener("DOMContentLoaded", function () {
 				return;
 			}
 
+			function applySampled(color, cacheKeys) {
+				if (!color) return false;
+				var adjusted = darkenCssColor(color, 0.1);
+				cacheAmbientColor(adjusted, cacheKeys || []);
+				applyAmbientBackground(adjusted);
+				return true;
+			}
+
+			// Scripts: sample the solid plate (grid tile or lightbox mount), same 10% darken as images.
+			if (isExperimentScriptItem(entry)) {
+				var scriptKey = scriptAmbientCacheKey(entry.filename);
+				if (lightboxColorCache[scriptKey]) {
+					applyAmbientBackground(lightboxColorCache[scriptKey]);
+					return;
+				}
+				var scriptFrame = findGridPreviewScriptFrame(entry.filename);
+				var sampleEl =
+					scriptFrame || (widgetMount && !widgetMount.hidden ? widgetMount : null);
+				if (!applySampled(sampleElementBackground(sampleEl), [scriptKey])) {
+					clearAmbientBackground();
+				}
+				return;
+			}
+
 			var cacheKey = entrySrc(entry);
 			if (cacheKey && lightboxColorCache[cacheKey]) {
 				applyAmbientBackground(lightboxColorCache[cacheKey]);
 				return;
 			}
 
-			function applySampled(color, extraKeys) {
-				if (!color) return false;
-				var adjusted = darkenCssColor(color, 0.1);
-				cacheAmbientColor(adjusted, [cacheKey, img.currentSrc || img.src].concat(extraKeys || []));
-				applyAmbientBackground(adjusted);
-				return true;
-			}
-
 			// Prefer the already-decoded grid thumb so open/nav doesn't wait on lightbox decode.
 			var preview = findGridPreviewImage(entry.filename);
-			if (preview && applySampled(extractAverageColor(preview), [preview.currentSrc || preview.src])) {
+			if (
+				preview &&
+				applySampled(extractAverageColor(preview), [
+					cacheKey,
+					img.currentSrc || img.src,
+					preview.currentSrc || preview.src,
+				])
+			) {
 				return;
 			}
 
 			function sampleFromImage() {
 				if (!state.open || token !== state.ambientToken) return;
-				applySampled(extractAverageColor(img));
+				applySampled(extractAverageColor(img), [cacheKey, img.currentSrc || img.src]);
 			}
 
 			if (typeof img.decode === "function") {
@@ -1912,7 +1954,11 @@ document.addEventListener("DOMContentLoaded", function () {
 		function refreshTheme() {
 			if (!state.open || !state.isThemed) return;
 			var entry = state.entries[state.index];
-			if (!entry || isExperimentScriptItem(entry)) return;
+			if (!entry) return;
+			if (isExperimentScriptItem(entry)) {
+				syncAmbientBackground(entry);
+				return;
+			}
 			img.src = entrySrc(entry);
 			syncAmbientBackground(entry);
 		}

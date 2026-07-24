@@ -4031,6 +4031,11 @@ html.gallery-lightbox-open body {
 	border-color: #dddddd;
 }
 
+.gallery-lightbox.is-ambient .gallery-lightbox-widget {
+	border-color: var(--color-border);
+}
+
+
 .gallery-lightbox-hit {
 	position: absolute;
 	top: 0;
