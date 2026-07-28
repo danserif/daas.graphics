@@ -226,6 +226,16 @@ document.addEventListener("DOMContentLoaded", function () {
 					img.src = newSrc;
 				}
 			});
+		var labMode = document.documentElement.classList.contains("light-mode")
+			? "light"
+			: "dark";
+		document.querySelectorAll("[data-lab-script='danscii']").forEach(function (el) {
+			if (typeof el._dansciiSyncTheme === "function") {
+				el._dansciiSyncTheme();
+			} else if (el._danscii && typeof el._danscii.setMode === "function") {
+				el._danscii.setMode(labMode);
+			}
+		});
 		if (galleryLightboxApi && typeof galleryLightboxApi.refreshTheme === "function") {
 			galleryLightboxApi.refreshTheme();
 		}
@@ -476,8 +486,9 @@ document.addEventListener("DOMContentLoaded", function () {
 			if (!widgets || typeof widgets[name] !== "function") {
 				throw new Error("LabWidgets." + name + " not found");
 			}
-			widgets[name](mountEl);
-			mountEl.dataset.labInitialized = "true";
+			return Promise.resolve(widgets[name](mountEl)).then(function () {
+				mountEl.dataset.labInitialized = "true";
+			});
 		});
 	}
 
@@ -1241,8 +1252,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 		const workItem = document.createElement("div");
 		workItem.className = "work-item";
-		// Allow 1, 2, 3, or 4 columns, default to 1
-		const columns = item.columns && [1, 2, 3, 4].includes(item.columns) ? item.columns : 1;
+		// Allow 1, 2, 3, 4, or 5 columns, default to 1
+		const columns = item.columns && [1, 2, 3, 4, 5].includes(item.columns) ? item.columns : 1;
 		workItem.setAttribute("data-columns", columns);
 		if (item.project) {
 			workItem.setAttribute("data-project", item.project);
@@ -1303,8 +1314,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 		const workItem = document.createElement("div");
 		workItem.className = "work-item";
-		// Allow 1, 2, 3, or 4 columns, default to 2
-		const columns = item.columns && [1, 2, 3, 4].includes(item.columns) ? item.columns : 2;
+		// Allow 1, 2, 3, 4, or 5 columns, default to 2
+		const columns = item.columns && [1, 2, 3, 4, 5].includes(item.columns) ? item.columns : 2;
 		workItem.setAttribute("data-columns", columns);
 
 		// Extract number from filename if not provided (e.g., "G-002.png" -> "G-002")
@@ -1624,10 +1635,14 @@ document.addEventListener("DOMContentLoaded", function () {
 			widgetMount.replaceChildren();
 			widgetMount.removeAttribute("data-lab-initialized");
 			widgetMount.removeAttribute("data-clock-running");
+			widgetMount.removeAttribute("data-danscii-running");
 			widgetMount.removeAttribute("data-lab-script");
+			widgetMount.style.removeProperty("aspect-ratio");
 			delete widgetMount._clockCleanup;
+			delete widgetMount._labCleanup;
+			delete widgetMount._danscii;
 			widgetMount.hidden = true;
-			widgetMount.classList.remove("is-ready");
+			widgetMount.classList.remove("is-ready", "lab-danscii", "lab-clock");
 		}
 
 		function entrySrc(entry) {
@@ -1777,6 +1792,13 @@ document.addEventListener("DOMContentLoaded", function () {
 				img.removeAttribute("src");
 				img.alt = "";
 				widgetMount.hidden = false;
+				widgetMount.dataset.labScript = getLabScriptName(entry.filename);
+				var widgetAspect = aspectRatioFromJsonDimensions(entry);
+				if (widgetAspect != null) {
+					widgetMount.style.aspectRatio = String(widgetAspect);
+				} else {
+					widgetMount.style.removeProperty("aspect-ratio");
+				}
 				syncAmbientBackground(entry);
 				loadAndInitLabScript(entry.filename, widgetMount)
 					.then(function () {
@@ -1784,7 +1806,9 @@ document.addEventListener("DOMContentLoaded", function () {
 						if (state.entries[state.index] !== entry) return;
 						widgetMount.classList.add("is-ready");
 						state.widgetCleanup = function () {
-							if (typeof widgetMount._clockCleanup === "function") {
+							if (typeof widgetMount._labCleanup === "function") {
+								widgetMount._labCleanup();
+							} else if (typeof widgetMount._clockCleanup === "function") {
 								widgetMount._clockCleanup();
 							}
 						};
@@ -2577,7 +2601,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 			// Calculate how many items fit within a given column budget (maxColumns).
 			// Graphics dividers and title rows are included in the slice but do not consume column budget.
-			// Used to cap initial display (2 rows) and "Load more" batches on desktop (separate larger budget per click below)
+			// Used to cap initial display (2–3 rows) and "Load more" batches on desktop (separate larger budget per click below)
 			function calculateDisplayCount(items, maxColumns) {
 				let totalColumns = 0;
 				let count = 0;
@@ -2656,11 +2680,13 @@ document.addEventListener("DOMContentLoaded", function () {
 			const isMobile = window.matchMedia("(max-width: 1080px)").matches;
 
 			// Initial display:
-			// - Desktop: max 2 rows (20 columns at largest breakpoint)
-			// - Mobile: max 4 content items (+ graphics dividers in the same slice)
+			// - Desktop: max 2 rows (20 columns); Lab shows 3 rows (30 columns)
+			// - Mobile: max 4 content items; Lab shows 5 (+ graphics dividers in the same slice)
+			const initialRowColumns = sectionType === "experiments" ? 30 : 20;
+			const initialMobileItems = sectionType === "experiments" ? 5 : 4;
 			const rawInitialCount = isMobile
-				? countMobileBatchItems(allItems, 4)
-				: calculateDisplayCount(allItems, 20);
+				? countMobileBatchItems(allItems, initialMobileItems)
+				: calculateDisplayCount(allItems, initialRowColumns);
 			const initialDisplayCount = adjustBatchCountForTrailingDividers(allItems, rawInitialCount);
 
 			async function displayNextBatch() {

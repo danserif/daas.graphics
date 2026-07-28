@@ -1,6 +1,35 @@
 {
   "items": [
     {
+      "filename": "danscii.js",
+      "type": "script",
+      "number": "G-21",
+      "description": "D@N5C1I (App)",
+      "columns": 5,
+      "width": 1370,
+      "height": 884,
+      "link": "https://dan.newman.is/building/danscii/",
+      "linkDisplay": "dan.newman.is/building/danscii"
+    },
+    {
+      "filename": "danscii-ui.png",
+      "number": "G-20",
+      "description": "D@N5C1I (UI)",
+      "columns": 3,
+      "width": 1628,
+      "height": 1212,
+      "shared": false
+    },
+    {
+      "filename": "ascii-nz.png",
+      "number": "G-19",
+      "description": "Aotearoa (ASCII)",
+      "columns": 2,
+      "width": 1072,
+      "height": 1492,
+      "shared": true
+    },
+    {
       "filename": "clock.js",
       "type": "script",
       "number": "G-18",

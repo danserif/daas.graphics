@@ -239,11 +239,10 @@
 		</div>
 		<!-- LOCATION -->
 		<div class="header-column">
-			<p class="header-label">Made in <span class="opacity-75">(Aotearoa)</span> New Zealand <span
-					class="desktop-only meta-separator">
-					<span class="opacity-50">WLG</span>
-					<span class="opacity-25">/</span> <span class="opacity-50">NZL</span></span>
-			</p>
+			<p class="header-label"><button type="button" class="ascii-map-trigger" aria-label="Show ASCII map">Made in
+					<span class="opacity-75">(Aotearoa)</span> New Zealand <span class="desktop-only meta-separator">
+						<span class="opacity-50">WLG</span>
+						<span class="opacity-25">/</span> <span class="opacity-50">NZL</span></span></button></p>
 			<hr class="divider" />
 		</div>
 		<!-- CLOCK -->
@@ -257,10 +256,12 @@
 			</p>
 			<hr class="divider" />
 		</div>
-		<!-- RATES -->
+		<!-- STATUS -->
 		<div class="header-column hide">
-			<p class="header-label">Shipping Worldwide <span class="opacity-50 meta-separator">[$]</span> <span
-					class="opacity-75">International Rates Apply</span></p>
+			<p class="header-label">
+				<a href="#about">Shipping Worldwide <span class="opacity-50 meta-separator">(1)</span> <span
+						class="opacity-75">Limited Availability</span></a>
+			</p>
 			<hr class="divider" />
 		</div>
 		<!-- LIGHT / DARK MODE + DESKTOP MENU -->
@@ -336,6 +337,38 @@
 	<!-- LETTER D (OVERLAY) -->
 	<div class="d-overlay" aria-hidden="true">
 		<span class="d-overlay-letter font-adhesion">D</span>
+	</div>
+	<!-- ASCII MAP (OVERLAY) -->
+	<div class="ascii-map" aria-hidden="true">
+		<div class="ascii-map-chrome">
+			<div class="ascii-map-chrome-bar">
+				<div class="ascii-map-chrome-bar-inner">
+					<p class="ascii-map-title font-departure">Aotearoa <span class="opacity-50">(New Zealand)</span></p>
+					<button type="button" class="ascii-map-close font-departure" aria-label="Close">
+						Close <span class="opacity-50">[</span>×<span class="opacity-50">]</span>
+					</button>
+				</div>
+			</div>
+			<div class="ascii-map-meta font-departure">
+				<p class="ascii-map-caption">ASCII <span class="opacity-50">(Map)</span></p>
+				<p class="ascii-map-filename">
+					<span class="opacity-15">&#8985;</span>
+					<span class="opacity-25"> /js/</span><span class="opacity-25">ascii-map.js</span>
+				</p>
+			</div>
+			<div class="ascii-map-link-wrap font-departure">
+				<p class="ascii-map-link-title">
+					<a class="ascii-map-link" href="https://dan.newman.is/building/danscii/" target="_blank"><span
+							class="opacity-25">Made with</span> D@N5C1I <span class="opacity-50">(App)</span><span class="opacity-50">
+							→</span></a>
+				</p>
+				<p class="ascii-map-link-url">
+					<a class="ascii-map-link ascii-map-link--url" href="https://dan.newman.is/building/danscii/"
+						target="_blank">dan.newman.is/building/danscii</a>
+				</p>
+			</div>
+		</div>
+		<div class="ascii-map-mount" id="ascii-map-mount"></div>
 	</div>
 	<!-- FACES (OVERLAY) -->
 	<div class="face-overlay" aria-hidden="true">
@@ -1331,8 +1364,8 @@
 						<li><span class="opacity-25">//</span></li>
 						<li><span class="opacity-25">D-04</span></li>
 						<li><span class="opacity-25">//</span></li>
-						<li><span class="opacity-50">Shipping Worldwide</span> <span class="opacity-25">[$]</span> <span
-								class="opacity-50">International Rates Apply</span></li>
+						<li><span class="opacity-50">Shipping Worldwide</span> <span class="opacity-25">(1)</span> <span
+								class="opacity-50">Limited Availability</span></li>
 						<li><span class="opacity-25">//</span></li>
 						<li><span class="opacity-25">Made in <span class="opacity-75">(Aotearoa)</span> New Zealand</span>
 						</li>
@@ -1372,8 +1405,8 @@
 						<li><span class="opacity-25">//</span></li>
 						<li><span class="opacity-25">D-04</span></li>
 						<li><span class="opacity-25">//</span></li>
-						<li><span class="opacity-50">Shipping Worldwide</span> <span class="opacity-25">[$]</span> <span
-								class="opacity-50">International Rates Apply</span></li>
+						<li><span class="opacity-50">Shipping Worldwide</span> <span class="opacity-25">(1)</span> <span
+								class="opacity-50">Limited Availability</span></li>
 						<li><span class="opacity-25">//</span></li>
 						<li><span class="opacity-25">Made in <span class="opacity-75">(Aotearoa)</span> New Zealand</span>
 						</li>
@@ -1916,6 +1949,7 @@
 		</div>
 	</div>
 	<!-- SCRIPTS -->
+	<script src="/js/ascii-map.js" defer></script>
 	<script src="/js/main.js" defer></script>
 	<script src="/js/pricing.js" defer></script>
 	<script src="/js/gallery.js" defer></script>
