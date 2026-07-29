@@ -362,57 +362,133 @@ if (document.readyState === "loading") {
 })();
 
 // Clock - Initialize immediately
-function updateClocks() {
-	const now = new Date();
-	const nzTimeZone = "Pacific/Auckland";
-	const nzTime = now.toLocaleString("en-NZ", {
-		timeZone: nzTimeZone,
+(function initNavClocks() {
+	const NZ_TZ = "Pacific/Auckland";
+	const timeFormatter = new Intl.DateTimeFormat("en-NZ", {
+		timeZone: NZ_TZ,
 		hour: "2-digit",
 		minute: "2-digit",
 		second: "2-digit",
 		hour12: true,
 	});
-	// Check DST using the same date object
-	const nzTimeString = now.toLocaleTimeString("en-NZ", {
-		timeZone: nzTimeZone,
+	const zoneFormatter = new Intl.DateTimeFormat("en-NZ", {
+		timeZone: NZ_TZ,
 		timeZoneName: "short",
+		hour: "2-digit",
+		minute: "2-digit",
 	});
-	const nzTimeZoneName = nzTimeString.includes("DT") ? "NZDT" : "NZST";
-	// Calculate timezone offset more efficiently
-	const nzDate = new Date(now.toLocaleString("en-US", { timeZone: nzTimeZone }));
-	const timezoneOffset = -nzDate.getTimezoneOffset() / 60;
-	const gmtOffsetFooter = `<span class="opacity-50">(GMT${timezoneOffset >= 0 ? "+" : ""}${timezoneOffset})</span>`;
-	const gmtOffsetHeader = `<span class="opacity-75">(GMT${timezoneOffset >= 0 ? "+" : ""}${timezoneOffset})</span>`;
-
-	const footerClockElement = document.getElementById("footer-clock");
-	if (footerClockElement) {
-		footerClockElement.innerHTML = `<span>${nzTime}</span> <span class="opacity-25">${nzTimeZoneName}</span> ${gmtOffsetFooter}`;
+	let offsetFormatter = null;
+	try {
+		offsetFormatter = new Intl.DateTimeFormat("en-US", {
+			timeZone: NZ_TZ,
+			timeZoneName: "shortOffset",
+		});
+	} catch (err) {
+		offsetFormatter = null;
 	}
 
-	const headerClockElement = document.getElementById("header-clock");
-	const headerClockGmtElement = document.getElementById("header-clock-gmt");
-	if (headerClockElement) {
-		const clockHTML = `<span class="opacity-50">${nzTimeZoneName}</span> <span>${nzTime}</span>`;
-		const headerLabel = headerClockElement.closest(".header-label");
-		if (!headerLabel || !headerLabel.classList.contains("typewriter-active")) {
-			headerClockElement.innerHTML = clockHTML;
+	let lastClockKey = "";
+	let cachedGmt = "";
+	let cachedGmtHourKey = "";
+	let clockTimer = null;
+
+	function getGmt(now) {
+		const hourKey =
+			now.getUTCFullYear() + "-" + now.getUTCMonth() + "-" + now.getUTCDate() + "-" + now.getUTCHours();
+		if (cachedGmt && cachedGmtHourKey === hourKey) return cachedGmt;
+
+		if (offsetFormatter) {
+			const parts = offsetFormatter.formatToParts(now);
+			for (let i = 0; i < parts.length; i++) {
+				if (parts[i].type === "timeZoneName") {
+					cachedGmt = (parts[i].value || "").replace(/^UTC/, "GMT");
+					cachedGmtHourKey = hourKey;
+					return cachedGmt;
+				}
+			}
 		}
 
-		if (headerClockGmtElement) {
-			headerClockGmtElement.innerHTML = gmtOffsetHeader;
+		const nzDate = new Date(now.toLocaleString("en-US", { timeZone: NZ_TZ }));
+		const timezoneOffset = -nzDate.getTimezoneOffset() / 60;
+		cachedGmt = "GMT" + (timezoneOffset >= 0 ? "+" : "") + timezoneOffset;
+		cachedGmtHourKey = hourKey;
+		return cachedGmt;
+	}
+
+	function updateClocks() {
+		if (document.hidden) return;
+		const now = new Date();
+		const nzTime = timeFormatter.format(now);
+		const zoneParts = zoneFormatter.formatToParts(now);
+		let zoneName = "";
+		for (let i = 0; i < zoneParts.length; i++) {
+			if (zoneParts[i].type === "timeZoneName") {
+				zoneName = zoneParts[i].value;
+				break;
+			}
+		}
+		const nzTimeZoneName = zoneName.includes("DT") ? "NZDT" : "NZST";
+		const gmt = getGmt(now);
+		const clockKey = nzTime + "|" + nzTimeZoneName + "|" + gmt;
+		if (clockKey === lastClockKey) return;
+		lastClockKey = clockKey;
+
+		const gmtOffsetFooter = '<span class="opacity-50">(' + gmt + ")</span>";
+		const gmtOffsetHeader = '<span class="opacity-75">(' + gmt + ")</span>";
+
+		const footerClockElement = document.getElementById("footer-clock");
+		if (footerClockElement) {
+			footerClockElement.innerHTML =
+				"<span>" +
+				nzTime +
+				'</span> <span class="opacity-25">' +
+				nzTimeZoneName +
+				"</span> " +
+				gmtOffsetFooter;
 		}
 
-		if (headerLabel && !headerLabel.hasAttribute("data-original")) {
-			headerLabel.setAttribute("data-original", headerLabel.innerHTML);
+		const headerClockElement = document.getElementById("header-clock");
+		const headerClockGmtElement = document.getElementById("header-clock-gmt");
+		if (headerClockElement) {
+			const clockHTML =
+				'<span class="opacity-50">' + nzTimeZoneName + "</span> <span>" + nzTime + "</span>";
+			const headerLabel = headerClockElement.closest(".header-label");
+			if (!headerLabel || !headerLabel.classList.contains("typewriter-active")) {
+				headerClockElement.innerHTML = clockHTML;
+			}
+
+			if (headerClockGmtElement) {
+				headerClockGmtElement.innerHTML = gmtOffsetHeader;
+			}
+
+			if (headerLabel && !headerLabel.hasAttribute("data-original")) {
+				headerLabel.setAttribute("data-original", headerLabel.innerHTML);
+			}
 		}
 	}
-}
-// Initialize clock immediately (before typewriter runs)
-updateClocks();
-// Start interval for updates after a short delay
-setTimeout(function () {
-	setInterval(updateClocks, 1000);
-}, 100);
+
+	function startClockTimer() {
+		if (clockTimer) return;
+		updateClocks();
+		clockTimer = setInterval(updateClocks, 1000);
+	}
+
+	function stopClockTimer() {
+		if (!clockTimer) return;
+		clearInterval(clockTimer);
+		clockTimer = null;
+	}
+
+	updateClocks();
+	setTimeout(startClockTimer, 100);
+	document.addEventListener("visibilitychange", function () {
+		if (document.hidden) stopClockTimer();
+		else {
+			lastClockKey = "";
+			startClockTimer();
+		}
+	});
+})();
 
 // Safari loses :hover after innerHTML mutations (typewriter, clock ticks). Nudge hit-testing
 // at the current pointer position so hover styles recover without a full mouse-out/in cycle.
@@ -463,6 +539,19 @@ let cachedStartSection = null;
 let headerSharedMinHeight = 0;
 let animationIntervals = [];
 let animationTimeouts = [];
+let asciiAnimationsWanted = false;
+let asciiHeroVisible = true;
+
+function stopAsciiCharAnimations() {
+	animationIntervals.forEach(function (interval) {
+		clearInterval(interval);
+	});
+	animationIntervals = [];
+	animationTimeouts.forEach(function (timeout) {
+		clearTimeout(timeout);
+	});
+	animationTimeouts = [];
+}
 
 function getHeaderLabelLayoutParent(label) {
 	const band = label.closest(".header-sticky-band");
@@ -532,15 +621,19 @@ function prepareAsciiDOM() {
 }
 
 function startAsciiCharAnimations() {
+	asciiAnimationsWanted = true;
+	if (document.hidden || !asciiHeroVisible) return;
+	stopAsciiCharAnimations();
 	const chars = glitchChars;
 	function animateChar(char, shouldLoop) {
+		if (!asciiAnimationsWanted || document.hidden || !asciiHeroVisible) return;
 		const finalChar = char.getAttribute("data-final");
 		const duration = 1000 + Math.random() * 2000;
 		const steps = 10 + Math.floor(Math.random() * 20);
 		const stepDuration = duration / steps;
 		let currentStep = 0;
 		const animate = setInterval(function () {
-			if (document.hidden) return;
+			if (document.hidden || !asciiHeroVisible || !asciiAnimationsWanted) return;
 			if (currentStep < steps) {
 				const randomChar = chars[Math.floor(Math.random() * chars.length)];
 				char.textContent = randomChar;
@@ -551,7 +644,7 @@ function startAsciiCharAnimations() {
 					return interval !== animate;
 				});
 				clearInterval(animate);
-				if (shouldLoop) {
+				if (shouldLoop && asciiAnimationsWanted && asciiHeroVisible && !document.hidden) {
 					const delay = 2000 + Math.random() * 5000;
 					const timeout = setTimeout(function () {
 						animationTimeouts = animationTimeouts.filter(function (t) {
@@ -576,6 +669,16 @@ function startAsciiCharAnimations() {
 		}, initialDelay);
 		animationTimeouts.push(timeout);
 	});
+}
+
+function syncAsciiCharAnimations() {
+	if (asciiAnimationsWanted && asciiHeroVisible && !document.hidden) {
+		if (animationIntervals.length === 0 && animationTimeouts.length === 0) {
+			startAsciiCharAnimations();
+		}
+		return;
+	}
+	stopAsciiCharAnimations();
 }
 
 function initAsciiAnimation() {
@@ -972,18 +1075,28 @@ function startAnimations() {
 	}
 	setTimeout(startAsciiCharAnimations, 450);
 
+	(function initAsciiAnimationLifecycle() {
+		const heroAscii = document.querySelector(".ascii-text");
+		if (heroAscii && typeof IntersectionObserver !== "undefined") {
+			const asciiIo = new IntersectionObserver(
+				function (entries) {
+					asciiHeroVisible = !!(entries[0] && entries[0].isIntersecting);
+					syncAsciiCharAnimations();
+				},
+				{ root: null, threshold: 0.01 },
+			);
+			asciiIo.observe(heroAscii);
+		}
+		document.addEventListener("visibilitychange", function () {
+			syncAsciiCharAnimations();
+		});
+	})();
+
 	let resizeTimeout;
 	window.addEventListener("resize", function () {
 		clearTimeout(resizeTimeout);
 		resizeTimeout = setTimeout(function () {
-			animationIntervals.forEach(function (interval) {
-				clearInterval(interval);
-			});
-			animationIntervals = [];
-			animationTimeouts.forEach(function (timeout) {
-				clearTimeout(timeout);
-			});
-			animationTimeouts = [];
+			stopAsciiCharAnimations();
 			initAsciiAnimation();
 		}, 250);
 	});
@@ -1501,6 +1614,7 @@ function startAnimations() {
 			document.body.removeChild(testLine);
 
 			const totalChars = linesCount * charsPerLine;
+			const patternChars = new Array(totalChars);
 
 			// Generate the actual pattern lines
 			for (let i = 0; i < linesCount; i++) {
@@ -1518,10 +1632,21 @@ function startAnimations() {
 						charSpan.style.paddingRight = "0";
 					}
 					line.appendChild(charSpan);
+					patternChars[i * charsPerLine + j] = charSpan;
 				}
 
 				patternEl.appendChild(line);
 			}
+
+			const firstPatternLine = patternEl.querySelector(".pattern-line");
+			patternEl._patternHit = {
+				chars: patternChars,
+				charsPerLine: charsPerLine,
+				linesCount: linesCount,
+				cellWidth: charWithPaddingWidth,
+				lineHeight: firstPatternLine ? firstPatternLine.offsetHeight : Math.round(charWidth * 1.5),
+				paddingLeft: paddingLeft,
+			};
 
 			const infoList =
 				patternEl.nextElementSibling &&
@@ -1609,39 +1734,44 @@ function startAnimations() {
 				}
 			}
 
-			patternEl.addEventListener("mousemove", function (e) {
+			let patternMoveRaf = 0;
+			let pendingPatternMove = null;
+
+			function hitTestPatternChar(clientX, clientY) {
+				const hit = patternEl._patternHit;
+				if (!hit || !hit.charsPerLine || !hit.cellWidth) return null;
 				const rect = patternEl.getBoundingClientRect();
-				const x = e.clientX - rect.left;
-				const y = e.clientY - rect.top;
+				const x = clientX - rect.left - hit.paddingLeft;
+				const y = clientY - rect.top;
+				if (x < 0 || y < 0) return null;
+				const col = Math.min(hit.charsPerLine - 1, Math.max(0, Math.floor(x / hit.cellWidth)));
+				const row = Math.min(hit.linesCount - 1, Math.max(0, Math.floor(y / hit.lineHeight)));
+				return hit.chars[row * hit.charsPerLine + col] || null;
+			}
 
-				if (cursorXEl) cursorXEl.textContent = Math.round(e.clientX);
-				if (cursorYEl) cursorYEl.textContent = Math.round(e.clientY);
+			patternEl.addEventListener("mousemove", function (e) {
+				pendingPatternMove = e;
+				if (patternMoveRaf) return;
+				patternMoveRaf = requestAnimationFrame(function () {
+					patternMoveRaf = 0;
+					const move = pendingPatternMove;
+					pendingPatternMove = null;
+					if (!move) return;
 
-				const chars = patternEl.querySelectorAll(".pattern-char");
-				let closestChar = null;
-				let minDistance = Infinity;
+					if (cursorXEl) cursorXEl.textContent = Math.round(move.clientX);
+					if (cursorYEl) cursorYEl.textContent = Math.round(move.clientY);
 
-				chars.forEach(function (charEl) {
-					const charRect = charEl.getBoundingClientRect();
-					const charX = charRect.left + charRect.width / 2 - rect.left;
-					const charY = charRect.top + charRect.height / 2 - rect.top;
+					const closestChar = hitTestPatternChar(move.clientX, move.clientY);
+					if (closestChar && !hoveredChars.has(closestChar)) {
+						closestChar.style.color = getAccentHex();
+						closestChar.style.opacity = "1";
+						hoveredChars.set(closestChar, Date.now());
 
-					const distance = Math.sqrt(Math.pow(x - charX, 2) + Math.pow(y - charY, 2));
-					if (distance < minDistance) {
-						minDistance = distance;
-						closestChar = charEl;
+						if (!fadeOutInterval) {
+							fadeOutInterval = setInterval(fadeOutTrail, 32);
+						}
 					}
 				});
-
-				if (closestChar && !hoveredChars.has(closestChar)) {
-					closestChar.style.color = getAccentHex();
-					closestChar.style.opacity = "1";
-					hoveredChars.set(closestChar, Date.now());
-
-					if (!fadeOutInterval) {
-						fadeOutInterval = setInterval(fadeOutTrail, 16);
-					}
-				}
 			});
 
 			patternEl.addEventListener("mouseleave", function () {

@@ -147,12 +147,20 @@
 			});
 	}
 
+	function pauseArt() {
+		if (!art) return;
+		art._visible = false;
+		if (typeof art._stopLoop === "function") art._stopLoop();
+		if (typeof art._clearIdleWake === "function") art._clearIdleWake();
+	}
+
 	function hide() {
 		if (!isVisible()) return;
 		overlay.classList.remove("is-visible");
 		overlay.setAttribute("aria-hidden", "true");
 		overlay.style.removeProperty("--ascii-map-chrome-top");
 		overlay.style.removeProperty("--ascii-map-chrome-bottom");
+		pauseArt();
 	}
 
 	var closeBtn = overlay.querySelector(".ascii-map-close");

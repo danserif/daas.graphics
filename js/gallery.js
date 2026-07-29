@@ -333,18 +333,27 @@ document.addEventListener("DOMContentLoaded", function () {
 		});
 	}
 
+	// Shared in-flight/resolved HEAD cache — captions + batch totals share one request per URL.
+	const fileSizeBytesCache = new Map();
+
 	// Raw Content-Length in bytes (HEAD), or null
-	async function getFileSizeBytes(url) {
-		try {
-			const response = await fetch(url, { method: "HEAD" });
-			const contentLength = response.headers.get("Content-Length");
-			if (contentLength) {
-				return parseInt(contentLength, 10);
+	function getFileSizeBytes(url) {
+		if (!url) return Promise.resolve(null);
+		if (fileSizeBytesCache.has(url)) return fileSizeBytesCache.get(url);
+		const request = (async function () {
+			try {
+				const response = await fetch(url, { method: "HEAD" });
+				const contentLength = response.headers.get("Content-Length");
+				if (contentLength) {
+					return parseInt(contentLength, 10);
+				}
+			} catch (error) {
+				console.warn("Could not fetch file size for", url);
 			}
-		} catch (error) {
-			console.warn("Could not fetch file size for", url);
-		}
-		return null;
+			return null;
+		})();
+		fileSizeBytesCache.set(url, request);
+		return request;
 	}
 
 	// Get file size in KB
@@ -352,6 +361,23 @@ document.addEventListener("DOMContentLoaded", function () {
 		const bytes = await getFileSizeBytes(url);
 		if (bytes == null) return null;
 		return Math.round(bytes / 1024);
+	}
+
+	// Bound concurrent HEADs so init doesn't open ~150 connections at once.
+	async function mapPool(items, concurrency, worker) {
+		const results = new Array(items.length);
+		let next = 0;
+		async function run() {
+			while (next < items.length) {
+				const index = next++;
+				results[index] = await worker(items[index], index);
+			}
+		}
+		const runners = [];
+		const count = Math.min(Math.max(1, concurrency), items.length || 1);
+		for (let r = 0; r < count; r++) runners.push(run());
+		await Promise.all(runners);
+		return results;
 	}
 
 	// e.g. 3mb, 2.4mb, 512kb — lowercase suffix per site copy
@@ -510,18 +536,24 @@ document.addEventListener("DOMContentLoaded", function () {
 		frame.appendChild(widget);
 
 		const widgetObserver = new IntersectionObserver(
-			function (entries, observer) {
+			function (entries) {
 				entries.forEach(function (entry) {
 					if (entry.isIntersecting) {
+						if (widget.dataset.labInitialized === "true") {
+							if (typeof widget._labResume === "function") widget._labResume();
+							return;
+						}
 						loadAndInitLabScript(item.filename, widget)
 							.then(function () {
 								frame.classList.add("is-loaded");
+								if (typeof widget._labResume === "function") widget._labResume();
 							})
 							.catch(function (err) {
 								console.warn(err);
 							});
-						observer.unobserve(entry.target);
+						return;
 					}
+					if (typeof widget._labPause === "function") widget._labPause();
 				});
 			},
 			{
@@ -2573,27 +2605,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
 			void (async function fetchWorkImageByteSizesByIndex() {
 				workImageBytesByIndex = new Array(allItems.length);
-				const tasks = [];
+				const jobs = [];
 				for (let i = 0; i < allItems.length; i++) {
 					workImageBytesByIndex[i] = null;
-					if (!allItems[i].filename) {
-						continue;
-					}
-					const idx = i;
+					if (!allItems[i].filename) continue;
 					let url = workImageBasePath + "dark/" + allItems[i].filename;
 					if (sectionType === "experiments" && allItems[i].type === "script") {
 						url = LAB_SCRIPT_BASE_PATH + allItems[i].filename;
 					}
-					tasks.push(
-						getFileSizeBytes(url).then(function (bytes) {
-							workImageBytesByIndex[idx] = bytes;
-						}),
-					);
+					jobs.push({ idx: i, url: url });
 				}
-				if (tasks.length === 0) {
-					return;
-				}
-				await Promise.all(tasks);
+				if (jobs.length === 0) return;
+				await mapPool(jobs, 6, async function (job) {
+					const bytes = await getFileSizeBytes(job.url);
+					workImageBytesByIndex[job.idx] = bytes;
+					return bytes;
+				});
 				updateLoadMoreStatus();
 			})();
 

@@ -7,6 +7,8 @@ LabWidgets.clock = function (mountEl) {
 	var SVG_NS = "http://www.w3.org/2000/svg";
 	var CX = 100;
 	var CY = 100;
+	var NZ_TZ = "Pacific/Auckland";
+	var TICK_MS = 250;
 
 	mountEl.classList.add("lab-clock");
 	mountEl.textContent = "";
@@ -49,7 +51,7 @@ LabWidgets.clock = function (mountEl) {
 	tzText.setAttribute("y", "81");
 
 	var tzParts = new Intl.DateTimeFormat("en-NZ", {
-		timeZone: "Pacific/Auckland",
+		timeZone: NZ_TZ,
 		timeZoneName: "short",
 	}).formatToParts(new Date());
 	for (var t = 0; t < tzParts.length; t++) {
@@ -132,42 +134,84 @@ LabWidgets.clock = function (mountEl) {
 		numeralsG.appendChild(txt);
 	}
 
-	var clockRAF = null;
+	var timeFormatter = new Intl.DateTimeFormat("en-US", {
+		timeZone: NZ_TZ,
+		hour12: false,
+		hour: "2-digit",
+		minute: "2-digit",
+		second: "2-digit",
+	});
+	var clockTimer = null;
+	var lastKey = "";
+	var pageVisible = !document.hidden;
+	var inView = true;
 
 	function getNZTime() {
-		var s = new Date().toLocaleString("en-US", {
-			timeZone: "Pacific/Auckland",
-			hour12: false,
-			hour: "2-digit",
-			minute: "2-digit",
-			second: "2-digit",
-		});
-		var parts = s.split(":");
+		var parts = timeFormatter.formatToParts(new Date());
+		var map = {};
+		for (var i = 0; i < parts.length; i++) {
+			map[parts[i].type] = parts[i].value;
+		}
 		return {
-			h: parseInt(parts[0], 10),
-			m: parseInt(parts[1], 10),
-			s: parseInt(parts[2], 10),
+			h: parseInt(map.hour, 10) || 0,
+			m: parseInt(map.minute, 10) || 0,
+			s: parseInt(map.second, 10) || 0,
 		};
 	}
 
 	function updateClock() {
+		if (!pageVisible || !inView) return;
 		var time = getNZTime();
-		var secAngle = time.s * 6;
-		var minAngle = time.m * 6 + time.s * 0.1;
-		var hourAngle = (time.h % 12) * 30 + time.m * 0.5;
-		hourHand.setAttribute("transform", "rotate(" + hourAngle + " 100 100)");
-		minuteHand.setAttribute("transform", "rotate(" + minAngle + " 100 100)");
-		secondGroup.setAttribute("transform", "rotate(" + secAngle + " 100 100)");
-		clockRAF = requestAnimationFrame(updateClock);
+		var key = time.h + ":" + time.m + ":" + time.s;
+		if (key === lastKey) return;
+		lastKey = key;
+		hourHand.setAttribute("transform", "rotate(" + ((time.h % 12) * 30 + time.m * 0.5) + " 100 100)");
+		minuteHand.setAttribute("transform", "rotate(" + (time.m * 6 + time.s * 0.1) + " 100 100)");
+		secondGroup.setAttribute("transform", "rotate(" + time.s * 6 + " 100 100)");
 	}
 
-	updateClock();
+	function start() {
+		if (clockTimer) return;
+		updateClock();
+		clockTimer = window.setInterval(updateClock, TICK_MS);
+	}
+
+	function stop() {
+		if (!clockTimer) return;
+		window.clearInterval(clockTimer);
+		clockTimer = null;
+	}
+
+	function syncRunning() {
+		if (pageVisible && inView) start();
+		else stop();
+	}
+
+	function onVisibility() {
+		pageVisible = !document.hidden;
+		syncRunning();
+	}
+
+	document.addEventListener("visibilitychange", onVisibility);
+
+	mountEl._labPause = function () {
+		inView = false;
+		syncRunning();
+	};
+
+	mountEl._labResume = function () {
+		inView = true;
+		lastKey = "";
+		syncRunning();
+	};
 
 	mountEl._clockCleanup = function () {
-		if (clockRAF) {
-			cancelAnimationFrame(clockRAF);
-			clockRAF = null;
-		}
+		stop();
+		document.removeEventListener("visibilitychange", onVisibility);
+		delete mountEl._labPause;
+		delete mountEl._labResume;
 		mountEl.dataset.clockRunning = "false";
 	};
+
+	syncRunning();
 };

@@ -71,6 +71,19 @@ LabWidgets.danscii = function (mountEl) {
 				attributeFilter: ["class"],
 			});
 
+			mountEl._labPause = function () {
+				if (!art) return;
+				art._visible = false;
+				if (typeof art._stopLoop === "function") art._stopLoop();
+				if (typeof art._clearIdleWake === "function") art._clearIdleWake();
+			};
+
+			mountEl._labResume = function () {
+				if (!art) return;
+				art._visible = true;
+				if (typeof art._wake === "function") art._wake();
+			};
+
 			mountEl._labCleanup = function () {
 				modeObserver.disconnect();
 				if (art && typeof art.destroy === "function") {
@@ -79,6 +92,8 @@ LabWidgets.danscii = function (mountEl) {
 				art = null;
 				delete mountEl._danscii;
 				delete mountEl._dansciiSyncTheme;
+				delete mountEl._labPause;
+				delete mountEl._labResume;
 				mountEl.dataset.dansciiRunning = "false";
 			};
 		})

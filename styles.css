@@ -1248,6 +1248,7 @@ h1.header-label {
 	visibility: hidden;
 	pointer-events: none;
 	cursor: pointer;
+	content-visibility: hidden;
 	transition: opacity 0.35s ease, visibility 0.35s ease;
 }
 
@@ -1255,6 +1256,7 @@ h1.header-label {
 	opacity: 1;
 	visibility: visible;
 	z-index: 99999;
+	content-visibility: visible;
 	pointer-events: auto;
 }
 
