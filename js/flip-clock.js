@@ -174,7 +174,7 @@
 			var angle = i * 6;
 			var isHour = i % 5 === 0;
 			var inner = polar(angle, isHour ? 77 : 79);
-			var outer = polar(angle, isHour ? 88.55 : 88);
+			var outer = polar(angle, 88);
 			var line = document.createElementNS(SVG_NS, "line");
 			line.setAttribute("x1", inner.x.toFixed(2));
 			line.setAttribute("y1", inner.y.toFixed(2));
