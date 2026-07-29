@@ -1646,19 +1646,19 @@ h1.header-label {
 .flip-clock-analog .flip-clock-analog-hand-hour {
 	stroke: #ffffff;
 	stroke-width: 3.5;
-	stroke-linecap: round;
+	stroke-linecap: butt;
 }
 
 .flip-clock-analog .flip-clock-analog-hand-minute {
 	stroke: #ffffff;
 	stroke-width: 2.5;
-	stroke-linecap: round;
+	stroke-linecap: butt;
 }
 
 .flip-clock-analog .flip-clock-analog-hand-second {
 	stroke: var(--color-accent);
 	stroke-width: 1.2;
-	stroke-linecap: round;
+	stroke-linecap: butt;
 }
 
 .flip-clock-analog .flip-clock-analog-cap {
