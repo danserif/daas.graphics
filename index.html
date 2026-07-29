@@ -7,7 +7,7 @@
 
 	<title>DaaS (Graphics)</title>
 
-	<!-- \m/ Thanks for looking at the code. Press M: to switch modes, F: to smile, and D: to see the letter D. \m/ -->
+	<!-- \m/ Thanks for looking at the code. Press M: to switch modes, F: to smile, C: to check the time, and D: to see the letter D. \m/ -->
 
 	<meta name="description" content="Dan as a Service" />
 	<meta name="author" content="Dan Newman" />
@@ -248,8 +248,10 @@
 		<!-- CLOCK -->
 		<div class="header-column bonus-column">
 			<p class="header-label">
-				<span id="header-clock"></span>
-				<span id="header-clock-gmt"></span> <span class="desktop-only"><span class="opacity-50 meta-separator">//</span>
+				<button type="button" class="flip-clock-trigger" aria-label="Show flip clock">
+					<span id="header-clock"></span>
+					<span id="header-clock-gmt"></span>
+				</button> <span class="desktop-only"><span class="opacity-50 meta-separator">//</span>
 					<span class="opacity-75">mailto:</span> <a href="mailto:dan@newman.is?subject=DaaS%20(Graphics)"
 						onclick="fathom.trackEvent('Email', 0);">dan <span class="opacity-50">[at]</span> newman <span
 							class="opacity-50">[dot]</span> is</a></span>
@@ -369,6 +371,22 @@
 			</div>
 		</div>
 		<div class="ascii-map-mount" id="ascii-map-mount"></div>
+	</div>
+	<!-- FLIP CLOCK (OVERLAY) -->
+	<div class="flip-clock-overlay" aria-hidden="true">
+		<div class="flip-clock" role="timer" aria-live="polite" aria-label="New Zealand time">
+			<div class="flip-clock-analog">
+				<div class="flip-clock-analog-dial" data-flip-analog aria-hidden="true"></div>
+				<p class="flip-clock-brand font-departure">DAAS <span class="opacity-50">(Timezone)</span></p>
+			</div>
+			<div class="flip-clock-digital">
+				<div class="flip-clock-digits" data-flip-digits></div>
+				<div class="flip-clock-caption">
+					<p class="flip-clock-meta font-departure" data-flip-meta></p>
+					<p class="flip-clock-date font-departure" data-flip-date></p>
+				</div>
+			</div>
+		</div>
 	</div>
 	<!-- FACES (OVERLAY) -->
 	<div class="face-overlay" aria-hidden="true">
@@ -1471,7 +1489,8 @@
 				<div class="footer-content">
 					<p><span>41.****° S, 174.****° E </span><span class="opacity-25">WLG</span> <span
 							class="opacity-50">(NZ)</span></p>
-					<p><span id="footer-clock"></span></p>
+					<p><button type="button" class="flip-clock-trigger" aria-label="Show flip clock"><span
+								id="footer-clock"></span></button></p>
 				</div>
 			</div>
 			<!-- COLOPHON -->
@@ -1950,6 +1969,7 @@
 	</div>
 	<!-- SCRIPTS -->
 	<script src="/js/ascii-map.js" defer></script>
+	<script src="/js/flip-clock.js" defer></script>
 	<script src="/js/main.js" defer></script>
 	<script src="/js/pricing.js" defer></script>
 	<script src="/js/gallery.js" defer></script>

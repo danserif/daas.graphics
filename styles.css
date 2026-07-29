@@ -1480,6 +1480,462 @@ h1.header-label {
 	}
 }
 
+/* FLIP CLOCK OVERLAY — triggered from header/footer clock (desktop only) */
+.flip-clock-trigger {
+	background: none;
+	border: none;
+	padding: 0;
+	margin: 0;
+	font: inherit;
+	color: inherit;
+	cursor: inherit;
+	text-align: inherit;
+}
+
+@media only screen and (min-width: 1081px) {
+	.flip-clock-trigger {
+		cursor: pointer;
+	}
+
+	.flip-clock-trigger:hover {
+		opacity: 0.5;
+	}
+}
+
+.flip-clock-overlay {
+	/* Fit analog + digital frames (~10.6u × 2.15u) into the padded overlay */
+	--flip-avail-w: calc(100vw - 2 * var(--header-fixed-pad-x));
+	--flip-avail-h: calc(100vh - 2 * var(--header-fixed-pad-x));
+	--flip-unit: min(160px, calc(var(--flip-avail-w) / 10.6), calc(var(--flip-avail-h) / 2.55));
+	--flip-gap: calc(var(--flip-unit) * 0.12);
+	--flip-label-size: 11px;
+	--flip-card: #080808;
+	--flip-text: #aaff00;
+	--flip-crease: #000000;
+	--flip-shade: rgba(0, 0, 0, 0.05);
+	--flip-overlay-bg: #000000;
+	--flip-frame: rgba(255, 255, 255, 0.1);
+	position: fixed;
+	inset: 0;
+	z-index: -1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: var(--header-fixed-pad-x);
+	box-sizing: border-box;
+	background: var(--flip-overlay-bg);
+	color: var(--color-text);
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	cursor: pointer;
+	transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+
+.flip-clock-overlay.is-visible {
+	opacity: 1;
+	visibility: visible;
+	z-index: 99999;
+	pointer-events: auto;
+}
+
+.light-mode .flip-clock-overlay {
+	--flip-card: #fafafa;
+	--flip-text: #0044ff;
+	--flip-crease: #ffffff;
+	--flip-shade: rgba(255, 255, 255, 0.25);
+	--flip-overlay-bg: #ffffff;
+	--flip-frame: rgba(0, 0, 0, 0.1);
+	background: var(--flip-overlay-bg);
+	color: #000000;
+}
+
+.light-mode .flip-clock-overlay .opacity-25 {
+	color: rgba(0, 0, 0, 0.25);
+}
+
+.light-mode .flip-clock-overlay .opacity-50 {
+	color: rgba(0, 0, 0, 0.5);
+}
+
+.light-mode .flip-clock-overlay .opacity-75 {
+	color: rgba(0, 0, 0, 0.75);
+}
+
+.light-mode .flip-clock-meta,
+.light-mode .flip-clock-brand,
+.light-mode .flip-clock-date {
+	color: #000000;
+}
+
+.light-mode .flip-clock-sep {
+	color: #000000;
+}
+
+.flip-clock {
+	--flip-frame-pad-y: calc(var(--flip-unit) * 0.5);
+	--flip-frame-pad-x: calc(var(--flip-unit) * 0.55);
+	--flip-frame-pad-bottom: calc(var(--flip-unit) * 0.65);
+	--flip-frame-h: calc(var(--flip-unit) + var(--flip-frame-pad-y) + var(--flip-frame-pad-bottom));
+	position: relative;
+	display: flex;
+	align-items: stretch;
+	gap: calc(var(--flip-gap) * 2.5 + var(--flip-unit) * 0.07);
+	padding: 0;
+	border: none;
+	box-sizing: border-box;
+	cursor: default;
+	user-select: none;
+}
+
+.flip-clock-analog {
+	position: relative;
+	flex: 0 0 auto;
+	width: var(--flip-frame-h);
+	height: var(--flip-frame-h);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	background: transparent;
+	color: #ffffff;
+	border: 1px dashed var(--flip-frame);
+	box-sizing: border-box;
+}
+
+.flip-clock-analog-dial {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.flip-clock-analog-svg {
+	width: calc(var(--flip-unit) * 1.4);
+	height: calc(var(--flip-unit) * 1.4);
+	display: block;
+}
+
+.flip-clock-analog .flip-clock-brand {
+	position: absolute;
+	left: 50%;
+	top: 100%;
+	margin: 0;
+	margin-left: 0;
+	transform: translate(-50%, -50%);
+	padding: 0 0.75em;
+	height: var(--flip-label-size);
+	pointer-events: none;
+	text-align: center;
+}
+
+.flip-clock-analog .flip-clock-analog-marker {
+	stroke: #ffffff;
+	stroke-width: 0.8;
+	opacity: 0.75;
+}
+
+.flip-clock-analog .flip-clock-analog-marker-hour {
+	stroke-width: 2;
+	opacity: 1;
+}
+
+.flip-clock-analog .flip-clock-analog-hand-hour {
+	stroke: #ffffff;
+	stroke-width: 3.5;
+	stroke-linecap: round;
+}
+
+.flip-clock-analog .flip-clock-analog-hand-minute {
+	stroke: #ffffff;
+	stroke-width: 2.5;
+	stroke-linecap: round;
+}
+
+.flip-clock-analog .flip-clock-analog-hand-second {
+	stroke: var(--color-accent);
+	stroke-width: 1.2;
+	stroke-linecap: round;
+}
+
+.flip-clock-analog .flip-clock-analog-cap {
+	fill: var(--color-accent);
+}
+
+.light-mode .flip-clock-analog .flip-clock-analog-marker,
+.light-mode .flip-clock-analog .flip-clock-analog-hand-hour,
+.light-mode .flip-clock-analog .flip-clock-analog-hand-minute {
+	stroke: #000000;
+}
+
+.flip-clock-digital {
+	position: relative;
+	flex: 0 0 auto;
+	height: var(--flip-frame-h);
+	display: flex;
+	align-items: center;
+	padding: var(--flip-frame-pad-y) var(--flip-frame-pad-x);
+	padding-bottom: var(--flip-frame-pad-bottom);
+	border: 1px dashed var(--flip-frame);
+	box-sizing: border-box;
+}
+
+.flip-clock-digits {
+	display: flex;
+	align-items: center;
+	gap: var(--flip-gap);
+}
+
+.flip-clock-caption {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 100%;
+	margin-top: 0;
+	transform: translateY(-50%);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: var(--flip-label-size);
+	pointer-events: none;
+	padding: 0 var(--flip-frame-pad-x);
+	box-sizing: border-box;
+}
+
+.flip-clock-brand,
+.flip-clock-date {
+	margin: 0;
+	padding: 0 0.75em;
+	font-family: "Departure Mono", monospace;
+	font-size: var(--flip-label-size);
+	line-height: var(--flip-label-size);
+	letter-spacing: 0.02em;
+	color: var(--color-text);
+	text-transform: uppercase;
+	white-space: nowrap;
+	background: var(--flip-overlay-bg);
+}
+
+.flip-clock-meta {
+	margin: 0;
+	margin-left: -0.75em;
+	padding: 0 0.75em;
+	font-family: "Departure Mono", monospace;
+	font-size: var(--flip-label-size);
+	line-height: var(--flip-label-size);
+	letter-spacing: 0.02em;
+	color: var(--color-text);
+	text-align: left;
+	text-transform: uppercase;
+	white-space: nowrap;
+	background: var(--flip-overlay-bg);
+}
+
+.flip-clock-date {
+	margin-left: 0;
+	margin-right: -0.75em;
+	text-align: right;
+}
+
+.flip-clock-group {
+	display: flex;
+	align-items: center;
+	gap: calc(var(--flip-gap) * 0.45);
+}
+
+.flip-clock-sep {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: calc(var(--flip-unit) * 0.22);
+	padding: 0 calc(var(--flip-gap) * 0.25);
+	color: #ffffff;
+	opacity: 0.15;
+}
+
+.flip-clock-sep span {
+	display: block;
+	width: calc(var(--flip-unit) * 0.07);
+	height: calc(var(--flip-unit) * 0.07);
+	border-radius: 0;
+	background: currentColor;
+}
+
+.flip-clock-digit {
+	position: relative;
+	width: var(--flip-unit);
+	height: var(--flip-unit);
+	font-family: "Departure Mono", monospace;
+	font-size: calc(var(--flip-unit) * 0.92);
+	line-height: 1;
+	perspective: calc(var(--flip-unit) * 5);
+	transform-style: preserve-3d;
+}
+
+.flip-clock-half {
+	position: absolute;
+	left: 0;
+	width: 100%;
+	height: 50%;
+	overflow: hidden;
+	background: var(--flip-card);
+	color: var(--flip-text);
+}
+
+.flip-clock-half span {
+	position: absolute;
+	left: 0;
+	width: 100%;
+	height: 200%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-variant-numeric: tabular-nums;
+}
+
+.flip-clock-half--upper {
+	top: 0;
+	border-radius: 0;
+	z-index: 1;
+}
+
+.flip-clock-half--upper::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: var(--flip-shade);
+	pointer-events: none;
+	z-index: 1;
+}
+
+.flip-clock-half--upper span {
+	top: 0;
+	z-index: 2;
+}
+
+.flip-clock-half--lower {
+	bottom: 0;
+	border-radius: 0;
+	z-index: 1;
+}
+
+.flip-clock-half--lower span {
+	bottom: 0;
+}
+
+/* Center hinge line — below the flap so it doesn’t flash during the flip */
+.flip-clock-digit::after {
+	content: "";
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 50%;
+	height: 2px;
+	margin-top: -1px;
+	background: var(--flip-crease);
+	z-index: 2;
+	pointer-events: none;
+}
+
+/* The hinged flap that actually flips */
+.flip-clock-flap {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 50%;
+	z-index: 3;
+	transform-origin: 50% 100%;
+	transform-style: preserve-3d;
+	pointer-events: none;
+	opacity: 0;
+}
+
+.flip-clock-digit.is-flipping .flip-clock-flap {
+	opacity: 1;
+	animation: flip-clock-flap 0.55s ease-in-out forwards;
+}
+
+.flip-clock-flap-face {
+	position: absolute;
+	inset: 0;
+	overflow: hidden;
+	background: var(--flip-card);
+	color: var(--flip-text);
+	backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
+}
+
+.flip-clock-flap-face span {
+	position: absolute;
+	left: 0;
+	width: 100%;
+	height: 200%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-variant-numeric: tabular-nums;
+}
+
+.flip-clock-flap-face--front {
+	border-radius: 0;
+	z-index: 2;
+}
+
+.flip-clock-flap-face--front::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: var(--flip-shade);
+	pointer-events: none;
+	z-index: 1;
+}
+
+.flip-clock-flap-face--front span {
+	top: 0;
+	z-index: 2;
+}
+
+.flip-clock-flap-face--back {
+	border-radius: 0;
+	transform: rotateX(180deg);
+	z-index: 1;
+}
+
+.flip-clock-flap-face--back span {
+	bottom: 0;
+}
+
+@keyframes flip-clock-flap {
+	0% {
+		transform: rotateX(0deg);
+	}
+
+	100% {
+		transform: rotateX(-180deg);
+	}
+}
+
+.flip-clock-overlay .opacity-25 {
+	color: var(--opacity-25);
+	opacity: 1;
+}
+
+.flip-clock-overlay .opacity-50 {
+	color: var(--opacity-50);
+	opacity: 1;
+}
+
+.flip-clock-overlay .opacity-75 {
+	color: var(--opacity-75);
+	opacity: 1;
+}
+
+@media only screen and (max-width: 1080px) {
+	.flip-clock-overlay {
+		display: none;
+	}
+}
+
 /* D OVERLAY — triggered from the fixed-bar "D" button */
 .d-overlay-trigger {
 	background: none;
