@@ -53,7 +53,7 @@
 			art.setColors("#ffffff", "#ffffff");
 		} else {
 			art.setMode("dark");
-			art.setColors("#ffffff", "#aaff00");
+			art.setColors("#ffffff", "#ffffff");
 		}
 	}
 

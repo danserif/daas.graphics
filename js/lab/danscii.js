@@ -56,7 +56,7 @@ LabWidgets.danscii = function (mountEl) {
 				if (!art) return;
 				if (isLightMode()) {
 					art.setMode("blue");
-					art.setColors("#ffffff", "#ffffff");
+					art.setColors("#ffffff", "#000000");
 				} else {
 					art.setMode("dark");
 				}
