@@ -3,6 +3,7 @@
 	var DESKTOP_MIN = 1081;
 	var NZ_TZ = "Pacific/Auckland";
 	var FLIP_MS = 550;
+	var TICK_MS = 250;
 	var SVG_NS = "http://www.w3.org/2000/svg";
 	var CX = 100;
 	var CY = 100;
@@ -16,12 +17,38 @@
 
 	var digitEls = [];
 	var currentDigits = "";
+	var lastMetaKey = "";
 	var tickTimer = null;
 	var built = false;
-	var analogRAF = null;
+	var analogBuilt = false;
 	var hourHand = null;
 	var minuteHand = null;
 	var secondGroup = null;
+	var lastAnalogKey = "";
+	var cachedGmt = "";
+	var cachedGmtHourKey = "";
+
+	var partsFormatter = new Intl.DateTimeFormat("en-NZ", {
+		timeZone: NZ_TZ,
+		weekday: "long",
+		day: "numeric",
+		month: "long",
+		hour: "2-digit",
+		minute: "2-digit",
+		second: "2-digit",
+		hour12: true,
+		timeZoneName: "short",
+	});
+
+	var offsetFormatter = null;
+	try {
+		offsetFormatter = new Intl.DateTimeFormat("en-US", {
+			timeZone: NZ_TZ,
+			timeZoneName: "shortOffset",
+		});
+	} catch (err) {
+		offsetFormatter = null;
+	}
 
 	function isDesktop() {
 		return window.innerWidth >= DESKTOP_MIN;
@@ -47,57 +74,53 @@
 		}
 	}
 
+	function getGmt(now) {
+		var hourKey = String(now.getUTCFullYear()) + "-" + now.getUTCMonth() + "-" + now.getUTCDate() + "-" + now.getUTCHours();
+		if (cachedGmt && cachedGmtHourKey === hourKey) return cachedGmt;
+
+		if (offsetFormatter) {
+			var offsetParts = offsetFormatter.formatToParts(now);
+			for (var i = 0; i < offsetParts.length; i++) {
+				if (offsetParts[i].type === "timeZoneName") {
+					cachedGmt = (offsetParts[i].value || "").replace(/^UTC/, "GMT");
+					cachedGmtHourKey = hourKey;
+					return cachedGmt;
+				}
+			}
+		}
+
+		var nzDate = new Date(now.toLocaleString("en-US", { timeZone: NZ_TZ }));
+		var offset = -nzDate.getTimezoneOffset() / 60;
+		cachedGmt = "GMT" + (offset >= 0 ? "+" : "") + offset;
+		cachedGmtHourKey = hourKey;
+		return cachedGmt;
+	}
+
 	function getNzParts() {
 		var now = new Date();
-		var parts = new Intl.DateTimeFormat("en-NZ", {
-			timeZone: NZ_TZ,
-			weekday: "long",
-			day: "numeric",
-			month: "long",
-			hour: "2-digit",
-			minute: "2-digit",
-			second: "2-digit",
-			hour12: true,
-			timeZoneName: "short",
-		}).formatToParts(now);
-
+		var parts = partsFormatter.formatToParts(now);
 		var map = {};
 		for (var i = 0; i < parts.length; i++) {
 			map[parts[i].type] = parts[i].value;
 		}
 
-		var nzDate = new Date(now.toLocaleString("en-US", { timeZone: NZ_TZ }));
-		var offset = -nzDate.getTimezoneOffset() / 60;
-		var gmt = "GMT" + (offset >= 0 ? "+" : "") + offset;
-		var tz = map.timeZoneName && map.timeZoneName.indexOf("DT") !== -1 ? "NZDT" : "NZST";
+		var h = parseInt(map.hour, 10) || 0;
+		var m = parseInt(map.minute, 10) || 0;
+		var s = parseInt(map.second, 10) || 0;
+		// hour12 midnight/noon can report 12; keep flip digits as 01–12.
+		var hour12 = String(map.hour).padStart(2, "0");
 
 		return {
-			digits:
-				String(map.hour).padStart(2, "0") +
-				String(map.minute).padStart(2, "0") +
-				String(map.second).padStart(2, "0"),
+			digits: hour12 + String(map.minute).padStart(2, "0") + String(map.second).padStart(2, "0"),
 			period: (map.dayPeriod || "").toUpperCase(),
-			tz: tz,
-			gmt: gmt,
+			tz: map.timeZoneName && map.timeZoneName.indexOf("DT") !== -1 ? "NZDT" : "NZST",
+			gmt: getGmt(now),
 			weekday: map.weekday || "",
 			day: ordinal(map.day || "1"),
 			month: map.month || "",
-		};
-	}
-
-	function getNZTime() {
-		var s = new Date().toLocaleString("en-US", {
-			timeZone: NZ_TZ,
-			hour12: false,
-			hour: "2-digit",
-			minute: "2-digit",
-			second: "2-digit",
-		});
-		var parts = s.split(":");
-		return {
-			h: parseInt(parts[0], 10),
-			m: parseInt(parts[1], 10),
-			s: parseInt(parts[2], 10),
+			h: h,
+			m: m,
+			s: s,
 		};
 	}
 
@@ -107,10 +130,8 @@
 	}
 
 	function buildAnalog() {
+		if (analogBuilt) return;
 		analogMount.textContent = "";
-		hourHand = null;
-		minuteHand = null;
-		secondGroup = null;
 
 		var svg = document.createElementNS(SVG_NS, "svg");
 		svg.setAttribute("class", "flip-clock-analog-svg");
@@ -175,31 +196,21 @@
 
 		svg.appendChild(dialG);
 		analogMount.appendChild(svg);
+		analogBuilt = true;
+		lastAnalogKey = "";
 	}
 
-	function updateAnalog() {
+	function updateAnalog(parts) {
 		if (!hourHand || !minuteHand || !secondGroup) return;
-		var time = getNZTime();
-		hourHand.setAttribute(
-			"transform",
-			"rotate(" + ((time.h % 12) * 30 + time.m * 0.5) + " 100 100)",
-		);
-		minuteHand.setAttribute("transform", "rotate(" + (time.m * 6 + time.s * 0.1) + " 100 100)");
-		secondGroup.setAttribute("transform", "rotate(" + time.s * 6 + " 100 100)");
-		analogRAF = requestAnimationFrame(updateAnalog);
-	}
+		var key = parts.h + ":" + parts.m + ":" + parts.s;
+		if (key === lastAnalogKey) return;
+		lastAnalogKey = key;
 
-	function startAnalog() {
-		stopAnalog();
-		buildAnalog();
-		updateAnalog();
-	}
-
-	function stopAnalog() {
-		if (analogRAF) {
-			cancelAnimationFrame(analogRAF);
-			analogRAF = null;
-		}
+		// hour12 parts: map.hour is 1–12; use 24h-ish angle via period when needed.
+		var hour = parts.h % 12;
+		hourHand.setAttribute("transform", "rotate(" + (hour * 30 + parts.m * 0.5) + " 100 100)");
+		minuteHand.setAttribute("transform", "rotate(" + (parts.m * 6 + parts.s * 0.1) + " 100 100)");
+		secondGroup.setAttribute("transform", "rotate(" + parts.s * 6 + " 100 100)");
 	}
 
 	function createDigit(value) {
@@ -221,6 +232,14 @@
 			value +
 			"</span></div>" +
 			"</div>";
+		el._flip = {
+			upper: el.querySelector(".flip-clock-half--upper span"),
+			lower: el.querySelector(".flip-clock-half--lower span"),
+			front: el.querySelector(".flip-clock-flap-face--front span"),
+			back: el.querySelector(".flip-clock-flap-face--back span"),
+			flap: el.querySelector(".flip-clock-flap"),
+			spans: el.querySelectorAll(".flip-clock-half span, .flip-clock-flap-face span"),
+		};
 		return el;
 	}
 
@@ -245,22 +264,24 @@
 
 	function build() {
 		if (built) return;
-		var initial = getNzParts().digits;
+		var initial = getNzParts();
 		digitsMount.textContent = "";
 		digitEls = [];
-		digitsMount.appendChild(createGroup(initial.slice(0, 2)));
+		digitsMount.appendChild(createGroup(initial.digits.slice(0, 2)));
 		digitsMount.appendChild(createSep());
-		digitsMount.appendChild(createGroup(initial.slice(2, 4)));
+		digitsMount.appendChild(createGroup(initial.digits.slice(2, 4)));
 		digitsMount.appendChild(createSep());
-		digitsMount.appendChild(createGroup(initial.slice(4, 6)));
-		currentDigits = initial;
+		digitsMount.appendChild(createGroup(initial.digits.slice(4, 6)));
+		currentDigits = initial.digits;
 		built = true;
-		renderMeta(getNzParts());
+		renderMeta(initial);
+		buildAnalog();
+		updateAnalog(initial);
 	}
 
 	function setDigitStatic(el, value) {
 		el.dataset.value = value;
-		var spans = el.querySelectorAll(".flip-clock-half span, .flip-clock-flap-face span");
+		var spans = el._flip.spans;
 		for (var i = 0; i < spans.length; i++) {
 			spans[i].textContent = value;
 		}
@@ -277,45 +298,39 @@
 			return;
 		}
 
-		var upper = el.querySelector(".flip-clock-half--upper span");
-		var lower = el.querySelector(".flip-clock-half--lower span");
-		var front = el.querySelector(".flip-clock-flap-face--front span");
-		var back = el.querySelector(".flip-clock-flap-face--back span");
-		var flap = el.querySelector(".flip-clock-flap");
-
-		// Static top reveals new digit immediately (under the flap).
-		// Static bottom keeps old until the flap lands.
-		front.textContent = prev;
-		back.textContent = next;
-		upper.textContent = next;
-		lower.textContent = prev;
-
+		var refs = el._flip;
+		refs.front.textContent = prev;
+		refs.back.textContent = next;
+		refs.upper.textContent = next;
+		refs.lower.textContent = prev;
 		el.dataset.value = next;
 
-		// Restart animation cleanly if needed.
-		flap.style.animation = "none";
-		// Force reflow so the next animation starts from 0.
-		void flap.offsetWidth;
-		flap.style.animation = "";
+		refs.flap.style.animation = "none";
+		void refs.flap.offsetWidth;
+		refs.flap.style.animation = "";
 
 		el.classList.add("is-flipping");
 
 		window.setTimeout(function () {
-			lower.textContent = next;
-			front.textContent = next;
+			refs.lower.textContent = next;
+			refs.front.textContent = next;
 			el.classList.remove("is-flipping");
-			flap.style.animation = "";
+			refs.flap.style.animation = "";
 		}, FLIP_MS);
 	}
 
 	function renderMeta(parts) {
+		var key = parts.month + "|" + parts.day + "|" + parts.weekday + "|" + parts.tz + "|" + parts.period + "|" + parts.gmt;
+		if (key === lastMetaKey) return;
+		lastMetaKey = key;
+
 		dateEl.innerHTML =
 			'<span class="opacity-75">' +
-			parts.day +
+			parts.month +
 			"</span>" +
 			' <span class="opacity-25">/</span> ' +
 			'<span class="opacity-75">' +
-			parts.month +
+			parts.day +
 			"</span>" +
 			' <span class="opacity-50">(' +
 			parts.weekday +
@@ -337,6 +352,7 @@
 		if (!isVisible()) return;
 		var parts = getNzParts();
 		renderMeta(parts);
+		updateAnalog(parts);
 		if (parts.digits === currentDigits) return;
 		for (var i = 0; i < digitEls.length; i++) {
 			if (parts.digits[i] !== currentDigits[i]) {
@@ -349,7 +365,7 @@
 	function startTick() {
 		stopTick();
 		tick();
-		tickTimer = window.setInterval(tick, 250);
+		tickTimer = window.setInterval(tick, TICK_MS);
 	}
 
 	function stopTick() {
@@ -365,7 +381,6 @@
 		overlay.classList.add("is-visible");
 		overlay.setAttribute("aria-hidden", "false");
 		startTick();
-		startAnalog();
 	}
 
 	function hide() {
@@ -373,7 +388,6 @@
 		overlay.classList.remove("is-visible");
 		overlay.setAttribute("aria-hidden", "true");
 		stopTick();
-		stopAnalog();
 	}
 
 	// Delegated click — typewriter can replace header-label HTML.
