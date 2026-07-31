@@ -50,10 +50,10 @@
 		if (!art) return;
 		if (isLightMode()) {
 			art.setMode("blue");
-			art.setColors("#ffffff", "#ffffff");
+			art.setColors("#ffffff", "#8AA9FF");
 		} else {
 			art.setMode("dark");
-			art.setColors("#ffffff", "#ffffff");
+			art.setColors("#ffffff", "#808080");
 		}
 	}
 
@@ -110,7 +110,7 @@
 				],
 				characters: " . ,-nzn",
 				invert: true,
-				hoverCells: 6,
+				hoverCells: 4,
 				introDuration: 1400,
 				idleBurstsPerSecond: 0.25,
 				idleCells: 1,

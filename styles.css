@@ -1454,7 +1454,7 @@ h1.header-label {
 }
 
 .ascii-map-link:hover {
-	opacity: 0.7;
+	opacity: 0.5;
 }
 
 .ascii-map-link--url,
