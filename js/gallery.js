@@ -2653,7 +2653,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 			// Calculate how many items fit within a given column budget (maxColumns).
 			// Graphics dividers and title rows are included in the slice but do not consume column budget.
-			// Used to cap initial display (2–3 rows) and "Load more" batches on desktop (separate larger budget per click below)
+			// Used to cap initial display (2–4 rows) and "Load more" batches on desktop (separate larger budget per click below)
 			function calculateDisplayCount(items, maxColumns) {
 				let totalColumns = 0;
 				let count = 0;
@@ -2732,9 +2732,9 @@ document.addEventListener("DOMContentLoaded", function () {
 			const isMobile = window.matchMedia("(max-width: 1080px)").matches;
 
 			// Initial display:
-			// - Desktop: max 2 rows (20 columns); Lab shows 3 rows (30 columns)
+			// - Desktop: max 2 rows (20 columns); Lab shows 4 rows (40 columns)
 			// - Mobile: max 4 content items; Lab shows 5 (+ graphics dividers in the same slice)
-			const initialRowColumns = sectionType === "experiments" ? 30 : 20;
+			const initialRowColumns = sectionType === "experiments" ? 40 : 20;
 			const initialMobileItems = sectionType === "experiments" ? 5 : 4;
 			const rawInitialCount = isMobile
 				? countMobileBatchItems(allItems, initialMobileItems)

@@ -1,6 +1,33 @@
 {
   "items": [
     {
+      "filename": "daascii.png",
+      "number": "G-24",
+      "description": "DaaS (ASCII)",
+      "columns": 3,
+      "width": 1628,
+      "height": 1428,
+      "shared": false
+    },
+    {
+      "filename": "laser-kiwi.png",
+      "number": "G-23",
+      "description": "Laser Kiwi Flag (ASCII)",
+      "columns": 3,
+      "width": 1628,
+      "height": 916,
+      "shared": false
+    },
+    {
+      "filename": "danscii-montage.png",
+      "number": "G-22",
+      "description": "D@N5C1I (Montage)",
+      "columns": 4,
+      "width": 2184,
+      "height": 1228,
+      "shared": false
+    },
+    {
       "filename": "danscii.js",
       "type": "script",
       "number": "G-21",
