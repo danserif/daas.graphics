@@ -4479,7 +4479,7 @@ a.plan-panel-cta:hover {
 /* Full-color work + lab: dim on hover as lightbox affordance */
 #work.work-images-full-color .work-image-frame:hover .work-image.is-loaded,
 #lab .work-image-frame:hover .work-image.is-loaded {
-	opacity: 0.50;
+	opacity: 0.75;
 }
 
 #work.work-images-full-color .work-image {
@@ -4554,7 +4554,7 @@ a.plan-panel-cta:hover {
 }
 
 .work-image-frame.work-script-frame:hover::after {
-	opacity: 0.5;
+	opacity: 0.25;
 }
 
 /* DANSCII: keep hover free for ASCII interaction */
