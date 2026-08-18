@@ -158,17 +158,33 @@
 			if (loadingProgress) loadingProgress.classList.add("fade-out");
 
 			setTimeout(function () {
-				loadingOverlay.classList.add("swipe-up");
-				setTimeout(function () {
+				function hideOverlay() {
 					loadingOverlay.classList.add("hidden");
-					body.classList.remove("loading");
 					var meta = document.querySelector('meta[name="theme-color"]');
 					if (meta) {
 						var isLight = document.documentElement.classList.contains("light-mode");
 						meta.setAttribute("content", isLight ? "#ffffff" : "#000000");
 					}
-					window.dispatchEvent(new CustomEvent("loadingComplete"));
-				}, SWIPE_DURATION_MS);
+				}
+
+				function swipeAway() {
+					loadingOverlay.classList.add("swipe-up");
+					setTimeout(hideOverlay, SWIPE_DURATION_MS);
+				}
+
+				/* Unlock overflow and let hash scroll land while the overlay still covers. */
+				body.classList.remove("loading");
+				window.dispatchEvent(new CustomEvent("loadingComplete"));
+
+				if (window.location.hash && window.location.hash !== "#") {
+					requestAnimationFrame(function () {
+						requestAnimationFrame(function () {
+							requestAnimationFrame(swipeAway);
+						});
+					});
+					return;
+				}
+				swipeAway();
 			}, CONTENT_FADE_MS);
 		}
 
