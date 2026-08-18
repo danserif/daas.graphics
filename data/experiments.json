@@ -1,36 +1,9 @@
 {
   "items": [
     {
-      "filename": "daascii.png",
-      "number": "G-24",
-      "description": "DaaS (ASCII)",
-      "columns": 3,
-      "width": 1628,
-      "height": 1428,
-      "shared": false
-    },
-    {
-      "filename": "laser-kiwi.png",
-      "number": "G-23",
-      "description": "Laser Kiwi Flag (ASCII)",
-      "columns": 3,
-      "width": 1628,
-      "height": 916,
-      "shared": false
-    },
-    {
-      "filename": "danscii-montage.png",
-      "number": "G-22",
-      "description": "D@N5C1I (Montage)",
-      "columns": 4,
-      "width": 2184,
-      "height": 1228,
-      "shared": false
-    },
-    {
       "filename": "danscii.js",
       "type": "script",
-      "number": "G-21",
+      "number": "G-24",
       "description": "D@N5C1I (App)",
       "columns": 5,
       "width": 1370,
@@ -40,7 +13,7 @@
     },
     {
       "filename": "danscii-ui.png",
-      "number": "G-20",
+      "number": "G-23",
       "description": "D@N5C1I (UI)",
       "columns": 3,
       "width": 1628,
@@ -49,12 +22,39 @@
     },
     {
       "filename": "ascii-nz.png",
-      "number": "G-19",
+      "number": "G-22",
       "description": "Aotearoa (ASCII)",
       "columns": 2,
       "width": 1072,
       "height": 1492,
       "shared": true
+    },
+    {
+      "filename": "laser-kiwi.png",
+      "number": "G-21",
+      "description": "Laser Kiwi Flag (ASCII)",
+      "columns": 3,
+      "width": 1628,
+      "height": 916,
+      "shared": false
+    },
+    {
+      "filename": "danscii-montage.png",
+      "number": "G-20",
+      "description": "D@N5C1I (Montage)",
+      "columns": 4,
+      "width": 2184,
+      "height": 1228,
+      "shared": false
+    },
+    {
+      "filename": "daascii.png",
+      "number": "G-19",
+      "description": "DaaS (ASCII)",
+      "columns": 3,
+      "width": 1628,
+      "height": 1428,
+      "shared": false
     },
     {
       "filename": "clock.js",
