@@ -107,6 +107,14 @@
 			}
 		}
 
+		function notifyHashListeners() {
+			try {
+				window.dispatchEvent(new HashChangeEvent("hashchange"));
+			} catch (e) {
+				window.dispatchEvent(new Event("hashchange"));
+			}
+		}
+
 		function scrollToHash(hash) {
 			if (!hash || hash === "#") return;
 			var id = hash.slice(1);
@@ -124,7 +132,6 @@
 							};
 				el = document.querySelector('[name="' + esc(id) + '"]');
 			}
-			if (!el) return;
 
 			// Ensure URL reflects the target without triggering native scroll twice
 			try {
@@ -133,6 +140,10 @@
 				// If pushState fails, fall back to assigning hash
 				window.location.hash = hash;
 			}
+
+			notifyHashListeners();
+
+			if (!el) return;
 
 			// Allow layout to settle after unlocking body scroll / panel close transition
 			requestAnimationFrame(function () {

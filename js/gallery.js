@@ -840,6 +840,165 @@ document.addEventListener("DOMContentLoaded", function () {
 		return canonicalName.replace(/,\s*Inc\.\s*$/i, "").trim();
 	}
 
+	function slugifyProjectName(name) {
+		return graphicsProjectListLabel(name)
+			.toLowerCase()
+			.replace(/[^a-z0-9]+/g, "-")
+			.replace(/^-+|-+$/g, "");
+	}
+
+	function isGalleryItemNumber(token) {
+		return /^[A-Za-z]{1,3}-\d{2}$/.test(String(token || ""));
+	}
+
+	function itemNumberFromEntry(entry) {
+		if (!entry) return "";
+		if (entry.number != null && entry.number !== "") {
+			return String(entry.number).toUpperCase();
+		}
+		return experimentDisplayNumber(entry);
+	}
+
+	function findItemByNumber(items, number) {
+		var want = String(number || "").toUpperCase();
+		if (!want) return null;
+		for (var i = 0; i < items.length; i++) {
+			if (!items[i] || !items[i].filename) continue;
+			if (itemNumberFromEntry(items[i]) === want) return items[i];
+		}
+		return null;
+	}
+
+	function projectNameFromSlug(projectNames, slug) {
+		var want = String(slug || "").toLowerCase();
+		if (!want || !projectNames) return null;
+		for (var i = 0; i < projectNames.length; i++) {
+			if (slugifyProjectName(projectNames[i]) === want) return projectNames[i];
+		}
+		return null;
+	}
+
+	function parseGalleryHash() {
+		var hash = window.location.hash || "";
+		if (!hash || hash === "#") return null;
+		if (hash === "#work") {
+			return { section: "work", projectSlug: null, itemNumber: null };
+		}
+		if (hash === "#lab") {
+			return { section: "lab", projectSlug: null, itemNumber: null };
+		}
+		var workMatch = hash.match(/^#work=(.+)$/);
+		if (workMatch) {
+			var workVal = workMatch[1];
+			try {
+				workVal = decodeURIComponent(workVal);
+			} catch (e) {}
+			if (isGalleryItemNumber(workVal)) {
+				return {
+					section: "work",
+					projectSlug: null,
+					itemNumber: workVal.toUpperCase(),
+				};
+			}
+			return {
+				section: "work",
+				projectSlug: workVal.toLowerCase(),
+				itemNumber: null,
+			};
+		}
+		var labMatch = hash.match(/^#lab=(.+)$/);
+		if (labMatch) {
+			var labVal = labMatch[1];
+			try {
+				labVal = decodeURIComponent(labVal);
+			} catch (e) {}
+			if (!isGalleryItemNumber(labVal)) {
+				return { section: "lab", projectSlug: null, itemNumber: null };
+			}
+			return {
+				section: "lab",
+				projectSlug: null,
+				itemNumber: labVal.toUpperCase(),
+			};
+		}
+		return null;
+	}
+
+	function setGallerySectionHash(section, opts) {
+		opts = opts || {};
+		var newHash;
+		if (opts.itemNumber) {
+			newHash = "#" + section + "=" + String(opts.itemNumber).toUpperCase();
+		} else if (opts.projectSlug) {
+			newHash = "#" + section + "=" + opts.projectSlug;
+		} else {
+			newHash = "#" + section;
+		}
+		if (window.location.hash !== newHash) {
+			history.replaceState(null, "", window.location.pathname + window.location.search + newHash);
+		}
+	}
+
+	function instantScrollToY(y) {
+		y = Math.max(0, y);
+		var html = document.documentElement;
+		var prev = html.style.scrollBehavior;
+		html.style.scrollBehavior = "auto";
+		window.scrollTo(0, y);
+		html.style.scrollBehavior = prev;
+	}
+
+	function instantScrollToElementTop(el) {
+		if (!el) return;
+		instantScrollToY((window.scrollY || window.pageYOffset) + el.getBoundingClientRect().top);
+	}
+
+	function afterPageLoading(fn) {
+		if (document.body.classList.contains("loading")) {
+			window.addEventListener("loadingComplete", fn, { once: true });
+			return;
+		}
+		fn();
+	}
+
+	function getFilterSnapTopAssumingHeaderScrolled() {
+		if (window.matchMedia(FILTER_BAR_MOBILE_MQL).matches) {
+			return getFilterBarSnapTopForStickyPx();
+		}
+		var fixed = document.querySelector(".header-fixed-bar");
+		if (fixed) return fixed.offsetHeight;
+		return getFilterBarSnapTopForStickyPx();
+	}
+
+	var galleryHashRouters = {};
+	var galleryHashApplying = false;
+
+	function routeGalleryHash() {
+		var parsed = parseGalleryHash();
+		if (!parsed) {
+			if (galleryLightboxApi && galleryLightboxApi.isOpen()) {
+				galleryHashApplying = true;
+				galleryLightboxApi.close();
+				galleryHashApplying = false;
+			}
+			return;
+		}
+		if (galleryLightboxApi && galleryLightboxApi.isOpen()) {
+			var openType = galleryLightboxApi.getSectionType();
+			var wantType = parsed.section === "work" ? "graphics" : "experiments";
+			if (openType && openType !== wantType) {
+				galleryHashApplying = true;
+				galleryLightboxApi.close();
+				galleryHashApplying = false;
+			}
+		}
+		var key = parsed.section === "work" ? "graphics" : parsed.section === "lab" ? "experiments" : null;
+		if (!key || !galleryHashRouters[key]) return;
+		galleryHashRouters[key](parsed);
+	}
+
+	window.addEventListener("hashchange", routeGalleryHash);
+
 	function buildGraphicsProjectFilterBar(projectNames, projectImageCounts, onProjectChange) {
 		if (!projectNames || projectNames.length <= 1) return null;
 
@@ -1799,7 +1958,7 @@ document.addEventListener("DOMContentLoaded", function () {
 					projectEl.appendChild(labLink);
 				} else {
 					var link = document.createElement("a");
-					link.href = "#";
+					link.href = "#work=" + slugifyProjectName(title);
 					link.className = "gallery-lightbox-project-link";
 
 					var nameSpan = document.createElement("span");
@@ -1982,6 +2141,10 @@ document.addEventListener("DOMContentLoaded", function () {
 					applyTotalSize(state.cachedTotalSizeStr);
 				});
 			}
+
+			if (typeof state.onIndexChange === "function") {
+				state.onIndexChange(entry);
+			}
 		}
 
 		function open(entries, startIndex, opts) {
@@ -1996,6 +2159,9 @@ document.addEventListener("DOMContentLoaded", function () {
 				typeof opts.onTitleNavigate === "function" ? opts.onTitleNavigate : null;
 			state.getTotalSizeStr =
 				typeof opts.getTotalSizeStr === "function" ? opts.getTotalSizeStr : null;
+			state.onIndexChange =
+				typeof opts.onIndexChange === "function" ? opts.onIndexChange : null;
+			state.onClose = typeof opts.onClose === "function" ? opts.onClose : null;
 			state.cachedTotalSizeStr = null;
 			state.cachedTotalSizeKey = null;
 			state.open = true;
@@ -2021,6 +2187,10 @@ document.addEventListener("DOMContentLoaded", function () {
 			document.documentElement.classList.remove("gallery-lightbox-open");
 			img.removeAttribute("src");
 			meta.replaceChildren();
+			var onClose = state.onClose;
+			state.onClose = null;
+			state.onIndexChange = null;
+			if (typeof onClose === "function") onClose();
 		}
 
 		function refreshTheme() {
@@ -2100,6 +2270,13 @@ document.addEventListener("DOMContentLoaded", function () {
 			isOpen: function () {
 				return state.open;
 			},
+			getCurrentEntry: function () {
+				if (!state.open) return null;
+				return state.entries[state.index] || null;
+			},
+			getSectionType: function () {
+				return state.sectionType;
+			},
 		};
 		return galleryLightboxApi;
 	}
@@ -2174,22 +2351,41 @@ document.addEventListener("DOMContentLoaded", function () {
 		try {
 			let activeGraphicsProject = null;
 			let filterChangeScrollEnabled = false;
+			let writeWorkHashOnFilter = false;
+			let skipFilterScroll = false;
+			let graphicsProjectNames = [];
 			let expandGraphicsFilterToVisible = async function () {};
+
+			function hashSectionName() {
+				return sectionType === "graphics" ? "work" : "lab";
+			}
 
 			function scrollGridIntoViewAfterFilterTap() {
 				if (!filterChangeScrollEnabled) return;
 
-				function measureAndScrollByFilterGeometry() {
+				function measureAndScrollByFilterGeometry(didSnap) {
 					const mobileScroll = window.matchMedia(FILTER_BAR_MOBILE_MQL).matches;
 					const gapPx = mobileScroll ? 12 : 16;
 					const titleBelowFilterPad = mobileScroll ? 10 : 14;
 					const minWantAnchorTopPx = mobileScroll ? 56 : 72;
 					const filterEl =
 						section.querySelector(".filter-bar") || workContent.querySelector(".filter-bar");
-					if (!filterEl) return;
+					if (!filterEl) {
+						instantScrollToElementTop(section);
+						return;
+					}
 
 					/* After dropdown selection the trigger label height can change (wrap, sup hidden); flush layout before rects */
 					void filterEl.offsetHeight;
+
+					if (!mobileScroll) {
+						const fixedBar = document.querySelector(".header-fixed-bar");
+						if (fixedBar) fixedBar.classList.add("is-visible");
+						document.body.classList.add("header-scrolled");
+					}
+
+					const snapTop = getFilterSnapTopAssumingHeaderScrolled();
+					section.style.setProperty("--filter-bar-snap-top", snapTop + "px");
 
 					let anchor = null;
 					if (sectionType === "graphics") {
@@ -2209,43 +2405,73 @@ document.addEventListener("DOMContentLoaded", function () {
 						anchor = section.querySelector(".disclaimer") || grid;
 					}
 
+					const fr = filterEl.getBoundingClientRect();
+					const filterH = Math.max(fr.height, filterEl.offsetHeight || 52);
+					const nearSticky =
+						didSnap ||
+						filterEl.classList.contains("is-stuck") ||
+						Math.abs(fr.top - snapTop) <= 12;
+
 					let wantAnchorTop;
-					if (anchor.classList && anchor.classList.contains("work-grid-title") && filterEl) {
-						const fr = filterEl.getBoundingClientRect();
-						wantAnchorTop = fr.bottom + gapPx + titleBelowFilterPad;
-						if (wantAnchorTop < gapPx + 48) {
-							const snap =
-								parseFloat(getComputedStyle(section).getPropertyValue("--filter-bar-snap-top")) ||
-								0;
-							wantAnchorTop =
-								snap +
-								Math.max(fr.height, filterEl.offsetHeight || 52) +
-								gapPx +
-								titleBelowFilterPad;
+					if (anchor.classList && anchor.classList.contains("work-grid-title")) {
+						if (nearSticky) {
+							wantAnchorTop = fr.bottom + gapPx + titleBelowFilterPad;
+							if (wantAnchorTop < gapPx + 48) {
+								wantAnchorTop = snapTop + filterH + gapPx + titleBelowFilterPad;
+							}
+						} else {
+							/* Deep link from elsewhere: use stuck-filter geometry, not the in-flow bar */
+							wantAnchorTop = snapTop + filterH + gapPx + titleBelowFilterPad;
 						}
 					} else {
-						wantAnchorTop = getFilterBarSnapTopForStickyPx() + gapPx + 48;
+						wantAnchorTop = snapTop + gapPx + 48;
 					}
 					wantAnchorTop = Math.max(wantAnchorTop, minWantAnchorTopPx);
 
-					const anchorTop = anchor.getBoundingClientRect().top;
-					const delta = anchorTop - wantAnchorTop;
-					if (Math.abs(delta) < 4) return;
-					window.scrollBy({ top: delta, behavior: "smooth" });
+					const delta = anchor.getBoundingClientRect().top - wantAnchorTop;
+					if (Math.abs(delta) < 4) {
+						if (typeof filterEl._checkStuck === "function") filterEl._checkStuck();
+						return;
+					}
+
+					if (!nearSticky) {
+						instantScrollToY((window.scrollY || window.pageYOffset) + delta);
+						requestAnimationFrame(function () {
+							requestAnimationFrame(function () {
+								if (typeof filterEl._checkStuck === "function") filterEl._checkStuck();
+								measureAndScrollByFilterGeometry(true);
+							});
+						});
+						return;
+					}
+
+					window.scrollBy({
+						top: delta,
+						behavior: didSnap ? "auto" : "smooth",
+					});
+					if (typeof filterEl._checkStuck === "function") filterEl._checkStuck();
 				}
 
-				/* Mobile: extra frame so sticky bar + dropdown label finish reflow before measuring */
-				if (window.matchMedia(FILTER_BAR_MOBILE_MQL).matches) {
-					requestAnimationFrame(function () {
+				function scheduleMeasure() {
+					/* Mobile: extra frame so sticky bar + dropdown label finish reflow before measuring */
+					if (window.matchMedia(FILTER_BAR_MOBILE_MQL).matches) {
 						requestAnimationFrame(function () {
-							requestAnimationFrame(measureAndScrollByFilterGeometry);
+							requestAnimationFrame(function () {
+								requestAnimationFrame(function () {
+									measureAndScrollByFilterGeometry(false);
+								});
+							});
 						});
-					});
-				} else {
-					requestAnimationFrame(function () {
-						requestAnimationFrame(measureAndScrollByFilterGeometry);
-					});
+					} else {
+						requestAnimationFrame(function () {
+							requestAnimationFrame(function () {
+								measureAndScrollByFilterGeometry(false);
+							});
+						});
+					}
 				}
+
+				afterPageLoading(scheduleMeasure);
 			}
 
 			const response = await fetch(jsonPath);
@@ -2275,18 +2501,35 @@ document.addEventListener("DOMContentLoaded", function () {
 						projectNames.push(pn);
 					}
 				}
+				graphicsProjectNames = projectNames;
 
 				filterBar = buildGraphicsProjectFilterBar(
 					projectNames,
 					projectImageCounts,
 					function (proj) {
+						const allowScroll = !skipFilterScroll;
 						activeGraphicsProject = proj;
+						if (
+							!galleryHashApplying &&
+							galleryLightboxApi &&
+							galleryLightboxApi.isOpen() &&
+							galleryLightboxApi.getSectionType() === sectionType
+						) {
+							galleryHashApplying = true;
+							galleryLightboxApi.close();
+							galleryHashApplying = false;
+						}
 						applyGraphicsProjectFilter();
 						updateLoadMoreStatus();
+						if (writeWorkHashOnFilter && !galleryHashApplying) {
+							setGallerySectionHash("work", {
+								projectSlug: proj ? slugifyProjectName(proj) : null,
+							});
+						}
 						void expandGraphicsFilterToVisible().then(function () {
 							applyGraphicsProjectFilter();
 							updateLoadMoreStatus();
-							scrollGridIntoViewAfterFilterTap();
+							if (allowScroll) scrollGridIntoViewAfterFilterTap();
 						});
 					},
 				);
@@ -2361,6 +2604,7 @@ document.addEventListener("DOMContentLoaded", function () {
 					}
 					window.addEventListener("resize", gfxOnResizeLayout);
 					gfxCheckFilterStuck();
+					filterBar._checkStuck = gfxCheckFilterStuck;
 				}
 			}
 
@@ -2469,6 +2713,24 @@ document.addEventListener("DOMContentLoaded", function () {
 					isThemed: true,
 					statusLabel: "Image",
 					onTitleNavigate: navigateToTitle,
+					onIndexChange: function (entry) {
+						if (galleryHashApplying) return;
+						var num = itemNumberFromEntry(entry);
+						if (!num) return;
+						setGallerySectionHash(hashSectionName(), { itemNumber: num });
+					},
+					onClose: function () {
+						if (galleryHashApplying) return;
+						if (sectionType === "graphics") {
+							setGallerySectionHash("work", {
+								projectSlug: activeGraphicsProject
+									? slugifyProjectName(activeGraphicsProject)
+									: null,
+							});
+						} else {
+							setGallerySectionHash("lab", {});
+						}
+					},
 					getTotalSizeStr: function (entries) {
 						function sumFromCache() {
 							if (!workImageBytesByIndex) return null;
@@ -2531,6 +2793,72 @@ document.addEventListener("DOMContentLoaded", function () {
 					return;
 				}
 				lightbox.open(entries, start, openOpts);
+			}
+
+			function closeLightboxIfThisSection() {
+				if (!lightbox.isOpen()) return;
+				if (lightbox.getSectionType() !== sectionType) return;
+				lightbox.close();
+			}
+
+			function applyGalleryHashForSection(parsed) {
+				if (!parsed) return;
+				galleryHashApplying = true;
+				skipFilterScroll = !parsed.projectSlug && !parsed.itemNumber;
+				try {
+					if (parsed.itemNumber) {
+						var item = findItemByNumber(allItems, parsed.itemNumber);
+						if (!item) {
+							if (sectionType === "graphics" && filterBar && filterBar._selectProject) {
+								filterBar._selectProject(null);
+							}
+							setGallerySectionHash(hashSectionName(), {});
+							closeLightboxIfThisSection();
+							return;
+						}
+						if (
+							sectionType === "graphics" &&
+							item.project &&
+							filterBar &&
+							typeof filterBar._selectProject === "function"
+						) {
+							if (activeGraphicsProject !== item.project) {
+								filterBar._selectProject(item.project);
+							}
+						}
+						var current = lightbox.getCurrentEntry && lightbox.getCurrentEntry();
+						if (!lightbox.isOpen() || !current || current.filename !== item.filename) {
+							openLightboxForFilename(item.filename);
+						}
+						if (sectionType === "experiments") {
+							afterPageLoading(function () {
+								instantScrollToElementTop(section);
+							});
+						}
+						return;
+					}
+
+					closeLightboxIfThisSection();
+
+					if (sectionType === "graphics" && filterBar && filterBar._selectProject) {
+						if (parsed.projectSlug) {
+							var name = projectNameFromSlug(graphicsProjectNames, parsed.projectSlug);
+							if (!name) {
+								filterBar._selectProject(null);
+								setGallerySectionHash("work", {});
+								return;
+							}
+							if (activeGraphicsProject !== name) {
+								filterBar._selectProject(name);
+							}
+						} else if (activeGraphicsProject) {
+							filterBar._selectProject(null);
+						}
+					}
+				} finally {
+					skipFilterScroll = false;
+					galleryHashApplying = false;
+				}
 			}
 
 			grid.addEventListener("click", function (e) {
@@ -2818,10 +3146,17 @@ document.addEventListener("DOMContentLoaded", function () {
 				}
 				divider.classList.remove("hidden");
 				updateLoadMoreStatus();
-				if (filterBar && filterBar._fireInitialFilter) {
+				const parsedInit = parseGalleryHash();
+				const willApplyHash =
+					(sectionType === "graphics" && parsedInit && parsedInit.section === "work") ||
+					(sectionType === "experiments" && parsedInit && parsedInit.section === "lab");
+				if (!willApplyHash && filterBar && filterBar._fireInitialFilter) {
 					filterBar._fireInitialFilter();
 				}
 				filterChangeScrollEnabled = true;
+				writeWorkHashOnFilter = true;
+				galleryHashRouters[sectionType] = applyGalleryHashForSection;
+				routeGalleryHash();
 
 				while (displayedCount < allItems.length && !remainingMatchingFilenameItemsExist()) {
 					await displayNextBatch();
