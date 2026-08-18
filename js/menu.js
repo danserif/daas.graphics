@@ -34,6 +34,10 @@
 	syncNavBackdropGrayscaleForWork();
 	window.addEventListener("loadingComplete", syncNavBackdropGrayscaleForWork);
 
+	if (window.location.hash && window.history && "scrollRestoration" in window.history) {
+		window.history.scrollRestoration = "manual";
+	}
+
 	function initNavOverlay() {
 		var overlay = document.querySelector("[data-nav-overlay]");
 		var root = document.documentElement;
@@ -115,8 +119,42 @@
 			}
 		}
 
-		function scrollToHash(hash) {
+		function syncHeaderScrollPadding() {
+			var mq = window.matchMedia("(max-width: 1080px)");
+			var band = document.querySelector(".header-sticky-band");
+			if (!band || !mq.matches) return;
+			document.documentElement.style.setProperty(
+				"--header-sticky-band-height",
+				band.offsetHeight + "px",
+			);
+		}
+
+		function isPlainSectionHash(hash) {
+			if (!hash || hash === "#" || hash.indexOf("=") !== -1) return false;
+			var id = hash.slice(1);
+			try {
+				id = decodeURIComponent(id);
+			} catch (e) {}
+			return !!document.getElementById(id);
+		}
+
+		function scrollElementToAnchor(el, behavior) {
+			if (!el) return;
+			syncHeaderScrollPadding();
+			if (behavior === "smooth") {
+				el.scrollIntoView({ behavior: "smooth", block: "start" });
+				return;
+			}
+			var html = document.documentElement;
+			var prev = html.style.scrollBehavior;
+			html.style.scrollBehavior = "auto";
+			el.scrollIntoView({ behavior: "auto", block: "start" });
+			html.style.scrollBehavior = prev;
+		}
+
+		function scrollToHash(hash, opts) {
 			if (!hash || hash === "#") return;
+			opts = opts || {};
 			var id = hash.slice(1);
 			try {
 				id = decodeURIComponent(id);
@@ -133,24 +171,37 @@
 				el = document.querySelector('[name="' + esc(id) + '"]');
 			}
 
-			// Ensure URL reflects the target without triggering native scroll twice
-			try {
-				history.pushState(null, "", hash);
-			} catch (e) {
-				// If pushState fails, fall back to assigning hash
-				window.location.hash = hash;
+			if (!opts.replace) {
+				// Ensure URL reflects the target without triggering native scroll twice
+				try {
+					history.pushState(null, "", hash);
+				} catch (e) {
+					// If pushState fails, fall back to assigning hash
+					window.location.hash = hash;
+				}
+				notifyHashListeners();
 			}
-
-			notifyHashListeners();
 
 			if (!el) return;
 
 			// Allow layout to settle after unlocking body scroll / panel close transition
 			requestAnimationFrame(function () {
 				requestAnimationFrame(function () {
-					el.scrollIntoView({ behavior: "smooth", block: "start" });
+					scrollElementToAnchor(el, opts.behavior || "smooth");
 				});
 			});
+		}
+
+		function applyFirstLoadSectionHash() {
+			var hash = window.location.hash;
+			if (!isPlainSectionHash(hash)) return;
+			scrollToHash(hash, { behavior: "auto", replace: true });
+		}
+
+		if (document.body.classList.contains("loading")) {
+			window.addEventListener("loadingComplete", applyFirstLoadSectionHash, { once: true });
+		} else {
+			applyFirstLoadSectionHash();
 		}
 
 		function handleNavLinkClick(event) {
