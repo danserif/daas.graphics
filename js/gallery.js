@@ -2362,6 +2362,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 			function scrollGridIntoViewAfterFilterTap() {
 				if (!filterChangeScrollEnabled) return;
+				if (sectionType === "graphics" && !activeGraphicsProject) return;
 
 				function measureAndScrollByFilterGeometry(didSnap) {
 					const mobileScroll = window.matchMedia(FILTER_BAR_MOBILE_MQL).matches;
@@ -3148,10 +3149,18 @@ document.addEventListener("DOMContentLoaded", function () {
 				updateLoadMoreStatus();
 				const parsedInit = parseGalleryHash();
 				const willApplyHash =
-					(sectionType === "graphics" && parsedInit && parsedInit.section === "work") ||
-					(sectionType === "experiments" && parsedInit && parsedInit.section === "lab");
+					(sectionType === "graphics" &&
+						parsedInit &&
+						parsedInit.section === "work" &&
+						(parsedInit.projectSlug || parsedInit.itemNumber)) ||
+					(sectionType === "experiments" &&
+						parsedInit &&
+						parsedInit.section === "lab" &&
+						parsedInit.itemNumber);
 				if (!willApplyHash && filterBar && filterBar._fireInitialFilter) {
+					skipFilterScroll = true;
 					filterBar._fireInitialFilter();
+					skipFilterScroll = false;
 				}
 				filterChangeScrollEnabled = true;
 				writeWorkHashOnFilter = true;
