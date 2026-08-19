@@ -410,8 +410,8 @@
 	}
 
 	function onActivity() {
-		if (isVisible() && openedByIdle) hide();
-		else restoreTitle();
+		if (isVisible()) return;
+		restoreTitle();
 		startIdleTimer();
 	}
 
@@ -469,9 +469,8 @@
 		else show();
 	});
 
-	overlay.addEventListener("click", function (e) {
+	overlay.addEventListener("click", function () {
 		if (!isVisible()) return;
-		if (e.target.closest(".flip-clock")) return;
 		hide();
 	});
 
