@@ -4579,7 +4579,7 @@ a.plan-panel-cta:hover {
 	display: block;
 	padding: 0;
 	box-sizing: border-box;
-	background: var(--color-bg);
+	background-color: var(--color-bg);
 	color: var(--color-text);
 	opacity: 0;
 	visibility: hidden;
@@ -4587,8 +4587,8 @@ a.plan-panel-cta:hover {
 	transition:
 		opacity 0.3s ease,
 		visibility 0.3s ease,
-		background-color 0.45s ease-out,
-		color 0.45s ease-out;
+		background-color 1.15s ease,
+		color 0.7s ease;
 }
 
 .gallery-lightbox.is-open {
