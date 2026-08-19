@@ -1977,16 +1977,11 @@ function colorKeyboardTargetOk() {
 	return true;
 }
 
-// "D" overlay — full-viewport accent letter; click / Escape / any interaction dismisses.
-// Also appears automatically after a period of inactivity (idle timer).
+// "D" overlay — full-viewport accent letter; click / Escape / D key dismisses/toggles.
 (function initDOverlay() {
 	var o = document.querySelector(".d-overlay");
 	if (!o) return;
 
-	var IDLE_MS = 60 * 1000; // 60 seconds of inactivity
-	var idleTimer = null;
-	var lastActivity = Date.now();
-	var openedByIdle = false;
 	/* Must match .d-overlay { transition: opacity … } — keep letter colour until fade finishes */
 	var D_OVERLAY_FADE_MS = 350;
 	var overWorkClassClearTimer = null;
@@ -2018,47 +2013,19 @@ function colorKeyboardTargetOk() {
 		o.classList.toggle("d-overlay--over-work", intersects);
 	}
 
-	/* Idle / tab-wake opens run from a timer; layout + visual viewport can lag one frame. */
-	function scheduleDOverlayOverWorkRecheck() {
-		setTimeout(updateDOverlayOverWork, 0);
-		requestAnimationFrame(function () {
-			requestAnimationFrame(updateDOverlayOverWork);
-		});
-	}
-
-	function faceOverlayOpen() {
-		var f = document.querySelector(".face-overlay");
-		return f && f.classList.contains("is-visible");
-	}
-
-	/** Menu / pricing both use #nav-overlay; `is-open` is set whenever either surface is showing. */
-	function navOverlayOpen() {
-		var nav = document.getElementById("nav-overlay");
-		return nav && nav.classList.contains("is-open");
-	}
-
-	function show(fromIdle) {
+	function show() {
 		if (isVisible()) return;
 		if (overWorkClassClearTimer) {
 			clearTimeout(overWorkClassClearTimer);
 			overWorkClassClearTimer = null;
 		}
-		if (fromIdle && (faceOverlayOpen() || navOverlayOpen())) {
-			startTimer();
-			return;
-		}
-		openedByIdle = !!fromIdle;
 		o.classList.add("is-visible");
 		o.setAttribute("aria-hidden", "false");
 		updateDOverlayOverWork();
-		if (fromIdle) {
-			scheduleDOverlayOverWorkRecheck();
-		}
 	}
 
 	function hide() {
 		if (!isVisible()) return;
-		openedByIdle = false;
 		o.classList.remove("is-visible");
 		o.setAttribute("aria-hidden", "true");
 		if (overWorkClassClearTimer) {
@@ -2070,42 +2037,6 @@ function colorKeyboardTargetOk() {
 		}, D_OVERLAY_FADE_MS);
 	}
 
-	function startTimer() {
-		clearTimeout(idleTimer);
-		lastActivity = Date.now();
-		idleTimer = setTimeout(function () {
-			show(true);
-		}, IDLE_MS);
-	}
-
-	// Activity only auto-dismisses the idle-triggered overlay;
-	// manually opened overlay is only closed by click or Escape.
-	function onActivity() {
-		if (isVisible() && openedByIdle) hide();
-		startTimer();
-	}
-
-	var MOUSEMOVE_THROTTLE_MS = 200;
-	var lastMousemoveActivity = 0;
-
-	function onMousemoveActivity() {
-		var now = Date.now();
-		if (now - lastMousemoveActivity < MOUSEMOVE_THROTTLE_MS) return;
-		lastMousemoveActivity = now;
-		onActivity();
-	}
-
-	document.addEventListener("visibilitychange", function () {
-		if (!document.hidden && !isVisible() && Date.now() - lastActivity >= IDLE_MS) {
-			show(true);
-		}
-	});
-
-	["mousedown", "keydown", "scroll", "touchstart"].forEach(function (evt) {
-		document.addEventListener(evt, onActivity, { passive: true });
-	});
-	document.addEventListener("mousemove", onMousemoveActivity, { passive: true });
-
 	window.addEventListener("scroll", updateDOverlayOverWork, { passive: true });
 	window.addEventListener("resize", updateDOverlayOverWork, { passive: true });
 
@@ -2113,12 +2044,10 @@ function colorKeyboardTargetOk() {
 		if (!isVisible()) return;
 		if (e.target.closest(".d-overlay-trigger")) return;
 		hide();
-		startTimer();
 	});
 	document.addEventListener("keydown", function (e) {
 		if (e.key === "Escape" && isVisible()) {
 			hide();
-			startTimer();
 			return;
 		}
 		if (
@@ -2136,16 +2065,9 @@ function colorKeyboardTargetOk() {
 
 	// Expose globally for onclick="toggleDOverlay()" in HTML
 	window.toggleDOverlay = function () {
-		if (isVisible()) {
-			hide();
-			startTimer();
-		} else {
-			show(false);
-			clearTimeout(idleTimer);
-		}
+		if (isVisible()) hide();
+		else show();
 	};
-
-	startTimer();
 })();
 
 // Face overlay — fills viewport with random daas-icon-1 / daas-icon-2 faces.

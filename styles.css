@@ -1538,9 +1538,14 @@ h1.header-label {
 .flip-clock-overlay.is-visible {
 	opacity: 1;
 	visibility: visible;
-	z-index: 99999;
+	/* Above gallery lightbox (99985) and other 99999 overlays */
+	z-index: 100000;
 	pointer-events: auto;
 	content-visibility: visible;
+}
+
+.flip-clock-overlay.flip-clock-no-transition {
+	transition: none;
 }
 
 .light-mode .flip-clock-overlay {

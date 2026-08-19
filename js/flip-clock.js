@@ -1,4 +1,5 @@
 // Flip clock overlay — NZ time on header/footer clock click (desktop only).
+// Also appears after inactivity or when the tab is hidden; sets the title to "Tick. Tock."
 (function initFlipClock() {
 	var DESKTOP_MIN = 1081;
 	var NZ_TZ = "Pacific/Auckland";
@@ -14,6 +15,13 @@
 	var metaEl = overlay && overlay.querySelector("[data-flip-meta]");
 	var analogMount = overlay && overlay.querySelector("[data-flip-analog]");
 	if (!overlay || !digitsMount || !dateEl || !metaEl || !analogMount) return;
+
+	var IDLE_MS = 60 * 1000;
+	var IDLE_TITLE = "Tick. Tock.";
+	var idleTimer = null;
+	var lastActivity = Date.now();
+	var openedByIdle = false;
+	var defaultTitle = document.title;
 
 	var digitEls = [];
 	var currentDigits = "";
@@ -375,8 +383,51 @@
 		}
 	}
 
-	function show() {
+	function setIdleTitle() {
+		if (document.title === IDLE_TITLE) return;
+		defaultTitle = document.title;
+		document.title = IDLE_TITLE;
+	}
+
+	function restoreTitle() {
+		if (document.title !== IDLE_TITLE) return;
+		document.title = defaultTitle;
+	}
+
+	function enterIdle() {
+		if (isVisible()) {
+			startIdleTimer();
+			return;
+		}
+		setIdleTitle();
+		show(true);
+	}
+
+	function startIdleTimer() {
+		clearTimeout(idleTimer);
+		lastActivity = Date.now();
+		idleTimer = setTimeout(enterIdle, IDLE_MS);
+	}
+
+	function onActivity() {
+		if (isVisible() && openedByIdle) hide();
+		else restoreTitle();
+		startIdleTimer();
+	}
+
+	var MOUSEMOVE_THROTTLE_MS = 200;
+	var lastMousemoveActivity = 0;
+
+	function onMousemoveActivity() {
+		var now = Date.now();
+		if (now - lastMousemoveActivity < MOUSEMOVE_THROTTLE_MS) return;
+		lastMousemoveActivity = now;
+		onActivity();
+	}
+
+	function show(fromIdle) {
 		if (!isDesktop() || isVisible()) return;
+		openedByIdle = !!fromIdle;
 		build();
 		overlay.classList.add("is-visible");
 		overlay.setAttribute("aria-hidden", "false");
@@ -385,9 +436,27 @@
 
 	function hide() {
 		if (!isVisible()) return;
+		openedByIdle = false;
 		overlay.classList.remove("is-visible");
+		overlay.classList.remove("flip-clock-no-transition");
 		overlay.setAttribute("aria-hidden", "true");
 		stopTick();
+		restoreTitle();
+		startIdleTimer();
+	}
+
+	function snapShowIdle() {
+		overlay.classList.add("flip-clock-no-transition");
+		setIdleTitle();
+		if (!isVisible()) show(true);
+	}
+
+	function releaseOverlayTransition() {
+		requestAnimationFrame(function () {
+			requestAnimationFrame(function () {
+				overlay.classList.remove("flip-clock-no-transition");
+			});
+		});
 	}
 
 	// Delegated click — typewriter can replace header-label HTML.
@@ -408,6 +477,8 @@
 
 	document.addEventListener("keydown", function (e) {
 		if (e.key === "Escape" && isVisible()) {
+			e.preventDefault();
+			e.stopImmediatePropagation();
 			hide();
 			return;
 		}
@@ -430,4 +501,22 @@
 	window.addEventListener("resize", function () {
 		if (!isDesktop() && isVisible()) hide();
 	});
+
+	document.addEventListener("visibilitychange", function () {
+		if (document.hidden) {
+			snapShowIdle();
+		} else if (overlay.classList.contains("flip-clock-no-transition")) {
+			snapShowIdle();
+			releaseOverlayTransition();
+		} else if (Date.now() - lastActivity >= IDLE_MS) {
+			enterIdle();
+		}
+	});
+
+	["mousedown", "keydown", "scroll", "touchstart"].forEach(function (evt) {
+		document.addEventListener(evt, onActivity, { passive: true });
+	});
+	document.addEventListener("mousemove", onMousemoveActivity, { passive: true });
+
+	startIdleTimer();
 })();
