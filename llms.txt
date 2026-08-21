@@ -38,7 +38,7 @@ The **Graphics/Work** section on the site groups case-study imagery by client:
 
 ## Sections
 
-The site is a single page with the following sections: TL;DR, About, Services, Tagline/Mission, Experience, Pricing, Availability, Graphics/Work (image gallery), Clients (logo marquee), Experiments/Lab (image gallery), Awards/Recognition, Testimonials, and Footer (proprietor, socials, location/time, colophon, colors, copyright).
+The site is a single page with the following sections: TL;DR, About, Services, Tagline/Mission, Experience, Pricing, Availability, Experiments/Lab (image gallery), Clients (logo marquee), Graphics/Work (image gallery), Awards/Recognition, Testimonials, and Footer (proprietor, socials, location/time, colophon, colors, copyright).
 
 ## Contact
 
