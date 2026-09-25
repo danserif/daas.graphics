@@ -7,7 +7,7 @@
 			description:
 				"For founders navigating startups, leaders managing teams, or individuals needing support with their career.",
 			image: "/images/plans/d-01.png",
-			status: "Limited availability",
+			status: "Fully booked",
 			pricePrefix: "Starting at",
 			priceAmount: "$250",
 			priceSuffix: "(USD) P/H",
@@ -34,7 +34,7 @@
 			description:
 				"For startups, teams, and businesses needing leadership support, creative direction, strategy, and recruitment.",
 			image: "/images/plans/d-02.png",
-			status: "Limited availability",
+			status: "Fully booked",
 			pricePrefix: "Starting at",
 			priceAmount: "$10,000",
 			priceSuffix: "(USD) P/M",
@@ -61,7 +61,7 @@
 			description:
 				"For startups and businesses needing to refine existing design work, or to create unique branding from scratch.",
 			image: "/images/plans/d-03.png",
-			status: "Limited availability",
+			status: "Fully booked",
 			pricePrefix: "Starting at",
 			priceAmount: "$7,000",
 			priceSuffix: "(USD) P/W",
@@ -78,7 +78,7 @@
 				"Pitch decks and presentations.",
 			],
 			ctaIcon: "D-03 /",
-			ctaLabel: "Waitlist",
+			ctaLabel: "Email",
 			ctaHref: "mailto:dan@newman.is?subject=D-03%20%2F%20Designing",
 		},
 		"D-04": {
@@ -88,7 +88,7 @@
 			description:
 				"Create a custom plan that works for your startup or business with add-ons configured exactly as needed.",
 			image: "/images/plans/d-04.png",
-			status: "Limited availability",
+			status: "Fully booked",
 			pricePrefix: "Custom",
 			priceAmount: "$TBC",
 			priceSuffix: "(USD) P/M",
