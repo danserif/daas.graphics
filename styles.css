@@ -4937,6 +4937,10 @@ html.gallery-lightbox-open body {
 		max-width: calc(100% - 2 * var(--gallery-lightbox-pad-x) - 5.5rem);
 	}
 
+	.gallery-lightbox-project-status {
+		display: none;
+	}
+
 	.gallery-lightbox-image,
 	.gallery-lightbox-widget {
 		max-height: 58vh;

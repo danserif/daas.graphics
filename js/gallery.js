@@ -31,9 +31,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	function rgbToHex(r, g, b) {
 		return (
 			"#" +
-			((1 << 24) + (clampByte(r) << 16) + (clampByte(g) << 8) + clampByte(b))
-				.toString(16)
-				.slice(1)
+			((1 << 24) + (clampByte(r) << 16) + (clampByte(g) << 8) + clampByte(b)).toString(16).slice(1)
 		);
 	}
 
@@ -131,8 +129,7 @@ document.addEventListener("DOMContentLoaded", function () {
 					if (!onEdge) continue;
 					// Corners are almost always the solid field — weight them up
 					// so one cropped edge of artwork can't outvote the surround.
-					var inCorner =
-						(x < inset || x >= size - inset) && (y < inset || y >= size - inset);
+					var inCorner = (x < inset || x >= size - inset) && (y < inset || y >= size - inset);
 					addPixel(x, y, inCorner ? 3 : 1);
 				}
 			}
@@ -213,9 +210,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	}
 
 	function scriptAmbientCacheKey(filename) {
-		var theme = document.documentElement.classList.contains("light-mode")
-			? "light"
-			: "dark";
+		var theme = document.documentElement.classList.contains("light-mode") ? "light" : "dark";
 		return "script:" + filename + ":" + theme;
 	}
 
@@ -243,9 +238,7 @@ document.addEventListener("DOMContentLoaded", function () {
 					img.src = newSrc;
 				}
 			});
-		var labMode = document.documentElement.classList.contains("light-mode")
-			? "light"
-			: "dark";
+		var labMode = document.documentElement.classList.contains("light-mode") ? "light" : "dark";
 		document.querySelectorAll("[data-lab-script='danscii']").forEach(function (el) {
 			if (typeof el._dansciiSyncTheme === "function") {
 				el._dansciiSyncTheme();
@@ -737,14 +730,17 @@ document.addEventListener("DOMContentLoaded", function () {
 	function assignWorkProjects(items) {
 		let proj = null;
 		let projDate = null;
+		let projStatus = null;
 		for (let i = 0; i < items.length; i++) {
 			const it = items[i];
 			if (it.type === "title" && it.name) {
 				proj = it.name;
 				projDate = it.date || null;
+				projStatus = it.status || null;
 			}
 			it.project = proj;
 			it.projectDate = projDate;
+			it.projectStatus = projStatus;
 		}
 	}
 
@@ -992,7 +988,8 @@ document.addEventListener("DOMContentLoaded", function () {
 				galleryHashApplying = false;
 			}
 		}
-		var key = parsed.section === "work" ? "graphics" : parsed.section === "lab" ? "experiments" : null;
+		var key =
+			parsed.section === "work" ? "graphics" : parsed.section === "lab" ? "experiments" : null;
 		if (!key || !galleryHashRouters[key]) return;
 		galleryHashRouters[key](parsed);
 	}
@@ -1425,6 +1422,13 @@ document.addEventListener("DOMContentLoaded", function () {
 			wrap.appendChild(line);
 		}
 
+		if (item.status) {
+			const statusLine = document.createElement("p");
+			statusLine.className = "work-text uppercase opacity-25";
+			appendBracketStyledText(item.status, statusLine);
+			wrap.appendChild(statusLine);
+		}
+
 		const linkEl = buildWorkLinkLine(item.link, item.linkDisplay);
 		if (linkEl) {
 			wrap.appendChild(linkEl);
@@ -1559,13 +1563,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 			const frame = isExperimentScriptItem(item)
 				? createWorkWidget(item)
-				: await createWorkImage(
-						"/images/lab/",
-						item.filename,
-						altText,
-						item,
-						item.shared === true,
-					);
+				: await createWorkImage("/images/lab/", item.filename, altText, item, item.shared === true);
 			workItem.appendChild(frame);
 		}
 
@@ -1794,8 +1792,7 @@ document.addEventListener("DOMContentLoaded", function () {
 					return;
 				}
 				var scriptFrame = findGridPreviewScriptFrame(entry.filename);
-				var sampleEl =
-					scriptFrame || (widgetMount && !widgetMount.hidden ? widgetMount : null);
+				var sampleEl = scriptFrame || (widgetMount && !widgetMount.hidden ? widgetMount : null);
 				applySampled(sampleElementBackground(sampleEl), [scriptKey]);
 				return;
 			}
@@ -1965,17 +1962,30 @@ document.addEventListener("DOMContentLoaded", function () {
 					link.href = "#work=" + slugifyProjectName(title);
 					link.className = "gallery-lightbox-project-link";
 
+					var lead = document.createElement("span");
+					lead.className = "no-break";
+
 					var nameSpan = document.createElement("span");
 					nameSpan.className = "gallery-lightbox-project-name";
 					nameSpan.textContent = title;
-					link.appendChild(nameSpan);
+					lead.appendChild(nameSpan);
 
 					if (entry.projectDate) {
-						link.appendChild(document.createTextNode(" "));
+						lead.appendChild(document.createTextNode(" "));
 						var dateSpan = document.createElement("span");
 						dateSpan.className = "opacity-75";
 						appendBracketStyledText(entry.projectDate, dateSpan);
-						link.appendChild(dateSpan);
+						lead.appendChild(dateSpan);
+					}
+
+					link.appendChild(lead);
+
+					if (entry.projectStatus) {
+						link.appendChild(document.createTextNode(" "));
+						var statusSpan = document.createElement("span");
+						statusSpan.className = "gallery-lightbox-project-status no-break uppercase opacity-25";
+						appendBracketStyledText(entry.projectStatus, statusSpan);
+						link.appendChild(statusSpan);
 					}
 
 					link.addEventListener("click", function (e) {
@@ -2163,8 +2173,7 @@ document.addEventListener("DOMContentLoaded", function () {
 				typeof opts.onTitleNavigate === "function" ? opts.onTitleNavigate : null;
 			state.getTotalSizeStr =
 				typeof opts.getTotalSizeStr === "function" ? opts.getTotalSizeStr : null;
-			state.onIndexChange =
-				typeof opts.onIndexChange === "function" ? opts.onIndexChange : null;
+			state.onIndexChange = typeof opts.onIndexChange === "function" ? opts.onIndexChange : null;
 			state.onClose = typeof opts.onClose === "function" ? opts.onClose : null;
 			state.cachedTotalSizeStr = null;
 			state.cachedTotalSizeKey = null;
@@ -2413,9 +2422,7 @@ document.addEventListener("DOMContentLoaded", function () {
 					const fr = filterEl.getBoundingClientRect();
 					const filterH = Math.max(fr.height, filterEl.offsetHeight || 52);
 					const nearSticky =
-						didSnap ||
-						filterEl.classList.contains("is-stuck") ||
-						Math.abs(fr.top - snapTop) <= 12;
+						didSnap || filterEl.classList.contains("is-stuck") || Math.abs(fr.top - snapTop) <= 12;
 
 					let wantAnchorTop;
 					if (anchor.classList && anchor.classList.contains("work-grid-title")) {
@@ -2870,8 +2877,7 @@ document.addEventListener("DOMContentLoaded", function () {
 				const frame = e.target.closest(".work-image-frame");
 				if (!frame || !grid.contains(frame)) return;
 				const thumb = frame.querySelector("img.work-image");
-				const filename =
-					(thumb && thumb.dataset.filename) || frame.dataset.filename || "";
+				const filename = (thumb && thumb.dataset.filename) || frame.dataset.filename || "";
 				if (!filename) return;
 				e.preventDefault();
 				openLightboxForFilename(filename);
@@ -2993,7 +2999,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 				for (let i = 0; i < items.length; i++) {
 					const item = items[i];
-					if (sectionType === "graphics" && (item.divider || item.type === "title" || item.type === "info")) {
+					if (
+						sectionType === "graphics" &&
+						(item.divider || item.type === "title" || item.type === "info")
+					) {
 						count++;
 						continue;
 					}
@@ -3018,7 +3027,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 				for (let i = 0; i < items.length; i++) {
 					const item = items[i];
-					if (sectionType === "graphics" && (item.divider || item.type === "title" || item.type === "info")) {
+					if (
+						sectionType === "graphics" &&
+						(item.divider || item.type === "title" || item.type === "info")
+					) {
 						count++;
 						continue;
 					}
