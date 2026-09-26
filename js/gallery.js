@@ -1981,7 +1981,6 @@ document.addEventListener("DOMContentLoaded", function () {
 					link.appendChild(lead);
 
 					if (entry.projectStatus) {
-						link.appendChild(document.createTextNode(" "));
 						var statusSpan = document.createElement("span");
 						statusSpan.className = "gallery-lightbox-project-status no-break uppercase opacity-25";
 						appendBracketStyledText(entry.projectStatus, statusSpan);

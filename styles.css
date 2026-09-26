@@ -4657,6 +4657,14 @@ html.gallery-lightbox-open body {
 	color: inherit;
 	text-decoration: none;
 	cursor: pointer;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: var(--gallery-lightbox-stack-gap);
+}
+
+.gallery-lightbox-project-status {
+	display: block;
 }
 
 .gallery-lightbox-project-link:hover {
@@ -4925,6 +4933,12 @@ html.gallery-lightbox-open body {
 	}
 }
 
+@media only screen and (max-width: 1200px) {
+	.gallery-lightbox-project-status {
+		display: none;
+	}
+}
+
 @media only screen and (max-width: 1080px) {
 	.gallery-lightbox {
 		--gallery-lightbox-pad-x: 1.5rem;
@@ -4935,10 +4949,6 @@ html.gallery-lightbox-open body {
 	.gallery-lightbox-project {
 		/* Leave room for Close; 50vw was too tight for name + years */
 		max-width: calc(100% - 2 * var(--gallery-lightbox-pad-x) - 5.5rem);
-	}
-
-	.gallery-lightbox-project-status {
-		display: none;
 	}
 
 	.gallery-lightbox-image,
